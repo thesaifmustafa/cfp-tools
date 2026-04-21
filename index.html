@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFP Investor Portal Pricing Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0b1220;
+    --navy-mid: #111b2e;
+    --navy-card: #151f33;
+    --navy-border: #1e2d47;
+    --blue: #2563eb;
+    --indigo: #4f46e5;
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --text: #e8edf5;
+    --muted: #6b7fa3;
+    --soft: #a8b8d4;
+  }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--blue), var(--teal));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-mark svg { display: block; }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    color: var(--soft);
+  }
+
+  .badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    background: rgba(13,148,136,0.12);
+    border: 1px solid rgba(13,148,136,0.25);
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  .card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 32px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .card-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .input-group {
+    margin-bottom: 24px;
+  }
+
+  .input-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0;
+    background: var(--navy);
+    border: 1px solid var(--navy-border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .input-row:focus-within {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+  }
+
+  .input-prefix {
+    padding: 0 14px;
+    background: rgba(255,255,255,0.03);
+    border-right: 1px solid var(--navy-border);
+    display: flex;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .input-suffix {
+    padding: 0 14px;
+    background: rgba(255,255,255,0.03);
+    border-left: 1px solid var(--navy-border);
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .slider-row {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--navy-border);
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(13,148,136,0.4);
+    transition: transform 0.15s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  .divider {
+    height: 1px;
+    background: var(--navy-border);
+    margin: 24px 0;
+  }
+
+  .result-block {
+    background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(13,148,136,0.08));
+    border: 1px solid rgba(13,148,136,0.2);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+
+  .result-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .result-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #5eead4, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    transition: all 0.2s;
+  }
+
+  .result-mo {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--muted);
+    -webkit-text-fill-color: var(--muted);
+  }
+
+  .result-annual {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .result-annual span {
+    color: var(--soft);
+    font-weight: 500;
+  }
+
+  .tier-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tier {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    font-size: 13px;
+  }
+
+  .tier.active {
+    background: rgba(13,148,136,0.08);
+    border-color: rgba(13,148,136,0.25);
+  }
+
+  .tier-name {
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tier-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--navy-border);
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .tier.active .tier-dot {
+    background: var(--teal-light);
+    box-shadow: 0 0 6px rgba(20,184,166,0.6);
+  }
+
+  .tier.active .tier-name { color: var(--soft); }
+
+  .tier-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .tier.active .tier-price { color: var(--teal-light); }
+
+  .footnote {
+    margin-top: 20px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo-row">
+    <div class="logo-mark">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M3 14L9 4L15 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M5.5 10.5H12.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="logo-text">Cash Flow Portal</span>
+    <span class="badge">Internal Tool</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Investor Portal Pricing</div>
+    <div class="card-sub">Real-time quote based on equity under management</div>
+
+    <div class="input-group">
+      <label class="input-label">Equity Under Management (EUM)</label>
+      <div class="input-row">
+        <span class="input-prefix">$</span>
+        <input type="number" id="eum-input" value="10" min="0" max="500" step="1" placeholder="0" oninput="cfpOnInput(this.value)" onchange="cfpOnInput(this.value)" />
+        <span class="input-suffix">million</span>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="eum-slider" min="0" max="200" step="1" value="10" oninput="cfpOnSlider(this.value)" onchange="cfpOnSlider(this.value)" onmousemove="cfpOnSlider(this.value)" ontouchmove="cfpOnSlider(this.value)" />
+        <span class="slider-label" id="slider-display">$10M</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="result-block">
+      <div class="result-label">Monthly Price — Investor Portal</div>
+      <div class="result-price" id="result-price">$499<span class="result-mo">/mo</span></div>
+      <div class="result-annual">Billed annually: <span id="result-annual">$5,988/yr</span></div>
+    </div>
+
+    <div class="tier-row">
+      <div class="tier active" id="tier-1">
+        <span class="tier-name"><span class="tier-dot"></span>Up to $10M EUM</span>
+        <span class="tier-price">$499/mo</span>
+      </div>
+      <div class="tier" id="tier-2">
+        <span class="tier-name"><span class="tier-dot"></span>$10M – $25M EUM</span>
+        <span class="tier-price">$599/mo</span>
+      </div>
+      <div class="tier" id="tier-3">
+        <span class="tier-name"><span class="tier-dot"></span>$25M – $50M EUM</span>
+        <span class="tier-price">$699/mo</span>
+      </div>
+      <div class="tier" id="tier-4">
+        <span class="tier-name"><span class="tier-dot"></span>Over $50M EUM</span>
+        <span class="tier-price" id="tier-4-price">$699 + $10/M</span>
+      </div>
+    </div>
+
+    <div class="footnote">All prices USD · Fund admin pricing sold separately</div>
+  </div>
+</div>
+
+<script>
+  // Global functions - defined on window so inline handlers always find them
+  // even when CRM injects HTML via innerHTML and strips addEventListener bindings
+
+  window.cfpCalcPrice = function(eum) {
+    if (eum <= 10) return 499;
+    if (eum <= 25) return 599;
+    if (eum <= 50) return 699;
+    return 699 + Math.ceil(eum - 50) * 10;
+  };
+
+  window.cfpFmt = function(n) {
+    return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  };
+
+  window.cfpUpdate = function(eum) {
+    eum = parseFloat(eum) || 0;
+    var price = window.cfpCalcPrice(eum);
+    var annual = price * 12;
+    var active = eum <= 10 ? 0 : eum <= 25 ? 1 : eum <= 50 ? 2 : 3;
+
+    var rp = document.getElementById('result-price');
+    var ra = document.getElementById('result-annual');
+    var sd = document.getElementById('slider-display');
+    var t4 = document.getElementById('tier-4-price');
+
+    if (rp) rp.innerHTML = window.cfpFmt(price) + '<span class="result-mo">/mo</span>';
+    if (ra) ra.innerHTML = 'Billed annually: <span>' + window.cfpFmt(annual) + '/yr</span>';
+    if (sd) sd.textContent = '$' + eum + 'M';
+
+    [1,2,3,4].forEach(function(i) {
+      var t = document.getElementById('tier-' + i);
+      if (t) t.classList.toggle('active', i - 1 === active);
+    });
+
+    if (t4) {
+      t4.textContent = eum > 50
+        ? '$699 + $' + (Math.ceil(eum - 50) * 10) + '/mo'
+        : '$699 + $10/M';
+    }
+  };
+
+  window.cfpOnSlider = function(val) {
+    var v = parseFloat(val) || 0;
+    var inp = document.getElementById('eum-input');
+    if (inp) inp.value = v;
+    window.cfpUpdate(v);
+  };
+
+  window.cfpOnInput = function(val) {
+    var v = Math.max(0, parseFloat(val) || 0);
+    var slider = document.getElementById('eum-slider');
+    if (slider) slider.value = Math.min(v, 200);
+    window.cfpUpdate(v);
+  };
+
+  // Fallback: also bind via addEventListener in case inline handlers are stripped
+  function cfpBind() {
+    var inp = document.getElementById('eum-input');
+    var slider = document.getElementById('eum-slider');
+    if (inp) {
+      inp.addEventListener('input', function() { window.cfpOnInput(this.value); });
+      inp.addEventListener('change', function() { window.cfpOnInput(this.value); });
+    }
+    if (slider) {
+      ['input','change','mousemove','touchmove'].forEach(function(ev) {
+        slider.addEventListener(ev, function() { window.cfpOnSlider(this.value); });
+      });
+    }
+    window.cfpUpdate(10);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', cfpBind);
+  } else {
+    cfpBind();
+  }
+</script>
+</body>
+</html>
