@@ -211,6 +211,7 @@
     border-radius: 12px;
     padding: 22px 24px;
     margin-bottom: 16px;
+    position: relative;
   }
 
   .result-label {
@@ -251,6 +252,63 @@
     color: var(--soft);
     font-weight: 500;
   }
+
+  .copy-row {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .copy-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--soft);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+
+  .copy-btn:hover {
+    background: rgba(13,148,136,0.10);
+    border-color: rgba(13,148,136,0.35);
+    color: var(--text);
+  }
+
+  .copy-btn:active { transform: translateY(1px); }
+
+  .copy-btn.copied {
+    background: rgba(13,148,136,0.15);
+    border-color: var(--teal);
+    color: var(--teal-light);
+  }
+
+  .copy-btn svg { display: block; opacity: 0.8; }
+
+  .share-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 4px;
+    transition: color 0.15s;
+    user-select: none;
+  }
+
+  .share-btn:hover { color: var(--soft); }
+  .share-btn.copied { color: var(--teal-light); }
 
   .tier-row {
     display: flex;
@@ -352,6 +410,15 @@
       <div class="result-label">Monthly Price — Investor Portal</div>
       <div class="result-price" id="result-price">$499<span class="result-mo">/mo</span></div>
       <div class="result-annual">Billed annually: <span id="result-annual">$5,988/yr</span></div>
+      <div class="copy-row">
+        <button type="button" class="copy-btn" id="copy-btn" onclick="cfpCopyQuote()" aria-label="Copy quote to clipboard">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span id="copy-btn-label">Copy quote</span>
+        </button>
+        <button type="button" class="share-btn" id="share-btn" onclick="cfpCopyLink()" aria-label="Copy shareable link">
+          <span id="share-btn-label">Copy link</span>
+        </button>
+      </div>
     </div>
 
     <div class="tier-row">
@@ -392,8 +459,12 @@
     return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   };
 
+  // Track latest EUM so copy/share buttons know what to emit
+  window.cfpCurrentEum = 10;
+
   window.cfpUpdate = function(eum) {
     eum = parseFloat(eum) || 0;
+    window.cfpCurrentEum = eum;
     var price = window.cfpCalcPrice(eum);
     var annual = price * 12;
     var active = eum <= 10 ? 0 : eum <= 25 ? 1 : eum <= 50 ? 2 : 3;
@@ -417,6 +488,14 @@
         ? '$699 + $' + (Math.ceil(eum - 50) * 10) + '/mo'
         : '$699 + $10/M';
     }
+
+    // Sync EUM to URL hash so the link is shareable. Guard for contexts
+    // where history isn't available (e.g. embedded in a CRM iframe).
+    try {
+      if (window.history && window.history.replaceState && window.location) {
+        window.history.replaceState(null, '', '#eum=' + eum);
+      }
+    } catch (e) { /* no-op */ }
   };
 
   window.cfpOnSlider = function(val) {
@@ -433,10 +512,92 @@
     window.cfpUpdate(v);
   };
 
+  // Build the pasteable quote string used by AEs in email/Slack
+  window.cfpQuoteText = function() {
+    var eum = window.cfpCurrentEum || 0;
+    var price = window.cfpCalcPrice(eum);
+    var annual = price * 12;
+    return 'Investor Portal: ' + window.cfpFmt(price) + '/mo ('
+      + window.cfpFmt(annual) + '/yr) at $' + eum + 'M EUM';
+  };
+
+  // Clipboard helper that works in both modern and older / non-secure contexts
+  window.cfpCopyText = function(text) {
+    var done = function(ok) { return ok; };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(function() { return true; }).catch(function() {
+          return window.cfpCopyFallback(text);
+        });
+      }
+    } catch (e) { /* fall through */ }
+    return Promise.resolve(window.cfpCopyFallback(text));
+  };
+
+  window.cfpCopyFallback = function(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  };
+
+  window.cfpFlashButton = function(id, labelId, okText, origText) {
+    var btn = document.getElementById(id);
+    var lbl = document.getElementById(labelId);
+    if (!btn || !lbl) return;
+    btn.classList.add('copied');
+    lbl.textContent = okText;
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      lbl.textContent = origText;
+    }, 1400);
+  };
+
+  window.cfpCopyQuote = function() {
+    var text = window.cfpQuoteText();
+    Promise.resolve(window.cfpCopyText(text)).then(function(ok) {
+      window.cfpFlashButton('copy-btn', 'copy-btn-label', ok ? 'Copied' : 'Copy failed', 'Copy quote');
+    });
+  };
+
+  window.cfpCopyLink = function() {
+    var href = (window.location && window.location.href) || '';
+    // Ensure the hash reflects the current EUM even if replaceState was blocked
+    if (href.indexOf('#') >= 0) href = href.split('#')[0];
+    href = href + '#eum=' + (window.cfpCurrentEum || 0);
+    Promise.resolve(window.cfpCopyText(href)).then(function(ok) {
+      window.cfpFlashButton('share-btn', 'share-btn-label', ok ? 'Link copied' : 'Copy failed', 'Copy link');
+    });
+  };
+
+  // Parse EUM from URL hash on load, e.g. "#eum=35"
+  window.cfpReadHash = function() {
+    try {
+      var h = (window.location && window.location.hash) || '';
+      var m = h.match(/eum=([0-9]+(?:\.[0-9]+)?)/i);
+      if (m) {
+        var v = parseFloat(m[1]);
+        if (!isNaN(v) && v >= 0) return v;
+      }
+    } catch (e) { /* no-op */ }
+    return null;
+  };
+
   // Fallback: also bind via addEventListener in case inline handlers are stripped
   function cfpBind() {
     var inp = document.getElementById('eum-input');
     var slider = document.getElementById('eum-slider');
+    var copyBtn = document.getElementById('copy-btn');
+    var shareBtn = document.getElementById('share-btn');
+
     if (inp) {
       inp.addEventListener('input', function() { window.cfpOnInput(this.value); });
       inp.addEventListener('change', function() { window.cfpOnInput(this.value); });
@@ -446,7 +607,18 @@
         slider.addEventListener(ev, function() { window.cfpOnSlider(this.value); });
       });
     }
-    window.cfpUpdate(10);
+    if (copyBtn) copyBtn.addEventListener('click', function() { window.cfpCopyQuote(); });
+    if (shareBtn) shareBtn.addEventListener('click', function() { window.cfpCopyLink(); });
+
+    // Initial value: URL hash wins over the default
+    var initial = window.cfpReadHash();
+    if (initial !== null) {
+      if (inp) inp.value = initial;
+      if (slider) slider.value = Math.min(initial, 200);
+      window.cfpUpdate(initial);
+    } else {
+      window.cfpUpdate(10);
+    }
   }
 
   if (document.readyState === 'loading') {
