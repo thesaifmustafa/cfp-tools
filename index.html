@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CFP Investor Portal Pricing Calculator</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Cash Flow Portal — Tools</title>
+<meta name="description" content="Interactive calculators and estimators for real estate syndicators evaluating Cash Flow Portal.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -12,620 +13,343 @@
     --navy: #0b1220;
     --navy-mid: #111b2e;
     --navy-card: #151f33;
+    --navy-card-hover: #1a2540;
     --navy-border: #1e2d47;
+    --navy-border-hover: #2a3d5c;
     --blue: #2563eb;
     --indigo: #4f46e5;
     --teal: #0d9488;
     --teal-light: #14b8a6;
+    --teal-glow: #5eead4;
     --text: #e8edf5;
     --muted: #6b7fa3;
     --soft: #a8b8d4;
   }
 
+  html, body { min-height: 100%; }
+
   body {
     background: var(--navy);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 24px 64px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Subtle background glow */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 600px;
+    background: radial-gradient(ellipse at center, rgba(13,148,136,0.08) 0%, rgba(37,99,235,0.04) 40%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   .wrap {
-    width: 100%;
-    max-width: 520px;
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
   }
 
-  .logo-row {
+  /* ---------- Header ---------- */
+  .header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 32px;
+    gap: 12px;
+    margin-bottom: 56px;
   }
 
   .logo-mark {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background: linear-gradient(135deg, var(--blue), var(--teal));
-    border-radius: 8px;
+    border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   }
-
-  .logo-mark svg { display: block; }
 
   .logo-text {
     font-family: 'Syne', sans-serif;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
     letter-spacing: 0.02em;
     color: var(--soft);
   }
 
-  .badge {
+  .home-link {
     margin-left: auto;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--teal-light);
-    background: rgba(13,148,136,0.12);
-    border: 1px solid rgba(13,148,136,0.25);
-    padding: 3px 8px;
-    border-radius: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
   }
 
-  .card {
+  .home-link:hover { color: var(--soft); }
+
+  /* ---------- Hero ---------- */
+  .hero { margin-bottom: 48px; max-width: 640px; }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, var(--text) 20%, var(--teal-glow) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.55;
+    color: var(--soft);
+    font-weight: 300;
+  }
+
+  /* ---------- Tile grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .tile {
+    position: relative;
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
     border-radius: 16px;
-    padding: 32px;
-  }
-
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .card-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-
-  .input-group {
-    margin-bottom: 24px;
-  }
-
-  .input-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-    display: block;
-  }
-
-  .input-row {
-    display: flex;
-    gap: 0;
-    background: var(--navy);
-    border: 1px solid var(--navy-border);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .input-row:focus-within {
-    border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
-  }
-
-  .input-prefix {
-    padding: 0 14px;
-    background: rgba(255,255,255,0.03);
-    border-right: 1px solid var(--navy-border);
-    display: flex;
-    align-items: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--muted);
-    white-space: nowrap;
-    user-select: none;
-  }
-
-  .input-suffix {
-    padding: 0 14px;
-    background: rgba(255,255,255,0.03);
-    border-left: 1px solid var(--navy-border);
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    color: var(--muted);
-    white-space: nowrap;
-    user-select: none;
-  }
-
-  input[type="number"] {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    padding: 14px 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-    -moz-appearance: textfield;
-  }
-
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
-
-  .slider-row {
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  input[type="range"] {
-    -webkit-appearance: none;
-    flex: 1;
-    height: 4px;
-    border-radius: 2px;
-    background: var(--navy-border);
-    outline: none;
-    cursor: pointer;
-  }
-
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--teal), var(--blue));
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(13,148,136,0.4);
-    transition: transform 0.15s;
-  }
-
-  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-
-  .divider {
-    height: 1px;
-    background: var(--navy-border);
-    margin: 24px 0;
-  }
-
-  .result-block {
-    background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(13,148,136,0.08));
-    border: 1px solid rgba(13,148,136,0.2);
-    border-radius: 12px;
-    padding: 22px 24px;
-    margin-bottom: 16px;
-    position: relative;
-  }
-
-  .result-label {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-
-  .result-price {
-    font-family: 'Syne', sans-serif;
-    font-size: 42px;
-    font-weight: 800;
-    background: linear-gradient(90deg, #5eead4, #60a5fa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-    transition: all 0.2s;
-  }
-
-  .result-mo {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--muted);
-    -webkit-text-fill-color: var(--muted);
-  }
-
-  .result-annual {
-    margin-top: 6px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .result-annual span {
-    color: var(--soft);
-    font-weight: 500;
-  }
-
-  .copy-row {
-    margin-top: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .copy-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    color: var(--soft);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--navy-border);
-    border-radius: 8px;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    user-select: none;
-  }
-
-  .copy-btn:hover {
-    background: rgba(13,148,136,0.10);
-    border-color: rgba(13,148,136,0.35);
-    color: var(--text);
-  }
-
-  .copy-btn:active { transform: translateY(1px); }
-
-  .copy-btn.copied {
-    background: rgba(13,148,136,0.15);
-    border-color: var(--teal);
-    color: var(--teal-light);
-  }
-
-  .copy-btn svg { display: block; opacity: 0.8; }
-
-  .share-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 8px 4px;
-    transition: color 0.15s;
-    user-select: none;
-  }
-
-  .share-btn:hover { color: var(--soft); }
-  .share-btn.copied { color: var(--teal-light); }
-
-  .tier-row {
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 12px;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    cursor: pointer;
+    overflow: hidden;
   }
 
-  .tier {
+  .tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: radial-gradient(circle at top right, rgba(13,148,136,0.10), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    pointer-events: none;
+  }
+
+  .tile:hover {
+    transform: translateY(-2px);
+    border-color: var(--navy-border-hover);
+    background: var(--navy-card-hover);
+  }
+
+  .tile:hover::after { opacity: 1; }
+
+  .tile.disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  .tile.disabled:hover {
+    transform: none;
+    border-color: var(--navy-border);
+    background: var(--navy-card);
+  }
+
+  .tile.disabled:hover::after { opacity: 0; }
+
+  .tile-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid transparent;
-    transition: all 0.2s;
-    font-size: 13px;
-  }
-
-  .tier.active {
-    background: rgba(13,148,136,0.08);
-    border-color: rgba(13,148,136,0.25);
-  }
-
-  .tier-name {
-    color: var(--muted);
-    display: flex;
-    align-items: center;
     gap: 8px;
   }
 
-  .tier-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--navy-border);
-    transition: background 0.2s;
+  .tile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(13,148,136,0.15));
+    border: 1px solid rgba(13,148,136,0.22);
+    color: var(--teal-glow);
     flex-shrink: 0;
   }
 
-  .tier.active .tier-dot {
-    background: var(--teal-light);
-    box-shadow: 0 0 6px rgba(20,184,166,0.6);
+  .tile.disabled .tile-icon {
+    background: rgba(255,255,255,0.03);
+    border-color: var(--navy-border);
+    color: var(--muted);
   }
 
-  .tier.active .tier-name { color: var(--soft); }
+  .tile-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
 
-  .tier-price {
-    font-family: 'JetBrains Mono', monospace;
+  .tile-badge.live {
+    color: var(--teal-light);
+    background: rgba(13,148,136,0.12);
+    border: 1px solid rgba(13,148,136,0.25);
+  }
+
+  .tile-badge.soon {
+    color: var(--muted);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--navy-border);
+  }
+
+  .tile h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text);
+  }
+
+  .tile p {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    font-weight: 300;
+    flex-grow: 1;
+  }
+
+  .tile-foot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--teal-light);
+    letter-spacing: 0.01em;
+    margin-top: 4px;
+  }
+
+  .tile-foot svg { transition: transform 0.18s ease; }
+  .tile:hover .tile-foot svg { transform: translateX(3px); }
+
+  .tile.disabled .tile-foot { color: var(--muted); }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    padding-top: 32px;
+    border-top: 1px solid var(--navy-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
     font-size: 12px;
     color: var(--muted);
-    font-weight: 600;
   }
 
-  .tier.active .tier-price { color: var(--teal-light); }
+  .footer a {
+    color: var(--soft);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
 
-  .footnote {
-    margin-top: 20px;
-    font-size: 11px;
-    color: var(--muted);
-    text-align: center;
-    letter-spacing: 0.02em;
+  .footer a:hover { color: var(--teal-light); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 520px) {
+    body { padding: 32px 20px 48px; }
+    .header { margin-bottom: 40px; }
+    .hero { margin-bottom: 32px; }
+    .grid { gap: 12px; margin-bottom: 40px; }
+    .tile { padding: 20px; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="logo-row">
+
+  <div class="header">
     <div class="logo-mark">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M3 14L9 4L15 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M5.5 10.5H12.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
     </div>
     <span class="logo-text">Cash Flow Portal</span>
-    <span class="badge">Internal Tool</span>
+    <a class="home-link" href="https://cashflowportal.com/" rel="noopener">cashflowportal.com ↗</a>
   </div>
 
-  <div class="card">
-    <div class="card-title">Investor Portal Pricing</div>
-    <div class="card-sub">Real-time quote based on equity under management</div>
+  <section class="hero">
+    <h1>Tools for real estate syndicators</h1>
+    <p>Interactive calculators to help you size up Cash Flow Portal for your fund — from monthly pricing to the hours you'll save versus manual investor operations.</p>
+  </section>
 
-    <div class="input-group">
-      <label class="input-label">Equity Under Management (EUM)</label>
-      <div class="input-row">
-        <span class="input-prefix">$</span>
-        <input type="number" id="eum-input" value="10" min="0" max="500" step="1" placeholder="0" oninput="cfpOnInput(this.value)" onchange="cfpOnInput(this.value)" />
-        <span class="input-suffix">million</span>
+  <div class="grid">
+
+    <a class="tile" href="pricing.html" aria-label="Open the Investor Portal Pricing Calculator">
+      <div class="tile-head">
+        <div class="tile-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <span class="tile-badge live">Live</span>
       </div>
-      <div class="slider-row">
-        <input type="range" id="eum-slider" min="0" max="200" step="1" value="10" oninput="cfpOnSlider(this.value)" onchange="cfpOnSlider(this.value)" onmousemove="cfpOnSlider(this.value)" ontouchmove="cfpOnSlider(this.value)" />
-        <span class="slider-label" id="slider-display">$10M</span>
+      <h2>Investor Portal Pricing</h2>
+      <p>Get a real-time monthly and annual quote based on your equity under management. Shareable via link.</p>
+      <div class="tile-foot">
+        Open calculator
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
       </div>
+    </a>
+
+    <div class="tile disabled" aria-label="ROI Estimator — coming soon">
+      <div class="tile-head">
+        <div class="tile-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+        </div>
+        <span class="tile-badge soon">Soon</span>
+      </div>
+      <h2>ROI &amp; Time Savings Estimator</h2>
+      <p>Plug in your investor count, distributions per year, and K-1s. We'll show you the hours and dollars saved vs. manual ops.</p>
+      <div class="tile-foot">Coming soon</div>
     </div>
 
-    <div class="divider"></div>
-
-    <div class="result-block">
-      <div class="result-label">Monthly Price — Investor Portal</div>
-      <div class="result-price" id="result-price">$499<span class="result-mo">/mo</span></div>
-      <div class="result-annual">Billed annually: <span id="result-annual">$5,988/yr</span></div>
-      <div class="copy-row">
-        <button type="button" class="copy-btn" id="copy-btn" onclick="cfpCopyQuote()" aria-label="Copy quote to clipboard">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-          <span id="copy-btn-label">Copy quote</span>
-        </button>
-        <button type="button" class="share-btn" id="share-btn" onclick="cfpCopyLink()" aria-label="Copy shareable link">
-          <span id="share-btn-label">Copy link</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="tier-row">
-      <div class="tier active" id="tier-1">
-        <span class="tier-name"><span class="tier-dot"></span>Up to $10M EUM</span>
-        <span class="tier-price">$499/mo</span>
-      </div>
-      <div class="tier" id="tier-2">
-        <span class="tier-name"><span class="tier-dot"></span>$10M – $25M EUM</span>
-        <span class="tier-price">$599/mo</span>
-      </div>
-      <div class="tier" id="tier-3">
-        <span class="tier-name"><span class="tier-dot"></span>$25M – $50M EUM</span>
-        <span class="tier-price">$699/mo</span>
-      </div>
-      <div class="tier" id="tier-4">
-        <span class="tier-name"><span class="tier-dot"></span>Over $50M EUM</span>
-        <span class="tier-price" id="tier-4-price">$699 + $10/M</span>
-      </div>
-    </div>
-
-    <div class="footnote">All prices USD · Fund admin pricing sold separately</div>
   </div>
+
+  <div class="footer">
+    <span>© Cash Flow Portal</span>
+    <span>Questions? <a href="mailto:sales@cashflowportal.com">Talk to sales</a></span>
+  </div>
+
 </div>
-
-<script>
-  // Global functions - defined on window so inline handlers always find them
-  // even when CRM injects HTML via innerHTML and strips addEventListener bindings
-
-  window.cfpCalcPrice = function(eum) {
-    if (eum <= 10) return 499;
-    if (eum <= 25) return 599;
-    if (eum <= 50) return 699;
-    return 699 + Math.ceil(eum - 50) * 10;
-  };
-
-  window.cfpFmt = function(n) {
-    return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-  };
-
-  // Track latest EUM so copy/share buttons know what to emit
-  window.cfpCurrentEum = 10;
-
-  window.cfpUpdate = function(eum) {
-    eum = parseFloat(eum) || 0;
-    window.cfpCurrentEum = eum;
-    var price = window.cfpCalcPrice(eum);
-    var annual = price * 12;
-    var active = eum <= 10 ? 0 : eum <= 25 ? 1 : eum <= 50 ? 2 : 3;
-
-    var rp = document.getElementById('result-price');
-    var ra = document.getElementById('result-annual');
-    var sd = document.getElementById('slider-display');
-    var t4 = document.getElementById('tier-4-price');
-
-    if (rp) rp.innerHTML = window.cfpFmt(price) + '<span class="result-mo">/mo</span>';
-    if (ra) ra.innerHTML = 'Billed annually: <span>' + window.cfpFmt(annual) + '/yr</span>';
-    if (sd) sd.textContent = '$' + eum + 'M';
-
-    [1,2,3,4].forEach(function(i) {
-      var t = document.getElementById('tier-' + i);
-      if (t) t.classList.toggle('active', i - 1 === active);
-    });
-
-    if (t4) {
-      t4.textContent = eum > 50
-        ? '$699 + $' + (Math.ceil(eum - 50) * 10) + '/mo'
-        : '$699 + $10/M';
-    }
-
-    // Sync EUM to URL hash so the link is shareable. Guard for contexts
-    // where history isn't available (e.g. embedded in a CRM iframe).
-    try {
-      if (window.history && window.history.replaceState && window.location) {
-        window.history.replaceState(null, '', '#eum=' + eum);
-      }
-    } catch (e) { /* no-op */ }
-  };
-
-  window.cfpOnSlider = function(val) {
-    var v = parseFloat(val) || 0;
-    var inp = document.getElementById('eum-input');
-    if (inp) inp.value = v;
-    window.cfpUpdate(v);
-  };
-
-  window.cfpOnInput = function(val) {
-    var v = Math.max(0, parseFloat(val) || 0);
-    var slider = document.getElementById('eum-slider');
-    if (slider) slider.value = Math.min(v, 200);
-    window.cfpUpdate(v);
-  };
-
-  // Build the pasteable quote string used by AEs in email/Slack
-  window.cfpQuoteText = function() {
-    var eum = window.cfpCurrentEum || 0;
-    var price = window.cfpCalcPrice(eum);
-    var annual = price * 12;
-    return 'Investor Portal: ' + window.cfpFmt(price) + '/mo ('
-      + window.cfpFmt(annual) + '/yr) at $' + eum + 'M EUM';
-  };
-
-  // Clipboard helper that works in both modern and older / non-secure contexts
-  window.cfpCopyText = function(text) {
-    var done = function(ok) { return ok; };
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        return navigator.clipboard.writeText(text).then(function() { return true; }).catch(function() {
-          return window.cfpCopyFallback(text);
-        });
-      }
-    } catch (e) { /* fall through */ }
-    return Promise.resolve(window.cfpCopyFallback(text));
-  };
-
-  window.cfpCopyFallback = function(text) {
-    try {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'absolute';
-      ta.style.left = '-9999px';
-      document.body.appendChild(ta);
-      ta.select();
-      var ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      return ok;
-    } catch (e) { return false; }
-  };
-
-  window.cfpFlashButton = function(id, labelId, okText, origText) {
-    var btn = document.getElementById(id);
-    var lbl = document.getElementById(labelId);
-    if (!btn || !lbl) return;
-    btn.classList.add('copied');
-    lbl.textContent = okText;
-    setTimeout(function() {
-      btn.classList.remove('copied');
-      lbl.textContent = origText;
-    }, 1400);
-  };
-
-  window.cfpCopyQuote = function() {
-    var text = window.cfpQuoteText();
-    Promise.resolve(window.cfpCopyText(text)).then(function(ok) {
-      window.cfpFlashButton('copy-btn', 'copy-btn-label', ok ? 'Copied' : 'Copy failed', 'Copy quote');
-    });
-  };
-
-  window.cfpCopyLink = function() {
-    var href = (window.location && window.location.href) || '';
-    // Ensure the hash reflects the current EUM even if replaceState was blocked
-    if (href.indexOf('#') >= 0) href = href.split('#')[0];
-    href = href + '#eum=' + (window.cfpCurrentEum || 0);
-    Promise.resolve(window.cfpCopyText(href)).then(function(ok) {
-      window.cfpFlashButton('share-btn', 'share-btn-label', ok ? 'Link copied' : 'Copy failed', 'Copy link');
-    });
-  };
-
-  // Parse EUM from URL hash on load, e.g. "#eum=35"
-  window.cfpReadHash = function() {
-    try {
-      var h = (window.location && window.location.hash) || '';
-      var m = h.match(/eum=([0-9]+(?:\.[0-9]+)?)/i);
-      if (m) {
-        var v = parseFloat(m[1]);
-        if (!isNaN(v) && v >= 0) return v;
-      }
-    } catch (e) { /* no-op */ }
-    return null;
-  };
-
-  // Fallback: also bind via addEventListener in case inline handlers are stripped
-  function cfpBind() {
-    var inp = document.getElementById('eum-input');
-    var slider = document.getElementById('eum-slider');
-    var copyBtn = document.getElementById('copy-btn');
-    var shareBtn = document.getElementById('share-btn');
-
-    if (inp) {
-      inp.addEventListener('input', function() { window.cfpOnInput(this.value); });
-      inp.addEventListener('change', function() { window.cfpOnInput(this.value); });
-    }
-    if (slider) {
-      ['input','change','mousemove','touchmove'].forEach(function(ev) {
-        slider.addEventListener(ev, function() { window.cfpOnSlider(this.value); });
-      });
-    }
-    if (copyBtn) copyBtn.addEventListener('click', function() { window.cfpCopyQuote(); });
-    if (shareBtn) shareBtn.addEventListener('click', function() { window.cfpCopyLink(); });
-
-    // Initial value: URL hash wins over the default
-    var initial = window.cfpReadHash();
-    if (initial !== null) {
-      if (inp) inp.value = initial;
-      if (slider) slider.value = Math.min(initial, 200);
-      window.cfpUpdate(initial);
-    } else {
-      window.cfpUpdate(10);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', cfpBind);
-  } else {
-    cfpBind();
-  }
-</script>
 </body>
 </html>
