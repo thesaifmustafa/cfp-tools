@@ -5,49 +5,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cash Flow Portal — Tools</title>
 <meta name="description" content="Interactive calculators and estimators for real estate syndicators evaluating Cash Flow Portal.">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --navy: #0b1220;
-    --navy-mid: #111b2e;
-    --navy-card: #151f33;
-    --navy-card-hover: #1a2540;
-    --navy-border: #1e2d47;
-    --navy-border-hover: #2a3d5c;
-    --blue: #2563eb;
-    --indigo: #4f46e5;
-    --teal: #0d9488;
-    --teal-light: #14b8a6;
-    --teal-glow: #5eead4;
-    --text: #e8edf5;
-    --muted: #6b7fa3;
-    --soft: #a8b8d4;
+    /* Surfaces */
+    --bg:           #f6f8fa;
+    --card:         #ffffff;
+    --card-hover:   #fafbff;
+    --surface:      #fafafa;
+    --surface-2:    #f5f5f7;
+
+    /* Lines */
+    --border:       #dce0e6;
+    --border-soft:  #e5e5e5;
+    --border-hover: #b6cceb;   /* lightsteelblue-300 */
+
+    /* Text */
+    --text:         #313844;
+    --text-2:       #54565a;
+    --muted:        #8f97a1;
+    --muted-soft:   #aeb8c2;
+
+    /* Brand */
+    --blue:         #0085ff;
+    --blue-deep:    #2766bd;
+    --blue-soft:    #e9f1fe;
+    --blue-tint:    rgba(0,133,255,0.08);
+    --blue-ring:    rgba(0,133,255,0.18);
+    --aqua:         #2fecaf;
+    --aqua-soft:    #e8f8f1;
+
+    /* Gradients */
+    --grad:         linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
+    --grad-text:    linear-gradient(90deg, #313844 0%, #0085ff 70%, #2fecaf 100%);
+
+    /* Shadow */
+    --shadow-sm:    0 1px 2px rgba(20, 35, 65, 0.04);
+    --shadow-md:    0 1px 2px rgba(20, 35, 65, 0.04), 0 8px 24px rgba(20, 35, 65, 0.06);
+    --shadow-lg:    0 1px 2px rgba(20, 35, 65, 0.04), 0 12px 32px rgba(20, 35, 65, 0.08);
   }
 
   html, body { min-height: 100%; }
 
   body {
-    background: var(--navy);
+    background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
     -webkit-font-smoothing: antialiased;
     padding: 48px 24px 64px;
     position: relative;
     overflow-x: hidden;
   }
 
-  /* Subtle background glow */
+  /* Soft ambient glow */
   body::before {
     content: '';
     position: fixed;
-    top: -200px;
+    top: -260px;
     left: 50%;
     transform: translateX(-50%);
-    width: 900px;
+    width: 1000px;
     height: 600px;
-    background: radial-gradient(ellipse at center, rgba(13,148,136,0.08) 0%, rgba(37,99,235,0.04) 40%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(0,133,255,0.07) 0%, rgba(47,236,175,0.04) 40%, transparent 70%);
     pointer-events: none;
     z-index: 0;
   }
@@ -70,43 +94,49 @@
   .logo-mark {
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, var(--blue), var(--teal));
+    background: var(--grad);
     border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0,133,255,0.25);
   }
 
   .logo-text {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-weight: 700;
     font-size: 16px;
-    letter-spacing: 0.02em;
-    color: var(--soft);
+    letter-spacing: -0.01em;
+    color: var(--text);
   }
 
   .home-link {
     margin-left: auto;
     font-size: 13px;
+    font-weight: 500;
     color: var(--muted);
     text-decoration: none;
     transition: color 0.15s;
   }
 
-  .home-link:hover { color: var(--soft); }
+  .home-link:hover { color: var(--blue-deep); }
 
   /* ---------- Hero ---------- */
   .hero { margin-bottom: 48px; max-width: 640px; }
 
   .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(28px, 4vw, 40px);
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(30px, 4.2vw, 44px);
     font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
     margin-bottom: 16px;
-    background: linear-gradient(90deg, var(--text) 20%, var(--teal-glow) 100%);
+    color: var(--text);
+  }
+
+  .hero h1 .accent {
+    background: var(--grad-text);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -115,8 +145,8 @@
   .hero p {
     font-size: clamp(15px, 1.6vw, 17px);
     line-height: 1.55;
-    color: var(--soft);
-    font-weight: 300;
+    color: var(--text-2);
+    font-weight: 400;
   }
 
   /* ---------- Tile grid ---------- */
@@ -129,8 +159,8 @@
 
   .tile {
     position: relative;
-    background: var(--navy-card);
-    border: 1px solid var(--navy-border);
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 24px;
     text-decoration: none;
@@ -138,7 +168,8 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
     cursor: pointer;
     overflow: hidden;
   }
@@ -148,7 +179,7 @@
     position: absolute;
     inset: 0;
     border-radius: 16px;
-    background: radial-gradient(circle at top right, rgba(13,148,136,0.10), transparent 60%);
+    background: radial-gradient(circle at top right, rgba(0,133,255,0.06), transparent 60%);
     opacity: 0;
     transition: opacity 0.18s ease;
     pointer-events: none;
@@ -156,21 +187,24 @@
 
   .tile:hover {
     transform: translateY(-2px);
-    border-color: var(--navy-border-hover);
-    background: var(--navy-card-hover);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-lg);
+    background: var(--card-hover);
   }
 
   .tile:hover::after { opacity: 1; }
 
   .tile.disabled {
     cursor: default;
-    opacity: 0.6;
+    opacity: 0.7;
+    background: var(--surface);
   }
 
   .tile.disabled:hover {
     transform: none;
-    border-color: var(--navy-border);
-    background: var(--navy-card);
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+    background: var(--surface);
   }
 
   .tile.disabled:hover::after { opacity: 0; }
@@ -189,21 +223,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(13,148,136,0.15));
-    border: 1px solid rgba(13,148,136,0.22);
-    color: var(--teal-glow);
+    background: linear-gradient(135deg, rgba(0,133,255,0.1), rgba(47,236,175,0.1));
+    border: 1px solid var(--blue-ring);
+    color: var(--blue);
     flex-shrink: 0;
   }
 
   .tile.disabled .tile-icon {
-    background: rgba(255,255,255,0.03);
-    border-color: var(--navy-border);
+    background: var(--surface-2);
+    border-color: var(--border);
     color: var(--muted);
   }
 
   .tile-badge {
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 3px 8px;
@@ -212,30 +246,31 @@
   }
 
   .tile-badge.live {
-    color: var(--teal-light);
-    background: rgba(13,148,136,0.12);
-    border: 1px solid rgba(13,148,136,0.25);
+    color: #0b7a56;
+    background: var(--aqua-soft);
+    border: 1px solid rgba(47,236,175,0.4);
   }
 
   .tile-badge.soon {
     color: var(--muted);
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--navy-border);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
   }
 
   .tile h2 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 18px;
     font-weight: 700;
     line-height: 1.25;
+    letter-spacing: -0.01em;
     color: var(--text);
   }
 
   .tile p {
     font-size: 13.5px;
     line-height: 1.5;
-    color: var(--muted);
-    font-weight: 300;
+    color: var(--text-2);
+    font-weight: 400;
     flex-grow: 1;
   }
 
@@ -244,13 +279,14 @@
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    font-weight: 500;
-    color: var(--teal-light);
+    font-weight: 600;
+    color: var(--blue);
     letter-spacing: 0.01em;
     margin-top: 4px;
   }
 
   .tile-foot svg { transition: transform 0.18s ease; }
+  .tile:hover .tile-foot { color: var(--blue-deep); }
   .tile:hover .tile-foot svg { transform: translateX(3px); }
 
   .tile.disabled .tile-foot { color: var(--muted); }
@@ -258,7 +294,7 @@
   /* ---------- Footer ---------- */
   .footer {
     padding-top: 32px;
-    border-top: 1px solid var(--navy-border);
+    border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -269,12 +305,13 @@
   }
 
   .footer a {
-    color: var(--soft);
+    color: var(--text-2);
     text-decoration: none;
+    font-weight: 500;
     transition: color 0.15s;
   }
 
-  .footer a:hover { color: var(--teal-light); }
+  .footer a:hover { color: var(--blue-deep); }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 520px) {
@@ -301,7 +338,7 @@
   </div>
 
   <section class="hero">
-    <h1>Tools for real estate syndicators</h1>
+    <h1>Tools for real estate <span class="accent">syndicators</span></h1>
     <p>Interactive calculators to help you size up Cash Flow Portal for your fund — from monthly pricing to the hours you'll save versus manual investor operations.</p>
   </section>
 

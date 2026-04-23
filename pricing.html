@@ -5,37 +5,83 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Investor Portal Pricing · Cash Flow Portal</title>
 <meta name="description" content="Real-time pricing for Cash Flow Portal's Investor Portal based on equity under management.">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --navy: #0b1220;
-    --navy-mid: #111b2e;
-    --navy-card: #151f33;
-    --navy-border: #1e2d47;
-    --blue: #2563eb;
-    --indigo: #4f46e5;
-    --teal: #0d9488;
-    --teal-light: #14b8a6;
-    --text: #e8edf5;
-    --muted: #6b7fa3;
-    --soft: #a8b8d4;
+    /* Surfaces */
+    --bg:           #f6f8fa;   /* page background (whitesmoke-900) */
+    --bg-soft:      #eceef8;   /* ghostwhite — subtle ambient tint */
+    --card:         #ffffff;
+    --surface:      #fafafa;   /* input fills */
+    --surface-2:    #f5f5f7;
+
+    /* Lines */
+    --border:       #dce0e6;   /* gainsboro-200 */
+    --border-soft:  #e5e5e5;
+    --border-focus: #a0c0fb;   /* lightskyblue-100 */
+
+    /* Text */
+    --text:         #313844;   /* darkslategray — primary */
+    --text-2:       #54565a;   /* dimgray-300 */
+    --muted:        #8f97a1;   /* lightslategray */
+    --muted-soft:   #aeb8c2;   /* silver-200 */
+
+    /* Brand — from logo */
+    --blue:         #0085ff;   /* dodgerblue */
+    --blue-deep:    #2766bd;   /* cornflowerblue (hover) */
+    --blue-soft:    #e9f1fe;   /* aliceblue-200 */
+    --blue-tint:    rgba(0,133,255,0.08);
+    --blue-ring:    rgba(0,133,255,0.18);
+    --aqua:         #2fecaf;   /* aquamarine */
+    --aqua-soft:    #e8f8f1;   /* mintcream-200 */
+
+    /* Accent combos */
+    --grad:         linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
+    --grad-text:    linear-gradient(90deg, #0085ff 0%, #2fecaf 100%);
+
+    /* Shadow */
+    --shadow-sm:    0 1px 2px rgba(20, 35, 65, 0.04);
+    --shadow-md:    0 1px 2px rgba(20, 35, 65, 0.04), 0 8px 24px rgba(20, 35, 65, 0.06);
   }
 
+  html, body { min-height: 100%; }
+
   body {
-    background: var(--navy);
+    background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 40px 24px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Soft ambient glow behind the card */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -240px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 820px;
+    height: 520px;
+    background: radial-gradient(ellipse at center, rgba(0,133,255,0.08) 0%, rgba(47,236,175,0.04) 40%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   .wrap {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: 520px;
   }
@@ -62,8 +108,8 @@
   }
 
   .back-link:hover {
-    color: var(--soft);
-    background: rgba(255,255,255,0.03);
+    color: var(--blue-deep);
+    background: var(--blue-soft);
   }
 
   .back-link svg { transition: transform 0.15s; }
@@ -80,47 +126,50 @@
   .logo-mark {
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, var(--blue), var(--teal));
+    background: var(--grad);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 14px rgba(0,133,255,0.25);
   }
 
   .logo-mark svg { display: block; }
 
   .logo-text {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-weight: 700;
     font-size: 15px;
-    letter-spacing: 0.02em;
-    color: var(--soft);
+    letter-spacing: -0.01em;
+    color: var(--text);
   }
 
   .badge {
     margin-left: auto;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--teal-light);
-    background: rgba(13,148,136,0.12);
-    border: 1px solid rgba(13,148,136,0.25);
+    color: var(--blue-deep);
+    background: var(--blue-soft);
+    border: 1px solid var(--blue-ring);
     padding: 3px 8px;
     border-radius: 20px;
   }
 
   .card {
-    background: var(--navy-card);
-    border: 1px solid var(--navy-border);
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 32px;
+    box-shadow: var(--shadow-md);
   }
 
   .card-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 20px;
     font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--text);
     margin-bottom: 4px;
   }
@@ -135,7 +184,7 @@
 
   .input-label {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
@@ -146,21 +195,21 @@
   .input-row {
     display: flex;
     gap: 0;
-    background: var(--navy);
-    border: 1px solid var(--navy-border);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 10px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
 
   .input-row:focus-within {
-    border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-tint);
   }
 
   .input-prefix, .input-suffix {
     padding: 0 14px;
-    background: rgba(255,255,255,0.03);
+    background: var(--surface-2);
     display: flex;
     align-items: center;
     font-size: 12px;
@@ -170,12 +219,13 @@
   }
 
   .input-prefix {
-    border-right: 1px solid var(--navy-border);
-    font-family: 'JetBrains Mono', monospace;
+    border-right: 1px solid var(--border);
     font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
   }
 
-  .input-suffix { border-left: 1px solid var(--navy-border); }
+  .input-suffix { border-left: 1px solid var(--border); }
 
   input[type="number"] {
     width: 100%;
@@ -183,7 +233,9 @@
     border: none;
     outline: none;
     padding: 14px 16px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Manrope', sans-serif;
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
     font-size: 15px;
     font-weight: 600;
     color: var(--text);
@@ -197,7 +249,7 @@
     margin-top: 12px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
 
   input[type="range"] {
@@ -205,7 +257,7 @@
     flex: 1;
     height: 4px;
     border-radius: 2px;
-    background: var(--navy-border);
+    background: var(--border);
     outline: none;
     cursor: pointer;
   }
@@ -215,31 +267,44 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--teal), var(--blue));
+    background: var(--grad);
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(13,148,136,0.4);
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0,133,255,0.3);
     transition: transform 0.15s;
   }
 
-  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--blue);
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0,133,255,0.3);
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
   .slider-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
     font-size: 12px;
-    color: var(--muted);
-    min-width: 50px;
+    color: var(--text-2);
+    min-width: 60px;
     text-align: right;
   }
 
   .divider {
     height: 1px;
-    background: var(--navy-border);
+    background: var(--border);
     margin: 24px 0;
   }
 
   .result-block {
-    background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(13,148,136,0.08));
-    border: 1px solid rgba(13,148,136,0.2);
+    background: linear-gradient(135deg, rgba(0,133,255,0.05) 0%, rgba(47,236,175,0.05) 100%);
+    border: 1px solid var(--blue-ring);
     border-radius: 12px;
     padding: 22px 24px;
     margin-bottom: 16px;
@@ -248,6 +313,7 @@
 
   .result-label {
     font-size: 11px;
+    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
@@ -255,10 +321,12 @@
   }
 
   .result-price {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
     font-size: 42px;
     font-weight: 800;
-    background: linear-gradient(90deg, #5eead4, #60a5fa);
+    letter-spacing: -0.02em;
+    background: var(--grad-text);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -267,11 +335,12 @@
   }
 
   .result-mo {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 500;
     color: var(--muted);
     -webkit-text-fill-color: var(--muted);
+    letter-spacing: 0;
   }
 
   .result-annual {
@@ -281,8 +350,8 @@
   }
 
   .result-annual span {
-    color: var(--soft);
-    font-weight: 500;
+    color: var(--text);
+    font-weight: 600;
   }
 
   .copy-row {
@@ -294,13 +363,13 @@
   }
 
   .copy-btn {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    color: var(--soft);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--navy-border);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--text-2);
+    background: #ffffff;
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 8px 12px;
     cursor: pointer;
@@ -312,23 +381,23 @@
   }
 
   .copy-btn:hover {
-    background: rgba(13,148,136,0.10);
-    border-color: rgba(13,148,136,0.35);
-    color: var(--text);
+    background: var(--blue-soft);
+    border-color: var(--blue-ring);
+    color: var(--blue-deep);
   }
 
   .copy-btn:active { transform: translateY(1px); }
 
   .copy-btn.copied {
-    background: rgba(13,148,136,0.15);
-    border-color: var(--teal);
-    color: var(--teal-light);
+    background: var(--aqua-soft);
+    border-color: rgba(47,236,175,0.45);
+    color: #0b7a56;
   }
 
-  .copy-btn svg { display: block; opacity: 0.8; }
+  .copy-btn svg { display: block; opacity: 0.85; }
 
   .share-btn {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 12px;
     font-weight: 500;
     color: var(--muted);
@@ -340,8 +409,92 @@
     user-select: none;
   }
 
-  .share-btn:hover { color: var(--soft); }
-  .share-btn.copied { color: var(--teal-light); }
+  .share-btn:hover { color: var(--blue-deep); }
+  .share-btn.copied { color: #0b7a56; }
+
+  /* ---------- Enterprise toggle ---------- */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .toggle-row.on {
+    background: var(--blue-soft);
+    border-color: var(--blue-ring);
+  }
+
+  .toggle-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .toggle-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+    margin-right: 10px;
+    line-height: 1.2;
+  }
+
+  .toggle {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #cfd6e0;
+    border-radius: 20px;
+    transition: background 0.2s;
+  }
+
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    top: 3px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+
+  .toggle input:checked + .toggle-slider {
+    background: var(--blue);
+  }
+
+  .toggle input:checked + .toggle-slider::before {
+    transform: translateX(14px);
+  }
+
+  .toggle input:focus-visible + .toggle-slider {
+    box-shadow: 0 0 0 3px var(--blue-tint);
+  }
+
+  .tier[hidden] { display: none; }
 
   .tier-row {
     display: flex;
@@ -355,7 +508,7 @@
     justify-content: space-between;
     padding: 8px 12px;
     border-radius: 8px;
-    background: rgba(255,255,255,0.02);
+    background: var(--surface);
     border: 1px solid transparent;
     transition: all 0.2s;
     font-size: 13px;
@@ -363,35 +516,37 @@
   }
 
   .tier.active {
-    background: rgba(13,148,136,0.08);
-    border-color: rgba(13,148,136,0.25);
+    background: var(--blue-soft);
+    border-color: var(--blue-ring);
   }
 
   .tier-name {
-    color: var(--muted);
+    color: var(--text-2);
     display: flex;
     align-items: center;
     gap: 8px;
+    font-weight: 500;
   }
 
   .tier-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--navy-border);
+    background: var(--muted-soft);
     transition: background 0.2s;
     flex-shrink: 0;
   }
 
   .tier.active .tier-dot {
-    background: var(--teal-light);
-    box-shadow: 0 0 6px rgba(20,184,166,0.6);
+    background: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-tint);
   }
 
-  .tier.active .tier-name { color: var(--soft); }
+  .tier.active .tier-name { color: var(--text); }
 
   .tier-price {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
     font-size: 12px;
     color: var(--muted);
     font-weight: 600;
@@ -399,7 +554,7 @@
     white-space: nowrap;
   }
 
-  .tier.active .tier-price { color: var(--teal-light); }
+  .tier.active .tier-price { color: var(--blue-deep); }
 
   .footnote {
     margin-top: 20px;
@@ -411,10 +566,11 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width: 520px) {
-    body { padding: 16px; }
+    body { padding: 24px 16px; }
     .card { padding: 24px 20px; }
     .result-price { font-size: 36px; }
     .logo-row { margin-bottom: 24px; }
+    .slider-label { min-width: 56px; }
   }
 </style>
 </head>
@@ -449,11 +605,11 @@
       <label class="input-label" for="eum-input">Equity Under Management (EUM)</label>
       <div class="input-row">
         <span class="input-prefix">$</span>
-        <input type="number" id="eum-input" value="10" min="0" max="500" step="1" placeholder="0" oninput="cfpOnInput(this.value)" onchange="cfpOnInput(this.value)" />
+        <input type="number" id="eum-input" value="10" min="0" max="1000" step="1" placeholder="0" oninput="cfpOnInput(this.value)" onchange="cfpOnInput(this.value)" />
         <span class="input-suffix">million</span>
       </div>
       <div class="slider-row">
-        <input type="range" id="eum-slider" min="0" max="200" step="1" value="10" oninput="cfpOnSlider(this.value)" onchange="cfpOnSlider(this.value)" onmousemove="cfpOnSlider(this.value)" ontouchmove="cfpOnSlider(this.value)" aria-label="EUM slider" />
+        <input type="range" id="eum-slider" min="0" max="1000" step="1" value="10" oninput="cfpOnSlider(this.value)" onchange="cfpOnSlider(this.value)" onmousemove="cfpOnSlider(this.value)" ontouchmove="cfpOnSlider(this.value)" aria-label="EUM slider" />
         <span class="slider-label" id="slider-display">$10M</span>
       </div>
     </div>
@@ -475,6 +631,17 @@
       </div>
     </div>
 
+    <div class="toggle-row" id="toggle-row">
+      <div>
+        <div class="toggle-label">Enterprise pricing</div>
+      </div>
+      <span class="toggle-hint">Progressive rate over $50M</span>
+      <label class="toggle" aria-label="Enable enterprise pricing">
+        <input type="checkbox" id="adv-toggle" onchange="cfpOnToggle(this.checked)" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
     <div class="tier-row">
       <div class="tier active" id="tier-1">
         <span class="tier-name"><span class="tier-dot"></span>Up to $10M EUM</span>
@@ -488,9 +655,23 @@
         <span class="tier-name"><span class="tier-dot"></span>$25M – $50M EUM</span>
         <span class="tier-price">$699/mo</span>
       </div>
-      <div class="tier" id="tier-4">
+      <!-- Flat mode (default): single overage row -->
+      <div class="tier" id="tier-4-flat">
         <span class="tier-name"><span class="tier-dot"></span>Over $50M EUM</span>
-        <span class="tier-price" id="tier-4-price">$699 + $10/M</span>
+        <span class="tier-price" id="tier-4-flat-price">$699 + $10/M</span>
+      </div>
+      <!-- Enterprise mode: three progressive bands (hidden by default) -->
+      <div class="tier" id="tier-4a" hidden>
+        <span class="tier-name"><span class="tier-dot"></span>$50M – $100M EUM</span>
+        <span class="tier-price">+ $10/M</span>
+      </div>
+      <div class="tier" id="tier-4b" hidden>
+        <span class="tier-name"><span class="tier-dot"></span>$100M – $150M EUM</span>
+        <span class="tier-price">+ $8/M</span>
+      </div>
+      <div class="tier" id="tier-4c" hidden>
+        <span class="tier-name"><span class="tier-dot"></span>Over $150M EUM</span>
+        <span class="tier-price">+ $6/M</span>
       </div>
     </div>
 
@@ -502,51 +683,109 @@
   // Global functions - defined on window so inline handlers always find them
   // even when CRM injects HTML via innerHTML and strips addEventListener bindings
 
-  window.cfpCalcPrice = function(eum) {
+  // Price calculator. `adv` enables progressive enterprise bands above $50M.
+  // Flat:        $10/MM for all overage
+  // Progressive: $10/MM in $50M-$100M, $8/MM in $100M-$150M, $6/MM above $150M
+  window.cfpCalcPrice = function(eum, adv) {
     if (eum <= 10) return 499;
     if (eum <= 25) return 599;
     if (eum <= 50) return 699;
-    return 699 + Math.ceil(eum - 50) * 10;
+    var overage = Math.ceil(eum - 50); // full MM over $50M, rounded up
+    if (!adv) return 699 + overage * 10;
+    var charge = 0;
+    var band1 = Math.min(overage, 50);       // $50M-$100M at $10/MM
+    charge += band1 * 10;
+    var rem = overage - band1;
+    var band2 = Math.min(rem, 50);            // $100M-$150M at $8/MM
+    charge += band2 * 8;
+    rem -= band2;
+    charge += rem * 6;                         // above $150M at $6/MM
+    return 699 + charge;
   };
 
   window.cfpFmt = function(n) {
     return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   };
 
+  // Short EUM label: '$25M', '$999M', '$1B', '$1.25B'
+  window.cfpFmtEum = function(eum) {
+    if (eum >= 1000) {
+      var b = eum / 1000;
+      return '$' + (b % 1 === 0 ? b.toFixed(0) : b.toFixed(2).replace(/\.?0+$/, '')) + 'B';
+    }
+    return '$' + eum + 'M';
+  };
+
   window.cfpCurrentEum = 10;
+  window.cfpAdvMode = false;
+
+  // Helper: set active class on a tier by id, safely
+  window.cfpSetActive = function(id, on) {
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('active', !!on);
+  };
+
+  // Helper: show/hide a tier by id
+  window.cfpShow = function(id, show) {
+    var el = document.getElementById(id);
+    if (el) el.hidden = !show;
+  };
 
   window.cfpUpdate = function(eum) {
     eum = parseFloat(eum) || 0;
     window.cfpCurrentEum = eum;
-    var price = window.cfpCalcPrice(eum);
+    var adv = !!window.cfpAdvMode;
+    var price = window.cfpCalcPrice(eum, adv);
     var annual = price * 12;
-    var active = eum <= 10 ? 0 : eum <= 25 ? 1 : eum <= 50 ? 2 : 3;
 
     var rp = document.getElementById('result-price');
     var ra = document.getElementById('result-annual');
     var sd = document.getElementById('slider-display');
-    var t4 = document.getElementById('tier-4-price');
+    var t4f = document.getElementById('tier-4-flat-price');
+    var toggleRow = document.getElementById('toggle-row');
 
     if (rp) rp.innerHTML = window.cfpFmt(price) + '<span class="result-mo">/mo</span>';
     if (ra) ra.innerHTML = 'Billed annually: <span>' + window.cfpFmt(annual) + '/yr</span>';
-    if (sd) sd.textContent = '$' + eum + 'M';
+    if (sd) sd.textContent = window.cfpFmtEum(eum);
+    if (toggleRow) toggleRow.classList.toggle('on', adv);
 
-    [1,2,3,4].forEach(function(i) {
-      var t = document.getElementById('tier-' + i);
-      if (t) t.classList.toggle('active', i - 1 === active);
-    });
+    // Active states on the fixed tiers 1-3
+    window.cfpSetActive('tier-1', eum <= 10);
+    window.cfpSetActive('tier-2', eum > 10 && eum <= 25);
+    window.cfpSetActive('tier-3', eum > 25 && eum <= 50);
 
-    if (t4) {
-      t4.textContent = eum > 50
-        ? '$699 + $' + (Math.ceil(eum - 50) * 10) + '/mo'
-        : '$699 + $10/M';
+    // Show/hide + active state for the overage tiers depending on mode
+    window.cfpShow('tier-4-flat', !adv);
+    window.cfpShow('tier-4a', adv);
+    window.cfpShow('tier-4b', adv);
+    window.cfpShow('tier-4c', adv);
+
+    if (!adv) {
+      window.cfpSetActive('tier-4-flat', eum > 50);
+      if (t4f) {
+        t4f.textContent = eum > 50
+          ? '$699 + $' + (Math.ceil(eum - 50) * 10) + '/mo'
+          : '$699 + $10/M';
+      }
+    } else {
+      // Highlight the band containing the current marginal rate
+      window.cfpSetActive('tier-4a', eum > 50 && eum <= 100);
+      window.cfpSetActive('tier-4b', eum > 100 && eum <= 150);
+      window.cfpSetActive('tier-4c', eum > 150);
     }
 
+    // Sync state to URL hash so the link is shareable
     try {
       if (window.history && window.history.replaceState && window.location) {
-        window.history.replaceState(null, '', '#eum=' + eum);
+        var hash = '#eum=' + eum + (adv ? '&adv=1' : '');
+        window.history.replaceState(null, '', hash);
       }
     } catch (e) { /* no-op */ }
+  };
+
+  window.cfpOnToggle = function(checked) {
+    window.cfpAdvMode = !!checked;
+    window.cfpUpdate(window.cfpCurrentEum);
   };
 
   window.cfpOnSlider = function(val) {
@@ -559,16 +798,18 @@
   window.cfpOnInput = function(val) {
     var v = Math.max(0, parseFloat(val) || 0);
     var slider = document.getElementById('eum-slider');
-    if (slider) slider.value = Math.min(v, 200);
+    if (slider) slider.value = Math.min(v, 1000);
     window.cfpUpdate(v);
   };
 
   window.cfpQuoteText = function() {
     var eum = window.cfpCurrentEum || 0;
-    var price = window.cfpCalcPrice(eum);
+    var adv = !!window.cfpAdvMode;
+    var price = window.cfpCalcPrice(eum, adv);
     var annual = price * 12;
+    var suffix = adv ? ' (enterprise pricing)' : '';
     return 'Investor Portal: ' + window.cfpFmt(price) + '/mo ('
-      + window.cfpFmt(annual) + '/yr) at $' + eum + 'M EUM';
+      + window.cfpFmt(annual) + '/yr) at $' + eum + 'M EUM' + suffix;
   };
 
   window.cfpCopyText = function(text) {
@@ -619,22 +860,25 @@
   window.cfpCopyLink = function() {
     var href = (window.location && window.location.href) || '';
     if (href.indexOf('#') >= 0) href = href.split('#')[0];
-    href = href + '#eum=' + (window.cfpCurrentEum || 0);
+    href = href + '#eum=' + (window.cfpCurrentEum || 0) + (window.cfpAdvMode ? '&adv=1' : '');
     Promise.resolve(window.cfpCopyText(href)).then(function(ok) {
       window.cfpFlashButton('share-btn', 'share-btn-label', ok ? 'Link copied' : 'Copy failed', 'Copy link');
     });
   };
 
+  // Returns { eum: number|null, adv: boolean } from the URL hash.
   window.cfpReadHash = function() {
+    var result = { eum: null, adv: false };
     try {
       var h = (window.location && window.location.hash) || '';
       var m = h.match(/eum=([0-9]+(?:\.[0-9]+)?)/i);
       if (m) {
         var v = parseFloat(m[1]);
-        if (isFinite(v) && v >= 0) return v;
+        if (isFinite(v) && v >= 0) result.eum = v;
       }
+      if (/(?:^|[#&?])adv=1\b/i.test(h)) result.adv = true;
     } catch (e) { /* no-op */ }
-    return null;
+    return result;
   };
 
   function cfpBind() {
@@ -642,6 +886,7 @@
     var slider = document.getElementById('eum-slider');
     var copyBtn = document.getElementById('copy-btn');
     var shareBtn = document.getElementById('share-btn');
+    var advToggle = document.getElementById('adv-toggle');
 
     if (inp) {
       inp.addEventListener('input', function() { window.cfpOnInput(this.value); });
@@ -654,15 +899,16 @@
     }
     if (copyBtn) copyBtn.addEventListener('click', function() { window.cfpCopyQuote(); });
     if (shareBtn) shareBtn.addEventListener('click', function() { window.cfpCopyLink(); });
+    if (advToggle) advToggle.addEventListener('change', function() { window.cfpOnToggle(this.checked); });
 
     var initial = window.cfpReadHash();
-    if (initial !== null) {
-      if (inp) inp.value = initial;
-      if (slider) slider.value = Math.min(initial, 200);
-      window.cfpUpdate(initial);
-    } else {
-      window.cfpUpdate(10);
-    }
+    window.cfpAdvMode = !!initial.adv;
+    if (advToggle) advToggle.checked = window.cfpAdvMode;
+
+    var eum = initial.eum !== null ? initial.eum : 10;
+    if (inp) inp.value = eum;
+    if (slider) slider.value = Math.min(eum, 1000);
+    window.cfpUpdate(eum);
   }
 
   if (document.readyState === 'loading') {
