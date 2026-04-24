@@ -8,29 +8,42 @@ Prospect-facing interactive calculators for [Cash Flow Portal](https://cashflowp
 
 ```
 /
-├── index.html       Launcher — tile grid of all tools
-├── pricing.html     Investor Portal Pricing Calculator
+├── index.html        Launcher — tile grid of all tools
+├── pricing.html      Investor Portal Pricing Calculator
+├── readiness.html    Deal Readiness & LP Friction Score
 └── README.md
 ```
 
-Flat layout: each tool is a single HTML file at the root. No build step, no dependencies.
+Flat layout: each tool is a single HTML file at the root. No build step, no dependencies. Manrope font, light palette (whitesmoke + dodgerblue/aquamarine brand gradient).
 
 ## Tools
 
 ### Pricing Calculator — `pricing.html`
 
-Real-time Investor Portal pricing based on equity under management.
+Real-time Investor Portal pricing based on equity under management. Supports flat and progressive (enterprise) pricing modes.
 
-| EUM | Monthly |
+| EUM | Monthly (flat) |
 |---|---|
 | Up to $10M | $499 |
 | $10M – $25M | $599 |
 | $25M – $50M | $699 |
 | Over $50M | $699 + $10/mo per $1M over $50M |
 
-Features: real-time quote, active-tier highlight, annual total, copy-quote for email/Slack, shareable URL.
+Enterprise mode (progressive rates above $50M): $10/MM in $50–100M band, $8/MM in $100–150M, $6/MM above $150M.
 
-**Deep link:** `pricing.html#eum=25` opens the calculator pre-filled at $25M EUM.
+Features: real-time quote, active-tier highlight, annual total, slider to $1B EUM, copy-quote for email/Slack, shareable URL.
+
+**Deep links:**
+- `pricing.html#eum=25` — $25M EUM (flat)
+- `pricing.html#eum=200&adv=1` — $200M EUM with enterprise pricing on
+
+### Deal Readiness & LP Friction Score — `readiness.html`
+
+Pre-raise diagnostic for real estate GPs. 8 questions across Structure, Narrative, Execution, and Strategy. Outputs a Readiness Score (0–100), LP Friction Score (0–100, lower is better), Top 3 Capital Killers, and 3 prioritized fixes.
+
+Scoring is heuristic, based on common failure patterns in sub-$50M raises. 10 test cases verified.
+
+**Deep link:** `readiness.html#r=33233331` opens a pre-filled result (the 8 digits encode each answer 1–3; an optional 9th digit 0–2 encodes the q1 LP-type option index).
 
 ### ROI & Time Savings Estimator — coming soon
 

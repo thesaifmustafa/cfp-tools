@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal Readiness & LP Friction Score · Cash Flow Portal</title>
+<meta name="description" content="Pre-raise diagnostic for real estate GPs. 8 questions, 90 seconds, an objective score on where your raise will break.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Surfaces */
+    --bg:           #f6f8fa;
+    --card:         #ffffff;
+    --surface:      #fafafa;
+    --surface-2:    #f5f5f7;
+
+    /* Lines */
+    --border:       #dce0e6;
+    --border-soft:  #e5e5e5;
+
+    /* Text */
+    --text:         #313844;
+    --text-2:       #54565a;
+    --muted:        #8f97a1;
+    --muted-soft:   #aeb8c2;
+
+    /* Brand */
+    --blue:         #0085ff;
+    --blue-deep:    #2766bd;
+    --blue-soft:    #e9f1fe;
+    --blue-tint:    rgba(0,133,255,0.08);
+    --blue-ring:    rgba(0,133,255,0.18);
+    --aqua:         #2fecaf;
+    --aqua-soft:    #e8f8f1;
+    --aqua-ring:    rgba(47,236,175,0.45);
+
+    /* Signal colors */
+    --warn:         #fa8c16;   /* darkorange-100 */
+    --warn-soft:    #fff7e6;
+    --warn-ring:    rgba(250,140,22,0.3);
+    --danger:       #ff4d4f;
+    --danger-soft:  #fff2f0;
+    --danger-ring:  rgba(255,77,79,0.3);
+    --good:         #0b7a56;
+    --good-soft:    #e8f8f1;
+
+    /* Gradients */
+    --grad:         linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
+    --grad-text:    linear-gradient(90deg, #0085ff 0%, #2fecaf 100%);
+
+    /* Shadow */
+    --shadow-sm:    0 1px 2px rgba(20, 35, 65, 0.04);
+    --shadow-md:    0 1px 2px rgba(20, 35, 65, 0.04), 0 8px 24px rgba(20, 35, 65, 0.06);
+  }
+
+  html, body { min-height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 24px 64px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -260px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 560px;
+    background: radial-gradient(ellipse at center, rgba(0,133,255,0.08) 0%, rgba(47,236,175,0.04) 40%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Top nav ---------- */
+  .topnav {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 10px 6px 6px;
+    border-radius: 8px;
+    margin-left: -6px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .back-link:hover { color: var(--blue-deep); background: var(--blue-soft); }
+  .back-link svg { transition: transform 0.15s; }
+  .back-link:hover svg { transform: translateX(-2px); }
+
+  /* ---------- Brand row ---------- */
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--grad);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0,133,255,0.25);
+  }
+
+  .logo-text {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue-deep);
+    background: var(--blue-soft);
+    border: 1px solid var(--blue-ring);
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  /* ---------- Card ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ---------- Step container ---------- */
+  .step[hidden] { display: none; }
+
+  /* ---------- Intro step ---------- */
+  .intro-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(24px, 3.5vw, 32px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .intro-title .accent {
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .intro-sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text-2);
+    margin-bottom: 28px;
+  }
+
+  .intro-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .meta-cell {
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 12px 18px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--grad);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,133,255,0.22);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0,133,255,0.3);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-primary[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-2);
+    border-color: var(--border);
+  }
+
+  .btn-ghost:hover {
+    background: var(--blue-soft);
+    border-color: var(--blue-ring);
+    color: var(--blue-deep);
+  }
+
+  .btn-text {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 6px;
+    transition: color 0.15s;
+  }
+
+  .btn-text:hover { color: var(--blue-deep); }
+  .btn-text.copied { color: var(--good); }
+
+  /* ---------- Wizard progress ---------- */
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .progress-dot {
+    width: 28px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.25s;
+  }
+
+  .progress-dot.done { background: var(--aqua); }
+  .progress-dot.current { background: var(--blue); }
+
+  .progress-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  .progress-label strong { color: var(--text); font-weight: 700; }
+
+  /* ---------- Wizard step heading ---------- */
+  .step-heading {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .step-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* ---------- Question / segmented control ---------- */
+  fieldset.q {
+    border: none;
+    padding: 0;
+    margin: 0 0 22px 0;
+  }
+
+  fieldset.q:last-of-type { margin-bottom: 0; }
+
+  .q-prompt {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .q-prompt .q-aux {
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .opt:hover {
+    background: var(--blue-soft);
+    border-color: var(--blue-ring);
+  }
+
+  .opt input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--muted-soft);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .opt input[type="radio"]:checked {
+    border-color: var(--blue);
+    border-width: 5px;
+  }
+
+  .opt-text {
+    flex: 1;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .opt-hint {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .opt:has(input:checked) {
+    background: var(--blue-soft);
+    border-color: var(--blue);
+  }
+
+  /* Fallback for browsers without :has() — the checked radio still visually indicates */
+  @supports not (selector(:has(*))) {
+    .opt input[type="radio"]:checked ~ .opt-text {
+      color: var(--blue-deep);
+    }
+  }
+
+  /* ---------- Wizard nav ---------- */
+  .wizard-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+  }
+
+  .wizard-nav-left,
+  .wizard-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ---------- Report step ---------- */
+  .report-hero {
+    background: linear-gradient(135deg, rgba(0,133,255,0.05) 0%, rgba(47,236,175,0.05) 100%);
+    border: 1px solid var(--blue-ring);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 24px;
+  }
+
+  .report-headline {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .score-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: end;
+  }
+
+  .score-block .score-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .score-value {
+    font-family: 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .score-value.gradient {
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .score-value.friction-color { color: var(--text); }
+  .score-value.friction-color.high { color: var(--danger); }
+  .score-value.friction-color.mid { color: var(--warn); }
+  .score-value.friction-color.low { color: var(--good); }
+
+  .score-out-of {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 2px;
+  }
+
+  .score-hint {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .score-tag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 20px;
+  }
+
+  .tag-good { color: var(--good); background: var(--good-soft); border: 1px solid var(--aqua-ring); }
+  .tag-mid  { color: var(--warn); background: var(--warn-soft); border: 1px solid var(--warn-ring); }
+  .tag-bad  { color: var(--danger); background: var(--danger-soft); border: 1px solid var(--danger-ring); }
+
+  .subscores {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .sub {
+    text-align: center;
+  }
+
+  .sub-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .sub-value {
+    font-variant-numeric: tabular-nums;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .sub-denom {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ---------- Report sections ---------- */
+  .report-section {
+    margin-bottom: 24px;
+  }
+
+  .report-section:last-of-type { margin-bottom: 0; }
+
+  .section-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title .section-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .killer-list,
+  .fixes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .killer {
+    padding: 14px 16px;
+    background: var(--danger-soft);
+    border: 1px solid var(--danger-ring);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .killer.medium {
+    background: var(--warn-soft);
+    border-color: var(--warn-ring);
+  }
+
+  .killer-ix {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--danger);
+    background: #ffffff;
+    border: 1px solid var(--danger-ring);
+    border-radius: 6px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .killer.medium .killer-ix {
+    color: var(--warn);
+    border-color: var(--warn-ring);
+  }
+
+  .killer-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .killer-text .k-detail {
+    display: block;
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  .fix {
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .fix-ix {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .fix-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .fix-text .f-detail {
+    display: block;
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* ---------- CTA ---------- */
+  .cta-block {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(0,133,255,0.04), rgba(47,236,175,0.04));
+    border: 1px solid var(--blue-ring);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cta-copy .cta-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+
+  .cta-copy .cta-line {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.35;
+  }
+
+  /* ---------- Report actions ---------- */
+  .report-actions {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .report-actions .copy-btn {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .report-actions .copy-btn:hover {
+    background: var(--blue-soft);
+    border-color: var(--blue-ring);
+    color: var(--blue-deep);
+  }
+
+  .report-actions .copy-btn.copied {
+    background: var(--aqua-soft);
+    border-color: var(--aqua-ring);
+    color: var(--good);
+  }
+
+  .footnote {
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 600px) {
+    body { padding: 24px 16px 48px; }
+    .card { padding: 24px 20px; }
+    .intro-meta { grid-template-columns: 1fr; }
+    .score-pair { grid-template-columns: 1fr; gap: 18px; }
+    .subscores { grid-template-columns: repeat(2, 1fr); }
+    .score-value { font-size: 42px; }
+    .cta-block { flex-direction: column; align-items: stretch; }
+    .cta-block .btn { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="topnav">
+    <a class="back-link" href="./" aria-label="Back to all CFP Tools">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      All tools
+    </a>
+  </nav>
+
+  <div class="logo-row">
+    <div class="logo-mark">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M3 14L9 4L15 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M5.5 10.5H12.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="logo-text">Cash Flow Portal</span>
+    <span class="badge">Deal Diagnostic</span>
+  </div>
+
+  <div class="card">
+
+    <!-- ========== STEP 0: INTRO ========== -->
+    <section class="step" id="step-intro">
+      <h1 class="intro-title">Is your deal <span class="accent">actually ready</span> to raise?</h1>
+      <p class="intro-sub">8 questions. 90 seconds. No signup. Get an objective read on where your raise will break — before it starts.</p>
+
+      <div class="intro-meta">
+        <div class="meta-cell">
+          <div class="meta-label">Output</div>
+          <div class="meta-value">Readiness score + LP friction</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Plus</div>
+          <div class="meta-value">Top 3 capital killers</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">And</div>
+          <div class="meta-value">3 prioritized fixes</div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary" id="start-btn" onclick="drStart()">
+          Start diagnostic
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <span style="font-size:12px; color:var(--muted);">Heuristic scoring — validated against common failure patterns.</span>
+      </div>
+    </section>
+
+    <!-- ========== STEP 1-4: WIZARD ========== -->
+    <section class="step" id="step-wizard" hidden>
+      <div class="progress">
+        <div class="progress-dots" id="progress-dots">
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+        </div>
+        <div class="progress-label" id="progress-label">Step 1 of 4</div>
+      </div>
+
+      <h2 class="step-heading" id="wizard-heading">Structure</h2>
+      <p class="step-sub" id="wizard-sub">How the deal is put together.</p>
+
+      <div id="wizard-questions"></div>
+
+      <div class="wizard-nav">
+        <div class="wizard-nav-left">
+          <button type="button" class="btn btn-ghost" id="back-btn" onclick="drBack()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Back
+          </button>
+        </div>
+        <div class="wizard-nav-right">
+          <span class="progress-label" id="step-count-label" style="margin-right:4px;">1 / 4</span>
+          <button type="button" class="btn btn-primary" id="next-btn" onclick="drNext()" disabled>
+            Next
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STEP 5: REPORT ========== -->
+    <section class="step" id="step-report" hidden>
+      <div class="report-hero">
+        <div class="report-headline">Your diagnostic</div>
+        <div class="score-pair">
+          <div class="score-block">
+            <div class="score-label">Deal Readiness</div>
+            <div>
+              <span class="score-value gradient" id="readiness-value">--</span><span class="score-out-of" id="readiness-denom">/100</span>
+            </div>
+            <div class="score-tag" id="readiness-tag">—</div>
+          </div>
+          <div class="score-block">
+            <div class="score-label">LP Friction</div>
+            <div>
+              <span class="score-value friction-color" id="friction-value">--</span><span class="score-out-of">/100</span>
+            </div>
+            <div class="score-hint">Lower is better — measures how hard your raise is to complete.</div>
+          </div>
+        </div>
+        <div class="subscores">
+          <div class="sub">
+            <div class="sub-label">Structure</div>
+            <div><span class="sub-value" id="sub-structure">--</span><span class="sub-denom">/25</span></div>
+          </div>
+          <div class="sub">
+            <div class="sub-label">Narrative</div>
+            <div><span class="sub-value" id="sub-narrative">--</span><span class="sub-denom">/25</span></div>
+          </div>
+          <div class="sub">
+            <div class="sub-label">Execution</div>
+            <div><span class="sub-value" id="sub-execution">--</span><span class="sub-denom">/25</span></div>
+          </div>
+          <div class="sub">
+            <div class="sub-label">Strategy</div>
+            <div><span class="sub-value" id="sub-strategy">--</span><span class="sub-denom">/25</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <div class="section-title">Top capital killers <span class="section-count" id="killers-count">—</span></div>
+        <div class="killer-list" id="killers-list"></div>
+      </div>
+
+      <div class="report-section">
+        <div class="section-title">Prioritized fixes <span class="section-count">3</span></div>
+        <div class="fixes-list" id="fixes-list"></div>
+      </div>
+
+      <div class="cta-block">
+        <div class="cta-copy">
+          <div class="cta-eyebrow">Want help fixing these?</div>
+          <div class="cta-line">Walk through your diagnostic with a Cash Flow Portal specialist.</div>
+        </div>
+        <a class="btn btn-primary" href="mailto:sales@cashflowportal.com?subject=Deal%20readiness%20walkthrough">
+          Book a walkthrough
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+      </div>
+
+      <div class="report-actions">
+        <button type="button" class="copy-btn" id="copy-link-btn" onclick="drCopyLink()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          <span id="copy-link-label">Copy link to results</span>
+        </button>
+        <button type="button" class="btn-text" onclick="drReset()">Start over</button>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="footnote">All scoring is heuristic, based on common failure patterns in sub-$50M raises. Not legal or financial advice.</div>
+
+</div>
+
+<script>
+  // =============================================================
+  // Deal Readiness & LP Friction Score
+  // Architecture: single-page, no deps, CRM-safe inline handlers
+  // State lives on window.dr, renderable from URL hash
+  // =============================================================
+
+  // Convention: answer values are 1 (worst) / 2 (mid) / 3 (best).
+  // Each question stores { id, prompt, aux, options: [{value, text, hint}] }.
+
+  window.drQuestions = [
+    // ---- Structure ----
+    {
+      id: 'q1',
+      section: 1,
+      prompt: 'Primary LP type you\'re targeting',
+      options: [
+        { value: 3, text: 'High-net-worth individuals', hint: '$100K–$1M checks, accredited' },
+        { value: 2, text: 'Institutional-lite', hint: 'Family offices, small funds of funds' },
+        { value: 2, text: 'Retail accredited', hint: '$25K–$100K checks, many small commits' }
+      ]
+    },
+    {
+      id: 'q2',
+      section: 1,
+      prompt: 'How complex is your deal structure?',
+      options: [
+        { value: 3, text: 'Simple', hint: 'E.g., 8% pref + 70/30 split, one class of LP' },
+        { value: 2, text: 'Standard waterfall', hint: '1–2 hurdles with a single promote tier' },
+        { value: 1, text: 'Complex', hint: 'Multi-tier promote, IRR hurdles, fee stacks' }
+      ]
+    },
+    // ---- Narrative ----
+    {
+      id: 'q3',
+      section: 2,
+      prompt: 'How clear is your risk disclosure?',
+      options: [
+        { value: 3, text: 'Structured and specific', hint: 'PPM-backed, summary slide in the deck' },
+        { value: 2, text: 'Mentioned at a high level', hint: 'Risks acknowledged but not enumerated' },
+        { value: 1, text: 'Minimal or buried', hint: 'Only in the PPM fine print' }
+      ]
+    },
+    {
+      id: 'q4',
+      section: 2,
+      prompt: 'Can you explain the deal in 2 sharp sentences?',
+      options: [
+        { value: 3, text: 'Yes — tight and memorable', hint: 'I could pitch it at a dinner party' },
+        { value: 2, text: 'Mostly', hint: 'Takes 3–4 sentences and some setup' },
+        { value: 1, text: 'Not really', hint: 'It depends on who I\'m talking to' }
+      ]
+    },
+    // ---- Execution ----
+    {
+      id: 'q5',
+      section: 3,
+      prompt: 'Steps from LP interest to wired capital',
+      options: [
+        { value: 3, text: '1–3 steps', hint: 'Integrated: sub docs + KYC + wire in one flow' },
+        { value: 2, text: '4–6 steps', hint: 'Portal + separate wire, or signing + manual KYC' },
+        { value: 1, text: '7+ steps', hint: 'Manual handoffs between docs, KYC, and wiring' }
+      ]
+    },
+    {
+      id: 'q6',
+      section: 3,
+      prompt: 'How do you collect subscription docs?',
+      options: [
+        { value: 3, text: 'Integrated investor portal', hint: 'Docs, KYC, and wire in one flow' },
+        { value: 2, text: 'DocuSign + email', hint: 'Signed docs, but wire + KYC handled separately' },
+        { value: 1, text: 'PDF sent by email', hint: 'Printed, signed, scanned, then wired manually' }
+      ]
+    },
+    // ---- Strategy ----
+    {
+      id: 'q7',
+      section: 4,
+      prompt: 'What % of the target raise do you expect from existing LPs?',
+      options: [
+        { value: 3, text: 'More than 60%', hint: 'Strong warm anchor before opening the raise' },
+        { value: 2, text: '30–60%', hint: 'Mixed — meaningful cold exposure' },
+        { value: 1, text: 'Less than 30%', hint: 'Mostly new / cold capital' }
+      ]
+    },
+    {
+      id: 'q8',
+      section: 4,
+      prompt: 'Your raise timeline',
+      options: [
+        { value: 3, text: '6+ months', hint: 'Sequenced outreach + room for soft commits' },
+        { value: 2, text: '3–6 months', hint: 'Normal pacing, no major slack' },
+        { value: 1, text: 'Under 3 months', hint: 'Or "as fast as possible"' }
+      ]
+    }
+  ];
+
+  // Human-readable labels for each section
+  window.drSections = [
+    { n: 1, title: 'Structure', sub: 'How the deal is put together.' },
+    { n: 2, title: 'Narrative', sub: 'How clearly you explain and disclose the deal.' },
+    { n: 3, title: 'Execution', sub: 'How easy it is for an interested LP to actually fund.' },
+    { n: 4, title: 'Strategy',  sub: 'The raise plan: who, how much, how fast.' }
+  ];
+
+  // State
+  window.dr = {
+    step: 0,          // 0 = intro, 1-4 = wizard, 5 = report
+    answers: {}       // keyed by question id → value 1-3
+  };
+
+  // ---------- Scoring engine ----------
+  // Points per answer (max 25 per section)
+  window.drScore = function(a) {
+    // q1 LP type: HNW=13, Inst=10, Retail=10. Use value 3 as HNW, 2 as either Inst or Retail.
+    // We need to distinguish Inst vs Retail; encode Retail by storing which option text was picked.
+    // But since both value=2, we can't distinguish post-hoc. Trade-off: we use value alone for
+    // scoring and rely on the alignment term for the only case where distinction matters —
+    // complex+retail. For that, we look at the index of the selected option (2) within q1.
+    // Keep it simple: treat q1 by raw value.
+
+    var q1 = a.q1 || 0, q2 = a.q2 || 0, q3 = a.q3 || 0, q4 = a.q4 || 0;
+    var q5 = a.q5 || 0, q6 = a.q6 || 0, q7 = a.q7 || 0, q8 = a.q8 || 0;
+
+    // Per-question base points
+    var pts = {
+      q1: [0, 10, 10, 13][q1] || 0,
+      q2: [0, 3,  8,  12][q2] || 0,
+      q3: [0, 2,  8,  13][q3] || 0,
+      q4: [0, 3,  8,  12][q4] || 0,
+      q5: [0, 2,  8,  13][q5] || 0,
+      q6: [0, 3,  8,  12][q6] || 0,
+      q7: [0, 3,  8,  13][q7] || 0,
+      q8: [0, 4,  8,  12][q8] || 0
+    };
+
+    // Alignment adjustment (LP type x structure complexity)
+    // If retail is picked we can detect it via the retail-index marker we store in answers.
+    var alignAdj = 0;
+    var isRetail  = a.q1Retail === true;
+    var isInst    = a.q1Inst === true;
+    if (isRetail && q2 === 1)      alignAdj = -5;   // complex + retail: bad fit
+    else if (isRetail && q2 === 3) alignAdj = +2;   // simple + retail: great fit
+    else if (isInst && q2 === 1)   alignAdj = +2;   // complex + inst: expected
+    else if (isInst && q2 === 3)   alignAdj = -2;   // simple + inst: may seem unsophisticated
+
+    var structure = Math.max(0, Math.min(25, pts.q1 + pts.q2 + alignAdj));
+    var narrative = pts.q3 + pts.q4;
+    var execution = pts.q5 + pts.q6;
+    var strategy  = pts.q7 + pts.q8;
+    var readiness = Math.round(structure + narrative + execution + strategy);
+
+    // Friction: inverse of 4 drop-off questions (q2, q4, q5, q6). Each 1-3.
+    var frictionSum = q2 + q4 + q5 + q6;       // range 4..12
+    var friction    = Math.round((12 - frictionSum) / 8 * 100);
+
+    // Badness weights (for killer ranking)
+    var weights = { q1: 0.8, q2: 1.2, q3: 1.0, q4: 1.1, q5: 1.5, q6: 1.5, q7: 1.3, q8: 1.0 };
+
+    // Build candidate issues (badness > 0 means suboptimal answer)
+    var candidates = [];
+    ['q2','q3','q4','q5','q6','q7','q8'].forEach(function(k) {
+      var v = a[k] || 0;
+      var bad = (3 - v) * weights[k];
+      if (bad > 0) candidates.push({ key: k, level: v, badness: bad });
+    });
+
+    // Alignment conditional killer
+    if (isRetail && q2 === 1) {
+      candidates.push({ key: 'align', level: 1, badness: (3 - 1) * 1.3 + 0.6 }); // boost slightly
+    }
+
+    // Sort by badness desc, take top 3
+    candidates.sort(function(x, y) { return y.badness - x.badness; });
+    var top3 = candidates.slice(0, 3);
+
+    return {
+      readiness: readiness,
+      friction: friction,
+      subscores: { structure: Math.round(structure), narrative: narrative, execution: execution, strategy: strategy },
+      killers: top3.map(function(c) { return window.drCopyFor(c.key, c.level); }),
+      candidateCount: candidates.length
+    };
+  };
+
+  // ---------- Killer + fix copy ----------
+  window.drCopyFor = function(key, level) {
+    // Returns { killer, detail, fix, fixDetail, severity }
+    var sev = level === 1 ? 'high' : 'medium';
+    var db = {
+      q2: {
+        1: {
+          killer: 'Your structure is too complex for the LP type you\'re targeting.',
+          detail: 'Multi-tier waterfalls force LPs to re-read the deck — many won\'t.',
+          fix: 'Add a 1-page plain-English returns summary.',
+          fixDetail: 'Show example LP outcomes at 3 scenarios (base / stressed / upside). Put it on page 2 of the deck.'
+        },
+        2: {
+          killer: 'Your structure is standard — not a killer, but not helping either.',
+          detail: 'Waterfalls don\'t differentiate you; nothing to slow LPs down, nothing to speed them up.',
+          fix: 'Lead with the LP\'s cash-on-cash and preferred return.',
+          fixDetail: 'Skip the waterfall diagram on the first pass. Show LPs what they get first, mechanics second.'
+        }
+      },
+      q3: {
+        1: {
+          killer: 'Weak risk disclosure will stall commits from analytical LPs.',
+          detail: 'Sophisticated LPs treat missing risk framing as a red flag, not a green light.',
+          fix: 'Add a 1-page risk summary referencing the relevant PPM sections.',
+          fixDetail: 'Top 3 risks + your specific mitigation. Put it right before the terms slide.'
+        },
+        2: {
+          killer: 'Risk disclosure is present but not structured.',
+          detail: 'LPs who want specifics have to hunt for them in the PPM.',
+          fix: 'Surface the top 3 risks on a dedicated slide with a mitigation for each.',
+          fixDetail: 'Make it defensible, not defensive. "Here is what could go wrong and how we\'ve hedged it."'
+        }
+      },
+      q4: {
+        1: {
+          killer: 'You can\'t pitch the deal in 2 sentences. LPs drop out in the first meeting.',
+          detail: 'If your own team can\'t hold the thesis in a sentence, LPs definitely can\'t repeat it to their spouse.',
+          fix: 'Write a 20-word deal thesis and rehearse it.',
+          fixDetail: 'Format: "[Asset] in [market] at [discount/thesis] returning [X%] over [Y years]." Refine until it feels boring to say.'
+        },
+        2: {
+          killer: 'Your pitch works with setup — not on cold LPs.',
+          detail: 'LPs decide "interested / not" in the first 15 seconds. Your thesis doesn\'t land that fast.',
+          fix: 'Tighten the opening line.',
+          fixDetail: 'Your first sentence should be a complete standalone thesis. Remove setup, context, and hedges from the hook.'
+        }
+      },
+      q5: {
+        1: {
+          killer: '7+ steps from interest to wire is your single biggest capital killer.',
+          detail: 'Every step after "I\'m in" loses ~10% of LPs. You\'re bleeding commits between yes and funded.',
+          fix: 'Consolidate to 3 steps or fewer.',
+          fixDetail: 'E-sign + KYC + wire instructions in one flow. This alone typically lifts funded conversion 30–50%.'
+        },
+        2: {
+          killer: 'Your onboarding is manageable but not sharp.',
+          detail: 'Each extra step is a compounding drop-off moment.',
+          fix: 'Cut 2–3 steps by moving KYC inline with the sub docs.',
+          fixDetail: 'KYC after signing is where many LPs disappear. Collect it as part of the signing flow, not after.'
+        }
+      },
+      q6: {
+        1: {
+          killer: 'Manual PDF subscription is the single most common reason LPs say yes but never fund.',
+          detail: 'PDFs require printing, signing, scanning, emailing, then separately wiring. Each touchpoint is a drop-off.',
+          fix: 'Move to an integrated investor portal.',
+          fixDetail: 'Cash Flow Portal or equivalent — single-flow sub docs typically 2–3x funded conversion vs. PDF + email.'
+        },
+        2: {
+          killer: 'DocuSign is better than PDF — but wire + KYC are still fragmented.',
+          detail: 'LPs sign the docs then have to chase you for wire instructions and complete KYC separately.',
+          fix: 'Consolidate wire instructions into the signed document.',
+          fixDetail: 'Trigger KYC before signing, not after. Most drop-off happens in the gap between "signed" and "funded".'
+        }
+      },
+      q7: {
+        1: {
+          killer: 'Cold-first raises take 2–3x longer. Your warm base is too thin.',
+          detail: 'Raises anchored by existing LPs close materially faster and signal validation to new LPs.',
+          fix: 'Before launching publicly, spend 30 days mining your warm list + referrals.',
+          fixDetail: 'Target 40%+ soft-committed before any outreach to cold capital. This is a sequencing problem, not a volume problem.'
+        },
+        2: {
+          killer: 'Mixed LP base — some anchor but material cold exposure.',
+          detail: 'Cold LPs commit slower and require more touches to close.',
+          fix: 'Secure the warm anchor first.',
+          fixDetail: 'Get the first 40% committed by existing LPs before going out to new capital. The momentum signal matters.'
+        }
+      },
+      q8: {
+        1: {
+          killer: 'Sub-90-day timelines rarely hold. Missing the target burns credibility.',
+          detail: 'LPs who passed on your deal will hear about the missed close, and your next raise starts from behind.',
+          fix: 'Extend to 4–6 months, or downsize the initial close.',
+          fixDetail: 'A hit close at a smaller number beats a missed close at your original target. Re-open later with momentum.'
+        },
+        2: {
+          killer: 'Timeline is reasonable but tight — no room for slippage.',
+          detail: 'Raises typically slip 3–4 weeks from plan. If you have no buffer, you\'ll miss.',
+          fix: 'Build a 30-day contingency into your target date.',
+          fixDetail: 'Announce the later date externally; aim for the earlier one internally. Never the reverse.'
+        }
+      },
+      align: {
+        1: {
+          killer: 'Retail LPs + a complex waterfall is a known drop-off pattern.',
+          detail: 'Retail LPs rarely push back — they just pass silently. The structure is filtering out your own target audience.',
+          fix: 'Either simplify to pref + split, or shift targeting to HNW and above.',
+          fixDetail: 'Complex waterfalls are expected by institutional money and tolerated by HNW. Retail reads them as "I don\'t understand what I\'m buying".'
+        }
+      },
+      q1: {
+        1: { killer: '', detail: '', fix: '', fixDetail: '' }, 2: { killer: '', detail: '', fix: '', fixDetail: '' }
+      }
+    };
+
+    var entry = (db[key] && db[key][level]) || { killer: '', detail: '', fix: '', fixDetail: '' };
+    return {
+      key: key,
+      level: level,
+      severity: sev,
+      killer: entry.killer,
+      detail: entry.detail,
+      fix: entry.fix,
+      fixDetail: entry.fixDetail
+    };
+  };
+
+  // ---------- Rendering ----------
+
+  window.drRender = function() {
+    var step = window.dr.step;
+    var intro  = document.getElementById('step-intro');
+    var wiz    = document.getElementById('step-wizard');
+    var report = document.getElementById('step-report');
+    if (!intro || !wiz || !report) return;
+
+    intro.hidden  = step !== 0;
+    wiz.hidden    = step < 1 || step > 4;
+    report.hidden = step !== 5;
+
+    if (step >= 1 && step <= 4) window.drRenderWizard(step);
+    if (step === 5) window.drRenderReport();
+  };
+
+  window.drRenderWizard = function(step) {
+    var section = window.drSections[step - 1];
+    var heading = document.getElementById('wizard-heading');
+    var sub     = document.getElementById('wizard-sub');
+    var stepCt  = document.getElementById('step-count-label');
+    var progLbl = document.getElementById('progress-label');
+    var dots    = document.getElementById('progress-dots');
+    var qContainer = document.getElementById('wizard-questions');
+    var backBtn  = document.getElementById('back-btn');
+    var nextBtn  = document.getElementById('next-btn');
+
+    if (heading) heading.textContent = section.title;
+    if (sub) sub.textContent = section.sub;
+    if (stepCt) stepCt.textContent = step + ' / 4';
+    if (progLbl) progLbl.innerHTML = 'Step <strong>' + step + '</strong> of 4 · ' + section.title;
+
+    // Progress dots
+    if (dots) {
+      var children = dots.children;
+      for (var i = 0; i < children.length; i++) {
+        children[i].className = 'progress-dot';
+        if (i + 1 < step) children[i].classList.add('done');
+        if (i + 1 === step) children[i].classList.add('current');
+      }
+    }
+
+    // Questions for this section
+    if (qContainer) {
+      qContainer.innerHTML = '';
+      window.drQuestions.filter(function(q) { return q.section === step; }).forEach(function(q) {
+        var fs = document.createElement('fieldset');
+        fs.className = 'q';
+        var legend = document.createElement('legend');
+        legend.className = 'q-prompt';
+        legend.textContent = q.prompt;
+        fs.appendChild(legend);
+
+        var opts = document.createElement('div');
+        opts.className = 'options';
+        q.options.forEach(function(opt, ix) {
+          var label = document.createElement('label');
+          label.className = 'opt';
+          var radio = document.createElement('input');
+          radio.type = 'radio';
+          radio.name = q.id;
+          radio.value = opt.value;
+          radio.setAttribute('data-opt-ix', ix);
+          // restore prior selection
+          var prior = window.dr.answers[q.id];
+          var priorIx = window.dr.answers['__ix_' + q.id];
+          if (prior === opt.value && (priorIx === undefined || priorIx === ix)) radio.checked = true;
+          radio.addEventListener('change', function() {
+            window.dr.answers[q.id] = opt.value;
+            window.dr.answers['__ix_' + q.id] = ix;
+            // Track retail / inst flag for alignment
+            if (q.id === 'q1') {
+              // option index: 0=HNW (value 3), 1=Inst (value 2), 2=Retail (value 2)
+              window.dr.answers.q1Retail = (ix === 2);
+              window.dr.answers.q1Inst   = (ix === 1);
+            }
+            window.drValidateStep();
+          });
+          var txt = document.createElement('div');
+          txt.className = 'opt-text';
+          txt.textContent = opt.text;
+          if (opt.hint) {
+            var hint = document.createElement('span');
+            hint.className = 'opt-hint';
+            hint.textContent = opt.hint;
+            txt.appendChild(hint);
+          }
+          label.appendChild(radio);
+          label.appendChild(txt);
+          opts.appendChild(label);
+        });
+        fs.appendChild(opts);
+        qContainer.appendChild(fs);
+      });
+    }
+
+    // Back button visible on step 2+
+    if (backBtn) backBtn.style.visibility = (step > 1) ? 'visible' : 'hidden';
+
+    // Next button label (final step says "See results")
+    if (nextBtn) {
+      nextBtn.childNodes[0].nodeValue = (step === 4) ? 'See results ' : 'Next ';
+    }
+
+    window.drValidateStep();
+  };
+
+  window.drValidateStep = function() {
+    var step = window.dr.step;
+    if (step < 1 || step > 4) return;
+    var qs = window.drQuestions.filter(function(q) { return q.section === step; });
+    var complete = qs.every(function(q) { return window.dr.answers[q.id] !== undefined; });
+    var nextBtn = document.getElementById('next-btn');
+    if (nextBtn) nextBtn.disabled = !complete;
+  };
+
+  window.drRenderReport = function() {
+    var result = window.drScore(window.dr.answers);
+
+    var rv = document.getElementById('readiness-value');
+    var fv = document.getElementById('friction-value');
+    var rt = document.getElementById('readiness-tag');
+    if (rv) rv.textContent = result.readiness;
+    if (fv) {
+      fv.textContent = result.friction;
+      fv.classList.remove('high', 'mid', 'low');
+      if (result.friction >= 60) fv.classList.add('high');
+      else if (result.friction >= 35) fv.classList.add('mid');
+      else fv.classList.add('low');
+    }
+    if (rt) {
+      rt.classList.remove('tag-good', 'tag-mid', 'tag-bad');
+      if (result.readiness >= 80)      { rt.textContent = 'Ready to raise'; rt.classList.add('tag-good'); }
+      else if (result.readiness >= 60) { rt.textContent = 'Raise with fixes'; rt.classList.add('tag-mid'); }
+      else                              { rt.textContent = 'Not ready yet';  rt.classList.add('tag-bad'); }
+    }
+
+    var sub = document.getElementById;
+    var subS = document.getElementById('sub-structure');
+    var subN = document.getElementById('sub-narrative');
+    var subE = document.getElementById('sub-execution');
+    var subT = document.getElementById('sub-strategy');
+    if (subS) subS.textContent = result.subscores.structure;
+    if (subN) subN.textContent = result.subscores.narrative;
+    if (subE) subE.textContent = result.subscores.execution;
+    if (subT) subT.textContent = result.subscores.strategy;
+
+    // Killers
+    var killersCount = document.getElementById('killers-count');
+    if (killersCount) killersCount.textContent = String(result.killers.length);
+
+    var killList = document.getElementById('killers-list');
+    if (killList) {
+      killList.innerHTML = '';
+      if (result.killers.length === 0) {
+        var none = document.createElement('div');
+        none.className = 'killer medium';
+        none.innerHTML = '<div class="killer-ix">Clean</div><div class="killer-text">No major capital killers detected. Your deal is tight across all four dimensions.<span class="k-detail">Focus the polish pass on narrative sharpening and LP sequencing.</span></div>';
+        killList.appendChild(none);
+      }
+      result.killers.forEach(function(k, ix) {
+        var div = document.createElement('div');
+        div.className = 'killer' + (k.severity === 'medium' ? ' medium' : '');
+        var badge = document.createElement('div');
+        badge.className = 'killer-ix';
+        badge.textContent = '#' + (ix + 1);
+        var txt = document.createElement('div');
+        txt.className = 'killer-text';
+        txt.innerHTML = window.drEscape(k.killer) + '<span class="k-detail">' + window.drEscape(k.detail) + '</span>';
+        div.appendChild(badge);
+        div.appendChild(txt);
+        killList.appendChild(div);
+      });
+    }
+
+    // Fixes
+    var fixList = document.getElementById('fixes-list');
+    if (fixList) {
+      fixList.innerHTML = '';
+      if (result.killers.length === 0) {
+        var tight = document.createElement('div');
+        tight.className = 'fix';
+        tight.innerHTML = '<div class="fix-ix">1</div><div class="fix-text">Rehearse your 20-second thesis with a skeptical LP.<span class="f-detail">At high readiness scores, pitch tightness is often the last lift before raise kickoff.</span></div>';
+        fixList.appendChild(tight);
+      }
+      result.killers.forEach(function(k, ix) {
+        var div = document.createElement('div');
+        div.className = 'fix';
+        var badge = document.createElement('div');
+        badge.className = 'fix-ix';
+        badge.textContent = (ix + 1);
+        var txt = document.createElement('div');
+        txt.className = 'fix-text';
+        txt.innerHTML = window.drEscape(k.fix) + '<span class="f-detail">' + window.drEscape(k.fixDetail) + '</span>';
+        div.appendChild(badge);
+        div.appendChild(txt);
+        fixList.appendChild(div);
+      });
+    }
+
+    // Update URL hash
+    window.drWriteHash();
+  };
+
+  window.drEscape = function(s) {
+    return String(s || '').replace(/[&<>"']/g, function(c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+
+  // ---------- Navigation ----------
+
+  window.drStart = function() {
+    window.dr.step = 1;
+    window.drRender();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.drNext = function() {
+    if (window.dr.step < 4) {
+      window.dr.step += 1;
+      window.drRender();
+    } else if (window.dr.step === 4) {
+      window.dr.step = 5;
+      window.drRender();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.drBack = function() {
+    if (window.dr.step > 1 && window.dr.step <= 4) {
+      window.dr.step -= 1;
+      window.drRender();
+    } else if (window.dr.step === 5) {
+      window.dr.step = 4;
+      window.drRender();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.drReset = function() {
+    window.dr = { step: 0, answers: {} };
+    try {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    } catch (e) {}
+    window.drRender();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ---------- Hash state ----------
+
+  // Encode answers as 8-digit string, one digit per question (plus 1-char LP type index).
+  // Format: #r=aaaaaaaai where a ∈ {1,2,3} and i is the q1 option index (0,1,2).
+  window.drWriteHash = function() {
+    try {
+      var a = window.dr.answers;
+      var digits = ['q1','q2','q3','q4','q5','q6','q7','q8']
+        .map(function(k) { return (a[k] || 0); }).join('');
+      var ix = (a['__ix_q1'] !== undefined) ? a['__ix_q1'] : '';
+      var hash = '#r=' + digits + (ix !== '' ? ix : '');
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', hash);
+      }
+    } catch (e) {}
+  };
+
+  window.drReadHash = function() {
+    try {
+      var h = (window.location && window.location.hash) || '';
+      var m = h.match(/r=([1-3]{8})([0-2])?/i);
+      if (!m) return null;
+      var digits = m[1], ix = m[2];
+      var a = {};
+      ['q1','q2','q3','q4','q5','q6','q7','q8'].forEach(function(k, i) {
+        a[k] = parseInt(digits.charAt(i), 10);
+      });
+      if (ix !== undefined) {
+        var ixN = parseInt(ix, 10);
+        a['__ix_q1'] = ixN;
+        a.q1Retail = (ixN === 2);
+        a.q1Inst   = (ixN === 1);
+      } else {
+        // Fallback: value 3 => HNW (ix 0), value 2 => Inst (ix 1) by default
+        a['__ix_q1'] = a.q1 === 3 ? 0 : 1;
+        a.q1Retail = false;
+        a.q1Inst = a.q1 === 2;
+      }
+      return a;
+    } catch (e) { return null; }
+  };
+
+  // ---------- Copy link ----------
+
+  window.drCopyText = function(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(function() { return true; }).catch(function() {
+          return window.drCopyFallback(text);
+        });
+      }
+    } catch (e) {}
+    return Promise.resolve(window.drCopyFallback(text));
+  };
+
+  window.drCopyFallback = function(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  };
+
+  window.drCopyLink = function() {
+    var href = (window.location && window.location.href) || '';
+    if (href.indexOf('#') >= 0) href = href.split('#')[0];
+    window.drWriteHash();
+    href = href + (window.location.hash || '');
+    Promise.resolve(window.drCopyText(href)).then(function(ok) {
+      var btn = document.getElementById('copy-link-btn');
+      var lbl = document.getElementById('copy-link-label');
+      if (btn && lbl) {
+        btn.classList.add('copied');
+        lbl.textContent = ok ? 'Link copied' : 'Copy failed';
+        setTimeout(function() {
+          btn.classList.remove('copied');
+          lbl.textContent = 'Copy link to results';
+        }, 1400);
+      }
+    });
+  };
+
+  // ---------- Init ----------
+
+  function drInit() {
+    // Restore from hash if present
+    var restored = window.drReadHash();
+    if (restored) {
+      window.dr.answers = restored;
+      window.dr.step = 5; // jump to report view
+    }
+    window.drRender();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', drInit);
+  } else {
+    drInit();
+  }
+</script>
+</body>
+</html>
