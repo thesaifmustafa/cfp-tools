@@ -8,9 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
     /* Surfaces */
     --bg:           #0a0a12;
@@ -46,247 +45,10 @@
     /* Shadow */
     --shadow-sm:    0 1px 2px rgba(0,0,0,0.35);
     --shadow-md:    0 2px 4px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
-
-    /* Layout */
-    --topbar-h:     68px;
-    --sidebar-w:    260px;
   }
 
-  html, body { min-height: 100%; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  /* Top-edge violet halo (Squaredocs aesthetic) */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -360px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1500px;
-    height: 760px;
-    background: radial-gradient(ellipse at center, rgba(167,139,250,0.22) 0%, rgba(99,72,180,0.08) 35%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-    filter: blur(8px);
-  }
-
-  a { color: inherit; text-decoration: none; }
-
-  /* ---------- Topbar ---------- */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    height: var(--topbar-h);
-    background: rgba(10,10,18,0.78);
-    -webkit-backdrop-filter: saturate(140%) blur(12px);
-    backdrop-filter: saturate(140%) blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .topbar-inner {
-    max-width: 1280px;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-  }
-
-  .topbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -0.01em;
-    color: var(--text);
-  }
-
-  .logo-mark {
-    width: 28px;
-    height: 28px;
-    background: var(--brand-grad);
-    border-radius: 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 4px 14px rgba(0,133,255,0.3);
-  }
-
-  .topbar-tabs {
-    display: flex;
-    gap: 4px;
-    margin-left: 18px;
-  }
-
-  .tab {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    padding: 7px 13px;
-    border-radius: 8px;
-    transition: color 0.15s, background 0.15s;
-  }
-
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--text); background: var(--surface-2); }
-
-  .topbar-aux {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .ext-link {
-    font-size: 12.5px;
-    font-weight: 500;
-    color: var(--muted);
-    transition: color 0.15s;
-  }
-
-  .ext-link:hover { color: var(--accent); }
-
-  /* ---------- Shell ---------- */
-  .shell {
-    position: relative;
-    z-index: 1;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 32px 32px 64px;
-    display: grid;
-    grid-template-columns: var(--sidebar-w) 1fr;
-    gap: 56px;
-    align-items: start;
-  }
-
-  /* ---------- Sidebar ---------- */
-  .sidebar {
-    position: sticky;
-    top: calc(var(--topbar-h) + 32px);
-    align-self: start;
-    max-height: calc(100vh - var(--topbar-h) - 64px);
-    overflow-y: auto;
-    padding-right: 8px;
-    padding-bottom: 32px;
-  }
-
-  .sidebar::-webkit-scrollbar { width: 6px; }
-  .sidebar::-webkit-scrollbar-track { background: transparent; }
-  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  .search {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 28px;
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-
-  .search:hover { border-color: var(--border-hover); }
-
-  .search svg { color: var(--muted); flex-shrink: 0; }
-
-  .search-text {
-    flex: 1;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .search-kbd {
-    display: inline-flex;
-    align-items: center;
-    gap: 1px;
-    font-family: 'Manrope', sans-serif;
-    font-size: 10.5px;
-    font-weight: 600;
-    color: var(--text-2);
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 2px 6px;
-  }
-
-  .nav-group { margin-bottom: 24px; }
-  .nav-group:last-child { margin-bottom: 0; }
-
-  .nav-group h4 {
-    font-size: 13.5px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.01em;
-    margin-bottom: 8px;
-    padding: 0 4px;
-  }
-
-  .nav-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-left: 1px solid var(--border);
-    margin-left: 4px;
-  }
-
-  .nav-list li { margin: 0; }
-
-  .nav-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 6px 0 6px 16px;
-    font-size: 13.5px;
-    font-weight: 500;
-    color: var(--text-2);
-    margin-left: -1px;
-    border-left: 1px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-    line-height: 1.4;
-  }
-
-  .nav-link:hover { color: var(--text); }
-
-  .nav-link.disabled {
-    color: var(--muted-soft);
-    cursor: default;
-    pointer-events: none;
-  }
-
-  .nav-link .nav-tag {
-    font-size: 9.5px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    padding: 2px 6px;
-    border-radius: 20px;
-    flex-shrink: 0;
-  }
-
-  /* ---------- Main content ---------- */
-  .content {
-    max-width: 760px;
-    min-width: 0;
-  }
+  /* ---------- Page content (launcher only) ---------- */
+  .content { max-width: 760px; }
 
   /* ---------- Hero ---------- */
   .hero {
@@ -394,7 +156,7 @@
     border-color: var(--border-hover);
   }
 
-  /* ---------- Category section ---------- */
+  /* ---------- Sections ---------- */
   .section-title {
     font-family: 'Manrope', sans-serif;
     font-size: 20px;
@@ -420,8 +182,6 @@
     transition: border-color 0.18s, background 0.18s, transform 0.18s;
     overflow: hidden;
   }
-
-  a.cat { cursor: pointer; }
 
   a.cat:hover {
     background: var(--card-hover);
@@ -477,7 +237,7 @@
     color: var(--text-2);
   }
 
-  /* ---------- Popular section ---------- */
+  /* ---------- Popular ---------- */
   .pop-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -538,100 +298,22 @@
   .footer a { color: var(--text-2); font-weight: 500; transition: color 0.15s; }
   .footer a:hover { color: var(--accent); }
 
-  /* ---------- Responsive ---------- */
-  @media (max-width: 960px) {
-    .shell {
-      grid-template-columns: 1fr;
-      gap: 32px;
-      padding: 24px 24px 48px;
-    }
-
-    .sidebar {
-      position: static;
-      max-height: none;
-      overflow-y: visible;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 8px;
-    }
-
-    .topbar-tabs { display: none; }
-    .topbar-inner { padding: 0 20px; gap: 12px; }
-    .cat-grid { grid-template-columns: 1fr; }
-    .pop-row { grid-template-columns: 1fr; }
-  }
-
   @media (max-width: 520px) {
     .hero { padding-top: 16px; padding-bottom: 36px; }
     .hero-actions { gap: 6px; }
     .hero-or { display: none; }
-    .topbar-aux .ext-link { display: none; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .pop-row { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="topbar-brand" href="./">
-      <span class="logo-mark">
-        <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-          <path d="M3 14L9 4L15 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M5.5 10.5H12.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <span>Cash Flow Portal</span>
-    </a>
-    <nav class="topbar-tabs">
-      <a class="tab active" href="./">Tools</a>
-      <a class="tab" href="https://cashflowportal.com/" rel="noopener">Site</a>
-    </nav>
-    <div class="topbar-aux">
-      <a class="ext-link" href="https://cashflowportal.com/" rel="noopener">cashflowportal.com ↗</a>
-    </div>
-  </div>
-</header>
+<header id="cfp-topbar" class="topbar"></header>
 
 <div class="shell">
 
-  <aside class="sidebar" aria-label="Tools navigation">
-
-    <div class="search" role="button" tabindex="0" aria-label="Search (placeholder)">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <span class="search-text">Search...</span>
-      <span class="search-kbd">⌘K</span>
-    </div>
-
-    <div class="nav-group">
-      <h4>Calculators</h4>
-      <ul class="nav-list">
-        <li><a class="nav-link" href="pricing.html">Investor Portal Pricing</a></li>
-        <li><a class="nav-link" href="readiness.html">Deal Readiness &amp; LP Friction</a></li>
-      </ul>
-    </div>
-
-    <div class="nav-group">
-      <h4>Coming soon</h4>
-      <ul class="nav-list">
-        <li><a class="nav-link disabled" aria-disabled="true">ROI &amp; Time Savings <span class="nav-tag">Soon</span></a></li>
-        <li><a class="nav-link disabled" aria-disabled="true">K-1 Estimator <span class="nav-tag">Soon</span></a></li>
-        <li><a class="nav-link disabled" aria-disabled="true">Capital Call Modeler <span class="nav-tag">Soon</span></a></li>
-      </ul>
-    </div>
-
-    <div class="nav-group">
-      <h4>About</h4>
-      <ul class="nav-list">
-        <li><a class="nav-link disabled" aria-disabled="true">About these tools</a></li>
-        <li><a class="nav-link disabled" aria-disabled="true">How scoring works</a></li>
-        <li><a class="nav-link" href="https://cashflowportal.com/" rel="noopener">Cash Flow Portal ↗</a></li>
-      </ul>
-    </div>
-
-  </aside>
+  <aside id="cfp-sidebar" class="sidebar" aria-label="Tools navigation"></aside>
 
   <main class="content">
 
@@ -745,5 +427,6 @@
   </main>
 </div>
 
+<script src="shell.js"></script>
 </body>
 </html>

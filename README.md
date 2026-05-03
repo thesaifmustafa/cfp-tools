@@ -8,13 +8,17 @@ Prospect-facing interactive calculators for [Cash Flow Portal](https://cashflowp
 
 ```
 /
-├── index.html        Launcher — tile grid of all tools
+├── index.html        Launcher — hero + category grid
 ├── pricing.html      Investor Portal Pricing Calculator
 ├── readiness.html    Deal Readiness & LP Friction Score
+├── shell.css         Shared topbar + sticky sidebar styles
+├── shell.js          Injects topbar/sidebar into every page; auto-active link
 └── README.md
 ```
 
 Flat layout: each tool is a single HTML file at the root. No build step, no dependencies. Manrope font, dark palette modeled on the Squaredocs Framer template (`#0a0a12` near-black + `#a78bfa` violet accent + soft top-edge halo). The CFP dodgerblue/aquamarine brand gradient is reserved for the logo mark only.
+
+**Shell.** Every page links `shell.css` and `shell.js`, then declares two empty placeholders — `<header id="cfp-topbar" class="topbar"></header>` and `<aside id="cfp-sidebar" class="sidebar"></aside>` — which `shell.js` fills with the shared topbar and sidebar nav. The active link is set automatically from `location.pathname`. To add a new tool: create `<toolname>.html`, add a `<li><a class="nav-link" href="<toolname>.html">Display Name</a></li>` to `SIDEBAR_HTML` inside `shell.js`, and the tile to `index.html`.
 
 ## Tools
 
@@ -51,9 +55,10 @@ Plug in investor count, distributions per year, and K-1 count. Returns hours and
 
 ## Adding a new tool
 
-1. Create `<toolname>.html` at the repo root (e.g. `roi.html`).
-2. Include the standard back-link at the top: `<a href="./">← All tools</a>`.
-3. Add a tile for it in `index.html`.
+1. Create `<toolname>.html` at the repo root (e.g. `roi.html`). Use `pricing.html` as a starting template — it already has the shell wired in.
+2. Inside the new file: link `shell.css` in the head, drop a `<header id="cfp-topbar" class="topbar"></header>` at the top of `<body>`, wrap your content in `<div class="shell"><aside id="cfp-sidebar" class="sidebar"></aside><main class="content">...</main></div>`, and include `<script src="shell.js"></script>` before `</body>`.
+3. In `shell.js`, add a `<li>` to `SIDEBAR_HTML` so it shows in the sidebar on every page.
+4. Add a tile for it in `index.html` (the launcher's category grid).
 
 ## Local preview
 
