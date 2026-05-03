@@ -9,6 +9,21 @@ Prospect-facing interactive calculators for [Cash Flow Portal](https://cashflowp
 ```
 /
 ├── index.html        Launcher — hero + category grid
+├── diagnostic.html   Capital Raise Failure Diagnostic
+├── pricing.html      Investor Portal Pricing Calculator
+├── readiness.html    Deal Readiness & LP Friction Score
+├── shell.css         Shared topbar + sticky sidebar styles
+├── shell.js          Injects topbar/sidebar into every page; auto-active link
+└── README.md
+```
+
+> The flat-layout section below is superseded by the table above. See individual tool sections for details.
+
+## Structure (legacy)
+
+```
+/
+├── index.html        Launcher — hero + category grid
 ├── pricing.html      Investor Portal Pricing Calculator
 ├── readiness.html    Deal Readiness & LP Friction Score
 ├── shell.css         Shared topbar + sticky sidebar styles
@@ -21,6 +36,47 @@ Flat layout: each tool is a single HTML file at the root. No build step, no depe
 **Shell.** Every page links `shell.css` and `shell.js`, then declares two empty placeholders — `<header id="cfp-topbar" class="topbar"></header>` and `<aside id="cfp-sidebar" class="sidebar"></aside>` — which `shell.js` fills with the shared topbar and sidebar nav. The active link is set automatically from `location.pathname`. To add a new tool: create `<toolname>.html`, add a `<li><a class="nav-link" href="<toolname>.html">Display Name</a></li>` to `SIDEBAR_HTML` inside `shell.js`, and the tile to `index.html`.
 
 ## Tools
+
+### Capital Raise Failure Diagnostic — `diagnostic.html`
+
+Pre-raise / active-raise diagnostic for real estate GPs, syndicators, and fund managers. 12 questions across five sections, producing a 0–100 headline **Capital Raise Failure Risk Score** (higher = worse) and five failure-mode sub-scores.
+
+**Sections and inputs:**
+
+| Section | Questions | Purpose |
+|---|---|---|
+| A — Raise Profile | Q1–Q4 (type, size, stage, timeline) | Context / lead qualification |
+| B — Investor Conversion | Q5–Q7 (subscription method, steps, commitment tracking) | LP Onboarding Friction + Funding Completion |
+| C — Pipeline Control | Q8–Q9 (LP tracking, forecast confidence) | Pipeline Momentum |
+| D — Deal Diligence | Q10–Q11 (return clarity, doc alignment) | LP Diligence Confidence |
+| E — Post-Close Operations | Q12 (post-close handling) | Post-Close Credibility |
+
+**Scoring rationale (v1 heuristics):**
+
+Five failure-mode sub-scores (each 0–100), computed from point tables in `DG_TABLES` (Section 11 of the spec). Headline = `max(subScores) × 0.5 + avg(subScores) × 0.5`, capped at 100.
+
+| Band | Range | Color |
+|---|---|---|
+| Low Risk | 0–30 | Green |
+| Moderate Risk | 31–60 | Amber |
+| High Risk | 61–80 | Amber |
+| Critical Risk | 81–100 | Red |
+
+Q1–Q4 (raise profile) are contextual and feed the lead capture form pre-fill but do not contribute to sub-scores in v1.
+
+**Deep-link format:**
+
+`diagnostic.html#r=XXXXXXXXXXXX` — 12 characters, each a digit (`0`–`6`) representing the selected option index for Q1–Q12. Unanswered questions encode as `x`. The page jumps directly to the report view if Q5–Q12 are all answered.
+
+Example: `diagnostic.html#r=1310122301x3` (Q1=1, Q2=3, Q3=1, Q4=0, …)
+
+**MVP scope boundaries:**
+
+Included: 12-question wizard, rule-based scoring, 5 sub-scores, top-3 capital killers, 3 fixes, dynamic CTA by primary risk mode, lead capture stub (client-side only, copies result to clipboard), shareable hash link.
+
+Not included in v1: file uploads, AI deck analysis, CRM/banking integrations, PDF export, login, dynamic benchmarking, real AE notification backend.
+
+---
 
 ### Pricing Calculator — `pricing.html`
 

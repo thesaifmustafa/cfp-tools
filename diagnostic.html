@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capital Raise Failure Diagnostic · Cash Flow Portal</title>
+<meta name="description" content="Diagnose where your capital raise is most likely to lose momentum. 12 questions, 3 minutes, five failure-mode risk scores.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<style>
+
+  :root {
+    /* Surfaces */
+    --bg:           #0a0a12;
+    --card:         #15151c;
+    --surface:      #11111a;
+    --surface-2:    #1a1a22;
+
+    /* Lines */
+    --border:       rgba(255,255,255,0.07);
+    --border-soft:  rgba(255,255,255,0.04);
+
+    /* Text */
+    --text:         #f5f5f7;
+    --text-2:       #b3b6bd;
+    --muted:        #7a7e89;
+    --muted-soft:   #5a5d66;
+
+    /* Accent — Squaredocs violet */
+    --accent:       #a78bfa;
+    --accent-hover: #b9a3fb;
+    --accent-soft:  rgba(167,139,250,0.10);
+    --accent-tint:  rgba(167,139,250,0.06);
+    --accent-ring:  rgba(167,139,250,0.28);
+
+    /* Signal colors — dark-tuned */
+    --warn:         #fbbf6c;
+    --warn-soft:    rgba(251,191,108,0.12);
+    --warn-ring:    rgba(251,191,108,0.32);
+    --danger:       #ff7575;
+    --danger-soft:  rgba(255,117,117,0.10);
+    --danger-ring:  rgba(255,117,117,0.32);
+    --good:         #6ee7b7;
+    --good-soft:    rgba(110,231,183,0.12);
+    --good-ring:    rgba(110,231,183,0.32);
+
+    /* Brand mark only */
+    --brand-grad:   linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
+
+    /* Gradients (UI) */
+    --grad-text:    linear-gradient(90deg, #f5f5f7 0%, #a78bfa 100%);
+
+    /* Shadow */
+    --shadow-sm:    0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md:    0 2px 4px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 660px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Card ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ---------- Step container ---------- */
+  .step[hidden] { display: none; }
+
+  /* ---------- Intro step ---------- */
+  .intro-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(22px, 3.2vw, 30px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .intro-title .accent {
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .intro-sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text-2);
+    margin-bottom: 28px;
+  }
+
+  .intro-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .meta-cell {
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 12px 18px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: #ffffff;
+    color: #0a0a12;
+    border-color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    background: #ececf0;
+    border-color: #ececf0;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-primary[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-2);
+    border-color: var(--border);
+  }
+
+  .btn-ghost:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+    color: var(--accent);
+  }
+
+  .btn-text {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 6px;
+    transition: color 0.15s;
+  }
+
+  .btn-text:hover { color: var(--accent); }
+
+  /* ---------- Wizard progress ---------- */
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .progress-dot {
+    width: 28px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.25s;
+  }
+
+  .progress-dot.done    { background: var(--accent); }
+  .progress-dot.current { background: var(--accent-hover); }
+
+  .progress-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  .progress-label strong { color: var(--text); font-weight: 700; }
+
+  /* ---------- Wizard step heading ---------- */
+  .step-heading {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .step-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* ---------- Question / segmented control ---------- */
+  fieldset.q {
+    border: none;
+    padding: 0;
+    margin: 0 0 22px 0;
+  }
+
+  fieldset.q:last-of-type { margin-bottom: 0; }
+
+  .q-prompt {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .opt:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+  }
+
+  .opt input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--muted-soft);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .opt input[type="radio"]:checked {
+    border-color: var(--accent);
+    border-width: 5px;
+  }
+
+  .opt-text {
+    flex: 1;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .opt-hint {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .opt:has(input:checked) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+
+  @supports not (selector(:has(*))) {
+    .opt input[type="radio"]:checked ~ .opt-text {
+      color: var(--accent);
+    }
+  }
+
+  /* ---------- Wizard nav ---------- */
+  .wizard-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+  }
+
+  .wizard-nav-left,
+  .wizard-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ---------- Report: hero score block ---------- */
+  .report-hero {
+    background: linear-gradient(135deg, rgba(167,139,250,0.10) 0%, rgba(167,139,250,0.04) 100%);
+    border: 1px solid var(--accent-ring);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 24px;
+  }
+
+  .report-headline {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .score-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .score-block .score-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .score-value {
+    font-family: 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .score-value.band-low      { color: var(--good); }
+  .score-value.band-moderate { color: var(--warn); }
+  .score-value.band-high     { color: var(--warn); }
+  .score-value.band-critical { color: var(--danger); }
+
+  .score-out-of {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 2px;
+  }
+
+  .score-tag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    border-radius: 20px;
+  }
+
+  .tag-good     { color: var(--good);   background: var(--good-soft);   border: 1px solid var(--good-ring); }
+  .tag-moderate { color: var(--warn);   background: var(--warn-soft);   border: 1px solid var(--warn-ring); }
+  .tag-high     { color: var(--warn);   background: var(--warn-soft);   border: 1px solid var(--warn-ring); }
+  .tag-critical { color: var(--danger); background: var(--danger-soft); border: 1px solid var(--danger-ring); }
+
+  .primary-mode-block {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .primary-mode-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .primary-mode-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--danger);
+    margin-bottom: 4px;
+  }
+
+  .primary-mode-name.band-low      { color: var(--good); }
+  .primary-mode-name.band-moderate { color: var(--warn); }
+  .primary-mode-name.band-high     { color: var(--warn); }
+  .primary-mode-name.band-critical { color: var(--danger); }
+
+  .primary-mode-desc {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+
+  /* ---------- Sub-scores bars ---------- */
+  .subscore-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .subscore-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .subscore-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    width: 200px;
+    flex-shrink: 0;
+  }
+
+  .subscore-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--surface-2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .subscore-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .subscore-bar-fill.low      { background: var(--good); }
+  .subscore-bar-fill.moderate { background: var(--warn); }
+  .subscore-bar-fill.high     { background: var(--warn); }
+  .subscore-bar-fill.critical { background: var(--danger); }
+
+  .subscore-val {
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    width: 44px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Report sections ---------- */
+  .report-section {
+    margin-bottom: 24px;
+  }
+
+  .report-section:last-of-type { margin-bottom: 0; }
+
+  .section-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  /* ---------- Killers ---------- */
+  .killer-list,
+  .fixes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .killer {
+    padding: 14px 16px;
+    background: var(--danger-soft);
+    border: 1px solid var(--danger-ring);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .killer.medium {
+    background: var(--warn-soft);
+    border-color: var(--warn-ring);
+  }
+
+  .killer-ix {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--danger);
+    background: rgba(255,117,117,0.10);
+    border: 1px solid var(--danger-ring);
+    border-radius: 6px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .killer.medium .killer-ix {
+    color: var(--warn);
+    background: rgba(251,191,108,0.10);
+    border-color: var(--warn-ring);
+  }
+
+  .killer-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .killer-text .k-detail {
+    display: block;
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* ---------- Fixes ---------- */
+  .fix {
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .fix-ix {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0a0a12;
+    font-weight: 700;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .fix-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .fix-text .f-detail {
+    display: block;
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* ---------- CTA ---------- */
+  .cta-block {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.10), rgba(167,139,250,0.04));
+    border: 1px solid var(--accent-ring);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cta-copy .cta-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .cta-copy .cta-line {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.35;
+  }
+
+  /* ---------- Lead capture ---------- */
+  .lead-section {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+
+  .lead-section h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .lead-section p {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .lead-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .lead-form .full-width { grid-column: 1 / -1; }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .form-field label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .form-field input,
+  .form-field select {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .form-field input::placeholder { color: var(--muted-soft); }
+
+  .form-field input:focus,
+  .form-field select:focus {
+    border-color: var(--accent-ring);
+    background: var(--card);
+  }
+
+  .form-field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7e89' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    cursor: pointer;
+  }
+
+  .form-field select option {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  .lead-submit-row {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .lead-thanks {
+    display: none;
+    padding: 14px 16px;
+    background: var(--good-soft);
+    border: 1px solid var(--good-ring);
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: var(--good);
+    font-weight: 500;
+    line-height: 1.5;
+    margin-top: 12px;
+  }
+
+  .lead-thanks.visible { display: block; }
+
+  /* ---------- Report actions ---------- */
+  .report-actions {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .copy-btn {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .copy-btn:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+    color: var(--accent);
+  }
+
+  .copy-btn.copied {
+    background: var(--good-soft);
+    border-color: var(--good-ring);
+    color: var(--good);
+  }
+
+  .footnote {
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 600px) {
+    .card { padding: 24px 20px; }
+    .intro-meta { grid-template-columns: 1fr; }
+    .score-value { font-size: 52px; }
+    .subscore-label { width: 140px; font-size: 11px; }
+    .cta-block { flex-direction: column; align-items: stretch; }
+    .cta-block .btn { justify-content: center; }
+    .lead-form { grid-template-columns: 1fr; }
+    .lead-form .full-width { grid-column: 1; }
+  }
+
+</style>
+</head>
+<body>
+
+<header id="cfp-topbar" class="topbar"></header>
+
+<div class="shell">
+  <aside id="cfp-sidebar" class="sidebar" aria-label="Tools navigation"></aside>
+  <main class="content">
+<div class="wrap">
+
+  <div class="card">
+
+    <!-- ========== STEP 0: INTRO ========== -->
+    <section class="step" id="step-intro">
+      <h1 class="intro-title">Find where your raise is most likely to <span class="accent">lose capital.</span></h1>
+      <p class="intro-sub">12 questions. 3 minutes. Diagnose the investor onboarding, pipeline, diligence, funding, and post-close risks that can stall your raise before you find out the hard way.</p>
+
+      <div class="intro-meta">
+        <div class="meta-cell">
+          <div class="meta-label">Output</div>
+          <div class="meta-value">Failure risk score 0–100</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Plus</div>
+          <div class="meta-value">5 failure-mode sub-scores</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">And</div>
+          <div class="meta-value">Top 3 capital killers</div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary" id="start-btn" onclick="dgStart()">
+          Run the diagnostic
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <span style="font-size:12px; color:var(--muted);">Higher score = higher failure risk.</span>
+      </div>
+    </section>
+
+    <!-- ========== STEPS 1–5: WIZARD ========== -->
+    <section class="step" id="step-wizard" hidden>
+      <div class="progress">
+        <div class="progress-dots" id="progress-dots">
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+        </div>
+        <div class="progress-label" id="progress-label">Step 1 of 5</div>
+      </div>
+
+      <h2 class="step-heading" id="wizard-heading">Raise Profile</h2>
+      <p class="step-sub" id="wizard-sub">Basic context about your raise.</p>
+
+      <div id="wizard-questions"></div>
+
+      <div class="wizard-nav">
+        <div class="wizard-nav-left">
+          <button type="button" class="btn btn-ghost" id="back-btn" onclick="dgBack()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Back
+          </button>
+        </div>
+        <div class="wizard-nav-right">
+          <span class="progress-label" id="step-count-label" style="margin-right:4px;">1 / 5</span>
+          <button type="button" class="btn btn-primary" id="next-btn" onclick="dgNext()" disabled>
+            Next
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STEP 6: REPORT ========== -->
+    <section class="step" id="step-report" hidden>
+
+      <!-- Score hero -->
+      <div class="report-hero">
+        <div class="report-headline">Your Capital Raise Failure Risk</div>
+        <div class="score-row">
+          <div class="score-block">
+            <div class="score-label">Risk Score</div>
+            <div>
+              <span class="score-value" id="risk-value">--</span><span class="score-out-of">/100</span>
+            </div>
+            <div class="score-tag" id="risk-tag">—</div>
+          </div>
+        </div>
+
+        <div class="primary-mode-block">
+          <div class="primary-mode-label">Primary failure risk</div>
+          <div class="primary-mode-name" id="primary-mode-name">—</div>
+          <div class="primary-mode-desc" id="primary-mode-desc">—</div>
+        </div>
+
+        <div class="subscore-list" id="subscore-list">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- Capital killers -->
+      <div class="report-section">
+        <div class="section-title">Top capital killers <span class="section-count" id="killers-count">—</span></div>
+        <div class="killer-list" id="killers-list"></div>
+      </div>
+
+      <!-- Prioritized fixes -->
+      <div class="report-section">
+        <div class="section-title">Prioritized fixes <span class="section-count">3</span></div>
+        <div class="fixes-list" id="fixes-list"></div>
+      </div>
+
+      <!-- CTA (varies by primary risk) -->
+      <div class="cta-block" id="cta-block">
+        <div class="cta-copy">
+          <div class="cta-eyebrow" id="cta-eyebrow">Next step</div>
+          <div class="cta-line" id="cta-line">Walk through your diagnostic with a Cash Flow Portal specialist.</div>
+        </div>
+        <a class="btn btn-primary" id="cta-link" href="mailto:sales@cashflowportal.com">
+          Book a walkthrough
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+      </div>
+
+      <!-- Lead capture stub -->
+      <div class="lead-section">
+        <h3>Want an AE to review this with you?</h3>
+        <p>Share your contact info and a Cash Flow Portal specialist will walk through your highest-risk areas with you within 1 business day.</p>
+        <form class="lead-form" id="lead-form" onsubmit="dgSubmitLead(event)">
+          <div class="form-field">
+            <label for="lead-name">Name</label>
+            <input type="text" id="lead-name" placeholder="Jane Smith" autocomplete="name">
+          </div>
+          <div class="form-field">
+            <label for="lead-email">Work email <span style="color:var(--danger)">*</span></label>
+            <input type="email" id="lead-email" placeholder="jane@fundco.com" required autocomplete="email">
+          </div>
+          <div class="form-field">
+            <label for="lead-company">Company</label>
+            <input type="text" id="lead-company" placeholder="Fund or company name" autocomplete="organization">
+          </div>
+          <div class="form-field">
+            <label for="lead-investors">Approximate LP count</label>
+            <select id="lead-investors">
+              <option value="">Select…</option>
+              <option>Fewer than 10</option>
+              <option>10–25</option>
+              <option>25–50</option>
+              <option>50–100</option>
+              <option>100+</option>
+            </select>
+          </div>
+          <div class="lead-submit-row full-width">
+            <button type="submit" class="btn btn-primary">
+              Send my results to an AE
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </form>
+        <div class="lead-thanks" id="lead-thanks">
+          ✓ Got it. An AE will be in touch within 1 business day. A result summary has been copied to your clipboard.
+        </div>
+      </div>
+
+      <!-- Share / reset -->
+      <div class="report-actions">
+        <button type="button" class="copy-btn" id="copy-link-btn" onclick="dgCopyLink()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          <span id="copy-link-label">Copy link to results</span>
+        </button>
+        <button type="button" class="btn-text" onclick="dgReset()">Start over</button>
+      </div>
+
+    </section>
+
+  </div><!-- /.card -->
+
+  <div class="footnote">Heuristic diagnostic — based on common failure patterns in sub-$50M raises. Not legal, financial, or investment advice.</div>
+
+</div><!-- /.wrap -->
+  </main>
+</div><!-- /.shell -->
+
+<script src="shell.js"></script>
+<script>
+  // =============================================================
+  // Capital Raise Failure Diagnostic
+  // Architecture: single-page, no deps, CRM-safe inline handlers
+  // State lives on window.dg; renderable from URL hash #r=...
+  // Scoring: higher = worse (opposite of readiness.html)
+  // =============================================================
+
+  // Question definitions — answer stored as option index (0-based)
+  window.dgQuestions = [
+    // ---- Section A: Raise Profile ----
+    {
+      id: 'q1',
+      section: 1,
+      prompt: 'What type of raise are you planning or running?',
+      options: [
+        { text: 'Single-asset syndication' },
+        { text: 'Fund' },
+        { text: 'SPV' },
+        { text: 'Fund of funds' },
+        { text: 'Co-sponsor / feeder vehicle' },
+        { text: 'Other' }
+      ]
+    },
+    {
+      id: 'q2',
+      section: 1,
+      prompt: 'What is your target raise size?',
+      options: [
+        { text: 'Less than $1M' },
+        { text: '$1M – $5M' },
+        { text: '$5M – $10M' },
+        { text: '$10M – $25M' },
+        { text: '$25M – $50M' },
+        { text: '$50M+' }
+      ]
+    },
+    {
+      id: 'q3',
+      section: 1,
+      prompt: 'What stage are you in?',
+      options: [
+        { text: 'Planning a raise' },
+        { text: 'Currently raising' },
+        { text: 'Soft commits collected' },
+        { text: 'Subscription docs sent' },
+        { text: 'Closing / collecting funds' },
+        { text: 'Post-close / investor operations' },
+        { text: 'Evaluating a new platform' }
+      ]
+    },
+    {
+      id: 'q4',
+      section: 1,
+      prompt: 'When do you need to close?',
+      options: [
+        { text: 'Less than 30 days' },
+        { text: '30 – 60 days' },
+        { text: '60 – 90 days' },
+        { text: '90+ days' },
+        { text: 'Not sure' }
+      ]
+    },
+
+    // ---- Section B: Investor Conversion Flow ----
+    {
+      id: 'q5',
+      section: 2,
+      prompt: 'How do investors currently review materials and subscribe?',
+      options: [
+        { text: 'Manual emails + PDFs', hint: 'Docs sent by email, signed offline or via PDF' },
+        { text: 'Dropbox / Google Drive + DocuSign', hint: 'Docs shared via link, signed electronically' },
+        { text: 'Existing investor portal', hint: 'One structured flow for materials, docs, and KYC' },
+        { text: 'Not set up yet', hint: 'No defined process in place' },
+        { text: 'Other' }
+      ]
+    },
+    {
+      id: 'q6',
+      section: 2,
+      prompt: 'How many separate steps does an LP take from "I\'m interested" to "I\'ve funded"?',
+      options: [
+        { text: '1 – 2 steps' },
+        { text: '3 – 5 steps' },
+        { text: '6 – 8 steps' },
+        { text: '9 or more steps' },
+        { text: 'Not sure' }
+      ]
+    },
+    {
+      id: 'q7',
+      section: 2,
+      prompt: 'How do you track signed commitments vs. received funds?',
+      options: [
+        { text: 'Spreadsheet', hint: 'Manual log of who signed and who wired' },
+        { text: 'CRM', hint: 'Pipeline tool, but no integrated banking view' },
+        { text: 'Investor portal', hint: 'Portal shows commitment and funding status' },
+        { text: 'Bank records / manual reconciliation', hint: 'Reconcile from bank statements' },
+        { text: 'Not consistently tracked' }
+      ]
+    },
+
+    // ---- Section C: Pipeline Control ----
+    {
+      id: 'q8',
+      section: 3,
+      prompt: 'How are you tracking LP conversations and follow-ups?',
+      options: [
+        { text: 'Spreadsheet', hint: 'Manual list of contacts and status' },
+        { text: 'Personal inbox', hint: 'Email threads are the system of record' },
+        { text: 'CRM', hint: 'Dedicated pipeline tool with stages' },
+        { text: 'Investor portal', hint: 'Portal tracks LP status and activity' },
+        { text: 'Not tracking systematically' }
+      ]
+    },
+    {
+      id: 'q9',
+      section: 3,
+      prompt: 'How confident are you in your current capital forecast?',
+      options: [
+        { text: 'Very confident', hint: 'Solid pipeline with staged probability weights' },
+        { text: 'Somewhat confident', hint: 'Good sense of the pipeline, not fully systematic' },
+        { text: 'Low confidence', hint: 'Hard to predict who will commit and when' },
+        { text: 'I don\'t have a reliable forecast' }
+      ]
+    },
+
+    // ---- Section D: Deal Diligence Readiness ----
+    {
+      id: 'q10',
+      section: 4,
+      prompt: 'How clearly can you explain the return story, downside case, and distribution logic to LPs?',
+      options: [
+        { text: 'Very clearly, with model support', hint: 'Scenarios modeled, distribution logic documented' },
+        { text: 'Somewhat clearly', hint: 'Comfortable with returns, less sharp on downside' },
+        { text: 'Depends on the LP', hint: 'Narrative varies — some questions I can\'t answer confidently' },
+        { text: 'Not fully prepared yet', hint: 'Underwriting still in progress' }
+      ]
+    },
+    {
+      id: 'q11',
+      section: 4,
+      prompt: 'Are your deck, model, subscription documents, and risk disclosures aligned?',
+      options: [
+        { text: 'Yes — they\'re consistent and final' },
+        { text: 'Mostly — minor gaps remain' },
+        { text: 'Not sure — I haven\'t cross-checked them' },
+        { text: 'No — still being finalized or contain discrepancies' }
+      ]
+    },
+
+    // ---- Section E: Post-Close Operations ----
+    {
+      id: 'q12',
+      section: 5,
+      prompt: 'How are you handling post-close reporting, capital accounts, distributions, and K-1s?',
+      options: [
+        { text: 'Internal team', hint: 'Your team manages post-close manually' },
+        { text: 'CPA / fund admin partner', hint: 'External partner without a shared platform' },
+        { text: 'Current platform', hint: 'Investor portal or fund admin software handles this' },
+        { text: 'Spreadsheet / manual process', hint: 'Tracking in Excel or Google Sheets' },
+        { text: 'Not fully planned yet', hint: 'Post-close operations not yet defined' }
+      ]
+    }
+  ];
+
+  // Section definitions (5 sections A–E)
+  window.dgSections = [
+    { n: 1, title: 'Raise Profile',         sub: 'Basic context about your raise — size, stage, and timeline.' },
+    { n: 2, title: 'Investor Conversion',   sub: 'How investors move from interest to funded capital.' },
+    { n: 3, title: 'Pipeline Control',      sub: 'How you track and forecast your LP pipeline.' },
+    { n: 4, title: 'Deal Diligence',        sub: 'How defensible your return story and documents are.' },
+    { n: 5, title: 'Post-Close Operations', sub: 'How prepared you are after capital closes.' }
+  ];
+
+  // State
+  window.dg = {
+    step:    0,   // 0 = intro, 1–5 = wizard sections, 6 = report
+    answers: {}   // keyed by question id → option index (0-based)
+  };
+
+  // ------------------------------------------------------------------
+  // Scoring engine
+  // Risk contribution tables: [optionIndex] → risk points
+  // ------------------------------------------------------------------
+  window.DG_TABLES = {
+    // LP Onboarding Friction Risk
+    lpOnb: {
+      q5: [45, 15, 0, 45, 15],   // manual, dropbox, portal, not-setup, other
+      q6: [0, 0, 20, 25, 20],    // 1-2, 3-5, 6-8, 9+, not sure
+      q7: [15, 5, 0, 15, 20]     // spreadsheet, CRM, portal, bank, not tracked
+    },
+    // Pipeline Momentum Risk
+    pipe: {
+      q8: [20, 30, 0, 0, 30],    // spreadsheet, inbox, CRM, portal, not tracking
+      q9: [0, 15, 30, 45]        // very confident, somewhat, low, no forecast
+    },
+    // LP Diligence Confidence Risk
+    dilig: {
+      q10: [0, 20, 35, 50],      // very clear, somewhat, depends, not prepared
+      q11: [0, 10, 25, 40]       // yes, mostly, not sure, no/finalizing
+    },
+    // Funding Completion Risk
+    fund: {
+      q5: [25, 15, 0, 25, 15],   // same q5 options
+      q7: [20, 10, 0, 25, 25]    // same q7 options
+    },
+    // Post-Close Credibility Risk
+    post: {
+      q12: [25, 15, 0, 70, 90]   // internal, CPA, platform, spreadsheet, not planned
+    }
+  };
+
+  window.dgScore = function(a) {
+    var T = window.DG_TABLES;
+
+    function lkp(mode, qid) {
+      var idx = a[qid];
+      if (idx === undefined || idx === null) return 0;
+      var row = T[mode][qid];
+      if (!row) return 0;
+      return row[idx] || 0;
+    }
+
+    var lpOnb = Math.min(100, lkp('lpOnb','q5') + lkp('lpOnb','q6') + lkp('lpOnb','q7'));
+    var pipe  = Math.min(100, lkp('pipe','q8')  + lkp('pipe','q9'));
+    var dilig = Math.min(100, lkp('dilig','q10') + lkp('dilig','q11'));
+    var fund  = Math.min(100, lkp('fund','q5')  + lkp('fund','q7'));
+    var post  = Math.min(100, lkp('post','q12'));
+
+    var subs = [lpOnb, pipe, dilig, fund, post];
+    var maxSub = Math.max.apply(null, subs);
+    var avgSub = subs.reduce(function(s,v){ return s+v; }, 0) / subs.length;
+    var headline = Math.min(100, Math.round(maxSub * 0.5 + avgSub * 0.5));
+
+    // Band
+    var band;
+    if (headline <= 30)      band = 'low';
+    else if (headline <= 60) band = 'moderate';
+    else if (headline <= 80) band = 'high';
+    else                     band = 'critical';
+
+    var bandLabel = { low: 'Low Risk', moderate: 'Moderate Risk', high: 'High Risk', critical: 'Critical Risk' }[band];
+
+    // Primary failure mode
+    var modeNames = ['LP Onboarding Friction', 'Pipeline Momentum', 'LP Diligence Confidence', 'Funding Completion', 'Post-Close Credibility'];
+    var modeKeys  = ['lpOnb', 'pipe', 'dilig', 'fund', 'post'];
+    var modeDescs = {
+      lpOnb: 'Interested LPs may stall before completing subscription because your process requires too many manual steps.',
+      pipe:  'Warm LPs may go cold — without a structured pipeline, follow-ups and capital forecasting become unreliable.',
+      dilig: 'LP trust may weaken because your return story, assumptions, or downside case are not presented clearly and consistently.',
+      fund:  'Signed commitments may not translate into received capital quickly if funding status and contribution tracking are handled manually.',
+      post:  'LPs may question whether your back-office is ready to handle investor reporting, distributions, tax workflows, and capital accounts.'
+    };
+
+    var maxIdx = 0;
+    subs.forEach(function(v,i){ if (v > subs[maxIdx]) maxIdx = i; });
+
+    var primaryKey  = modeKeys[maxIdx];
+    var primaryName = modeNames[maxIdx];
+    var primaryDesc = modeDescs[primaryKey];
+
+    // Build candidate killers (questions that contributed any risk)
+    var candidates = [];
+    var riskFor = function(qid) {
+      var best = 0;
+      ['lpOnb','pipe','dilig','fund','post'].forEach(function(m) {
+        var v = lkp(m, qid);
+        if (v > best) best = v;
+      });
+      return best;
+    };
+
+    ['q5','q6','q7','q8','q9','q10','q11','q12'].forEach(function(qid) {
+      var idx = a[qid];
+      if (idx === undefined || idx === null) return;
+      var risk = riskFor(qid);
+      if (risk > 0) {
+        candidates.push({ qid: qid, idx: idx, risk: risk });
+      }
+    });
+
+    candidates.sort(function(a,b){ return b.risk - a.risk; });
+    var top3 = candidates.slice(0,3).map(function(c){
+      return window.dgCopyFor(c.qid, c.idx);
+    });
+
+    return {
+      headline: headline,
+      band: band,
+      bandLabel: bandLabel,
+      subs: { lpOnb: lpOnb, pipe: pipe, dilig: dilig, fund: fund, post: post },
+      subNames: modeNames,
+      subKeys: modeKeys,
+      primaryKey: primaryKey,
+      primaryName: primaryName,
+      primaryDesc: primaryDesc,
+      killers: top3
+    };
+  };
+
+  // ------------------------------------------------------------------
+  // Killer + fix copy database
+  // ------------------------------------------------------------------
+  window.dgCopyFor = function(qid, optIdx) {
+    var db = {
+      // Q5 — subscription method
+      'q5_0': {
+        severity: 'high',
+        killer:    'Manual investor onboarding is your biggest LP drop-off risk.',
+        detail:    'LPs who express interest but have to print, sign, scan, email, and separately wire are leaking out of your funnel at every handoff.',
+        fix:       'Move to a single-flow investor portal.',
+        fixDetail: 'One guided workflow from deal review → subscription → KYC → wire instructions eliminates the manual handoff points where LPs go cold.'
+      },
+      'q5_1': {
+        severity: 'medium',
+        killer:    'Fragmented subscription flow creates a gap between signed and funded.',
+        detail:    'DocuSign handles the signature, but wire instructions and KYC are still separate conversations — that gap is where momentum dies.',
+        fix:       'Consolidate KYC and wire instructions into the signing flow.',
+        fixDetail: 'LPs who complete KYC after signing drop off at 2–3x the rate of those who do it inline. Close the loop in one workflow.'
+      },
+      'q5_3': {
+        severity: 'high',
+        killer:    'No investor onboarding process is your highest-urgency operational gap.',
+        detail:    'Before you can convert soft interest into funded capital, you need a defined process. Without one, every LP interaction is custom and fragile.',
+        fix:       'Define your subscription workflow before you begin outreach.',
+        fixDetail: 'At minimum: deal materials → subscription docs → KYC → wire instructions → funding confirmation. Each step needs a system, not an email thread.'
+      },
+      'q5_4': {
+        severity: 'medium',
+        killer:    'Non-standard onboarding creates invisible friction.',
+        detail:    'Custom or unclear processes force LPs to ask questions — and many won\'t. They\'ll just pass.',
+        fix:       'Map your current onboarding steps and identify where LPs ask for clarification.',
+        fixDetail: 'Every question an LP has to ask about the process is a drop-off risk. Your goal is zero required questions.'
+      },
+      // Q6 — number of steps
+      'q6_2': {
+        severity: 'medium',
+        killer:    'Six to eight investment steps is where LP momentum quietly dies.',
+        detail:    'Each step after "I\'m in" loses a percentage of interested LPs. 6–8 steps typically means you\'re losing 30–50% between interest and funded.',
+        fix:       'Audit your subscription steps and consolidate to 3 or fewer.',
+        fixDetail: 'Sub docs + KYC + wire in one flow. If you can\'t consolidate, remove any step that requires the LP to chase you for information.'
+      },
+      'q6_3': {
+        severity: 'high',
+        killer:    'Nine-plus steps to invest is a capital bleed you can\'t outrun with better pitching.',
+        detail:    'This is the single most common reason GPs with strong deal interest close 40–60% below their soft commit number.',
+        fix:       'Rebuild your onboarding flow targeting 3 steps or fewer.',
+        fixDetail: 'E-signature, accreditation verification, and wire instructions should be a single linked workflow — not three separate emails and a PDF.'
+      },
+      'q6_4': {
+        severity: 'medium',
+        killer:    'Not knowing your step count usually means the process is fragmented.',
+        detail:    'LPs in your raise are likely having different experiences depending on when they come in. Inconsistency signals operational immaturity.',
+        fix:       'Document your current process end-to-end and count the actual steps.',
+        fixDetail: 'Ask the last LP who signed to describe their experience. The answer will tell you more than your own mental model.'
+      },
+      // Q7 — tracking commitments vs funds
+      'q7_0': {
+        severity: 'medium',
+        killer:    'Spreadsheet-tracked commitments create a false sense of capital certainty.',
+        detail:    'Signed docs and funded capital are different milestones. Conflating them in a spreadsheet leads to projecting a close that won\'t materialize.',
+        fix:       'Separate your commitment tracker from your funded capital tracker.',
+        fixDetail: 'Two columns, minimum: "Subscription docs signed" and "Capital received." Never mark funded until the wire clears.'
+      },
+      'q7_1': {
+        severity: 'medium',
+        killer:    'CRM tracks conversations — not real-time funded capital status.',
+        detail:    'A CRM without portal or banking integration gives you LP stage, but not actual funding status. Those are not the same thing.',
+        fix:       'Connect your CRM to a funding status view.',
+        fixDetail: 'Even a manual bridge — update CRM when a wire clears — is better than guessing. Best case: a portal with contribution tracking that updates CRM automatically.'
+      },
+      'q7_3': {
+        severity: 'high',
+        killer:    'Bank-record reconciliation is the most common source of surprise funding shortfalls.',
+        detail:    'By the time you reconcile bank records against expectations, the close date has slipped — and you\'re calling LPs to explain a shortfall you didn\'t see coming.',
+        fix:       'Set up real-time funded vs. committed tracking before your next close.',
+        fixDetail: 'A simple contribution tracker updated daily is materially better than monthly bank reconciliation. You need to know before the deadline, not after.'
+      },
+      'q7_4': {
+        severity: 'high',
+        killer:    'Untracked commitments vs. funded capital is the most dangerous gap in an active raise.',
+        detail:    'You cannot predict your close, sequence capital calls, or manage investor expectations if you don\'t know who has committed vs. who has actually funded.',
+        fix:       'Implement daily funded status tracking immediately.',
+        fixDetail: 'Start with a spreadsheet split into Soft commit / Documents signed / Capital received. Update it every day. Nothing else will help you more right now.'
+      },
+      // Q8 — LP conversation tracking
+      'q8_0': {
+        severity: 'medium',
+        killer:    'Spreadsheet LP tracking creates follow-up blind spots and stale leads.',
+        detail:    'Spreadsheets can\'t surface who went silent, sequence follow-ups, or tell you which LP is closest to committing. You\'re doing this manually in your head.',
+        fix:       'Move pipeline tracking to a CRM with stage-based views.',
+        fixDetail: 'Minimum stages: Identified → Contacted → Meeting → Deal sent → Soft commit → Docs signed → Funded. Every LP needs a stage and a next-step date.'
+      },
+      'q8_1': {
+        severity: 'high',
+        killer:    'Managing your raise from your inbox is the #1 cause of warm LPs going cold.',
+        detail:    'An inbox can\'t surface stale follow-ups, can\'t tell you who hasn\'t responded in 14 days, and makes every LP interaction reactive rather than planned.',
+        fix:       'Move LP tracking out of your inbox immediately.',
+        fixDetail: 'Even a simple CRM with one field — "Next follow-up date" — will surface the LPs about to go cold before they do. This is the highest-return operational change you can make today.'
+      },
+      'q8_4': {
+        severity: 'high',
+        killer:    'Without systematic pipeline tracking, you have no real capital forecast — only hope.',
+        detail:    'A raise managed without a pipeline is unpredictable. You don\'t know which LPs are warm, who went silent, or whether you\'re on pace to close.',
+        fix:       'Start your pipeline today, even if the raise is already in progress.',
+        fixDetail: 'List every LP contact, assign a stage, add a follow-up date. This exercise alone will surface 3–5 LPs who should have been followed up a week ago.'
+      },
+      // Q9 — forecast confidence
+      'q9_1': {
+        severity: 'medium',
+        killer:    'Partial forecast confidence usually means your pipeline isn\'t systematically defined.',
+        detail:    'Raises managed by mental model consistently close below target. Comfortable confidence is not the same as structured confidence.',
+        fix:       'Build a stage-by-stage capital forecast with probability weights.',
+        fixDetail: 'Soft commit = 60% probability, docs signed = 85%, funded = 95%. Sum the weighted amounts. Your forecast should make you accountable, not comfortable.'
+      },
+      'q9_2': {
+        severity: 'high',
+        killer:    'Low capital forecast confidence signals your LP pipeline is poorly defined.',
+        detail:    'Without a structured pipeline, you cannot reliably predict who will fund, when, and at what amount. Your close date is a guess with a deadline attached.',
+        fix:       'Restructure your pipeline with commitment stages and probability weights.',
+        fixDetail: 'Assign every LP a stage. Weight each stage. Total the weighted committed amounts. Update weekly. In three weeks, your forecast accuracy will be meaningfully higher.'
+      },
+      'q9_3': {
+        severity: 'high',
+        killer:    'No reliable capital forecast means you\'re managing a raise blind.',
+        detail:    'Without a forecast, you cannot sequence investor outreach, set a defensible close date, or know when to escalate. This is the leading predictor of missed closings.',
+        fix:       'Build a capital forecast this week, even if it\'s imperfect.',
+        fixDetail: 'List every LP, assign a commitment probability (0–100%), multiply by expected check size, sum it up. That number — however rough — is more useful than none.'
+      },
+      // Q10 — return story clarity
+      'q10_1': {
+        severity: 'medium',
+        killer:    'A return story that requires setup to land will lose LPs in their first 15 minutes.',
+        detail:    'If you need to build context before LPs understand the opportunity, you\'re losing the investors who won\'t ask a follow-up question — which is most of them.',
+        fix:       'Rebuild your opening narrative to be self-contained in 2 sentences.',
+        fixDetail: 'Test: can you text it to an LP and have them understand the thesis? If not, it needs simplification. The downside case should be equally clear and rehearsed.'
+      },
+      'q10_2': {
+        severity: 'high',
+        killer:    'A return story that varies by audience is a diligence red flag — LPs talk to each other.',
+        detail:    'When LPs compare notes and hear different versions of the return logic, they question whether the numbers hold. Inconsistent narrative is worse than a simple one.',
+        fix:       'Standardize your return narrative and practice it until every delivery is identical.',
+        fixDetail: 'One pitch deck, one model, one distribution explanation. If you\'re customizing the story per LP, you\'re creating inconsistencies that sophisticated investors will find.'
+      },
+      'q10_3': {
+        severity: 'high',
+        killer:    'An undefended return story will lose LPs during diligence, not during the pitch.',
+        detail:    'GPs who can\'t clearly explain the downside case, distribution logic, or return assumptions lose LPs after they\'ve already expressed interest — the most expensive drop-off point.',
+        fix:       'Complete your underwriting before restarting LP conversations.',
+        fixDetail: 'Build your base, stressed, and upside scenarios. Define your distribution logic. Prepare a 1-page return summary with clear LP economics. Don\'t pitch what you can\'t defend.'
+      },
+      // Q11 — doc alignment
+      'q11_1': {
+        severity: 'medium',
+        killer:    'Minor misalignment between deck, model, and docs accumulates into LP trust erosion.',
+        detail:    'LPs who catch a single discrepancy — a different return number in the deck vs. the model, or a term in the PPM that doesn\'t match the pitch — begin questioning everything.',
+        fix:       'Run a single-session alignment audit: read deck, model, and PPM side by side.',
+        fixDetail: 'Check: return projections (consistent), distribution timeline (consistent), LP economics (consistent), defined terms (consistent). Fix any discrepancy before the next LP conversation.'
+      },
+      'q11_2': {
+        severity: 'high',
+        killer:    'Uncertainty about doc alignment means you haven\'t checked — and sophisticated LPs will.',
+        detail:    'If you haven\'t aligned your materials, your diligence confidence is lower than your pitch confidence. LPs find inconsistencies before you do.',
+        fix:       'Conduct a full doc alignment review before proceeding.',
+        fixDetail: 'Assign one person to read every public-facing document against the model. Every number that appears in more than one place needs to match exactly.'
+      },
+      'q11_3': {
+        severity: 'high',
+        killer:    'Unaligned or unfinished docs expose you to LP trust collapse mid-diligence.',
+        detail:    'The moment an LP finds a discrepancy between what you told them and what the docs say, the deal is effectively dead — even if they don\'t say so directly.',
+        fix:       'Do not raise capital until your deck, model, and PPM are aligned and final.',
+        fixDetail: 'Soft commits are not contracts. LPs who discover material inconsistencies will quietly withdraw. Aligned docs first, then open the raise.'
+      },
+      // Q12 — post-close operations
+      'q12_0': {
+        severity: 'medium',
+        killer:    'Internal team post-close operations create reporting and K-1 risk without dedicated infrastructure.',
+        detail:    'Unless your internal team has done this at scale before, manual post-close operations typically result in delayed K-1s, capital account errors, and LP communication gaps.',
+        fix:       'Map your post-close obligations against your team capacity before close.',
+        fixDetail: 'Post-close requirements: capital account reconciliation, distribution calculations, K-1 prep, waterfall verification, and quarterly LP reporting. Each needs an owner and a deadline.'
+      },
+      'q12_1': {
+        severity: 'medium',
+        killer:    'CPA or fund admin support without a shared platform creates reporting delays.',
+        detail:    'When your fund admin works in their system and you work in yours, K-1s arrive late, distribution confirmations lag, and LP reporting requires manual consolidation.',
+        fix:       'Establish a shared data workflow between your team and your fund admin.',
+        fixDetail: 'Define: who owns the source of truth, when they update it, and how LP-facing reports are generated. Misaligned workflows are the leading cause of LP reporting complaints.'
+      },
+      'q12_3': {
+        severity: 'high',
+        killer:    'Spreadsheet-based post-close operations will create investor relations problems at your first distribution.',
+        detail:    'Manual capital accounts, distribution calculations, and K-1 prep at scale produce errors that damage LP confidence — often in year two, when it\'s hardest to recover.',
+        fix:       'Move to a platform that handles capital accounts, distributions, and K-1 workflows before you close.',
+        fixDetail: 'Even a basic fund admin platform reduces post-close operational risk significantly. The cost of LP attrition on your next raise from post-close trust damage is much higher.'
+      },
+      'q12_4': {
+        severity: 'high',
+        killer:    'No post-close plan is a structural gap that will surface at exactly the wrong moment.',
+        detail:    'GPs who close capital without a post-close operational plan routinely underinvest in it until an LP calls to ask where their distribution is.',
+        fix:       'Build your post-close operational plan before you close capital.',
+        fixDetail: 'The plan needs to cover: capital account structure, distribution calculation method, K-1 workflow, and LP reporting cadence. If you don\'t have answers to these four items, you\'re not ready to close.'
+      }
+    };
+
+    var key   = qid + '_' + optIdx;
+    var entry = db[key] || { severity: 'medium', killer: '', detail: '', fix: '', fixDetail: '' };
+    return { key: key, qid: qid, optIdx: optIdx,
+             severity: entry.severity, killer: entry.killer, detail: entry.detail,
+             fix: entry.fix, fixDetail: entry.fixDetail };
+  };
+
+  // CTA routing by primary failure mode
+  window.DG_CTA = {
+    lpOnb: {
+      eyebrow: 'Investor Portal',
+      line:    'See how CFP reduces friction from LP interest to completed subscription.',
+      href:    'mailto:sales@cashflowportal.com?subject=Investor%20Portal%20Demo%20-%20Capital%20Raise%20Diagnostic'
+    },
+    pipe: {
+      eyebrow: 'Raise CRM',
+      line:    'See how CFP helps GPs manage their raise like a capital pipeline.',
+      href:    'mailto:sales@cashflowportal.com?subject=Raise%20CRM%20Demo%20-%20Capital%20Raise%20Diagnostic'
+    },
+    dilig: {
+      eyebrow: 'Underwriting',
+      line:    'See how CFP helps make your return story more defensible.',
+      href:    'mailto:sales@cashflowportal.com?subject=Underwriting%20Demo%20-%20Capital%20Raise%20Diagnostic'
+    },
+    fund: {
+      eyebrow: 'Banking',
+      line:    'See how CFP connects signed commitments to trackable capital movement.',
+      href:    'mailto:sales@cashflowportal.com?subject=Banking%20Demo%20-%20Capital%20Raise%20Diagnostic'
+    },
+    post: {
+      eyebrow: 'Fund Administration',
+      line:    'See how CFP supports investor operations after close.',
+      href:    'mailto:sales@cashflowportal.com?subject=Fund%20Admin%20Demo%20-%20Capital%20Raise%20Diagnostic'
+    }
+  };
+
+  // ------------------------------------------------------------------
+  // Rendering
+  // ------------------------------------------------------------------
+
+  window.dgRender = function() {
+    var step   = window.dg.step;
+    var intro  = document.getElementById('step-intro');
+    var wiz    = document.getElementById('step-wizard');
+    var report = document.getElementById('step-report');
+    if (!intro || !wiz || !report) return;
+
+    intro.hidden  = step !== 0;
+    wiz.hidden    = step < 1 || step > 5;
+    report.hidden = step !== 6;
+
+    if (step >= 1 && step <= 5) window.dgRenderWizard(step);
+    if (step === 6)              window.dgRenderReport();
+  };
+
+  window.dgRenderWizard = function(step) {
+    var section = window.dgSections[step - 1];
+    var heading  = document.getElementById('wizard-heading');
+    var sub      = document.getElementById('wizard-sub');
+    var stepCt   = document.getElementById('step-count-label');
+    var progLbl  = document.getElementById('progress-label');
+    var dots     = document.getElementById('progress-dots');
+    var qCont    = document.getElementById('wizard-questions');
+    var backBtn  = document.getElementById('back-btn');
+    var nextBtn  = document.getElementById('next-btn');
+
+    if (heading) heading.textContent = section.title;
+    if (sub)     sub.textContent     = section.sub;
+    if (stepCt)  stepCt.textContent  = step + ' / 5';
+    if (progLbl) progLbl.innerHTML   = 'Step <strong>' + step + '</strong> of 5 · ' + section.title;
+
+    // Progress dots
+    if (dots) {
+      var children = dots.children;
+      for (var i = 0; i < children.length; i++) {
+        children[i].className = 'progress-dot';
+        if (i + 1 < step)  children[i].classList.add('done');
+        if (i + 1 === step) children[i].classList.add('current');
+      }
+    }
+
+    // Build questions for this section
+    if (qCont) {
+      qCont.innerHTML = '';
+      window.dgQuestions.filter(function(q){ return q.section === step; }).forEach(function(q) {
+        var fs = document.createElement('fieldset');
+        fs.className = 'q';
+        var legend = document.createElement('legend');
+        legend.className = 'q-prompt';
+        legend.textContent = q.prompt;
+        fs.appendChild(legend);
+
+        var opts = document.createElement('div');
+        opts.className = 'options';
+        q.options.forEach(function(opt, ix) {
+          var label = document.createElement('label');
+          label.className = 'opt';
+          var radio = document.createElement('input');
+          radio.type  = 'radio';
+          radio.name  = q.id;
+          radio.value = ix;
+          // Restore prior selection
+          if (window.dg.answers[q.id] === ix) radio.checked = true;
+          radio.addEventListener('change', function() {
+            window.dg.answers[q.id] = ix;
+            window.dgValidateStep();
+          });
+          var txt = document.createElement('div');
+          txt.className = 'opt-text';
+          txt.textContent = opt.text;
+          if (opt.hint) {
+            var hint = document.createElement('span');
+            hint.className = 'opt-hint';
+            hint.textContent = opt.hint;
+            txt.appendChild(hint);
+          }
+          label.appendChild(radio);
+          label.appendChild(txt);
+          opts.appendChild(label);
+        });
+        fs.appendChild(opts);
+        qCont.appendChild(fs);
+      });
+    }
+
+    if (backBtn) backBtn.style.visibility = step > 1 ? 'visible' : 'hidden';
+    if (nextBtn) {
+      nextBtn.childNodes[0].nodeValue = step === 5 ? 'See results ' : 'Next ';
+    }
+    window.dgValidateStep();
+  };
+
+  window.dgValidateStep = function() {
+    var step = window.dg.step;
+    if (step < 1 || step > 5) return;
+    var qs = window.dgQuestions.filter(function(q){ return q.section === step; });
+    var complete = qs.every(function(q){ return window.dg.answers[q.id] !== undefined; });
+    var nextBtn = document.getElementById('next-btn');
+    if (nextBtn) nextBtn.disabled = !complete;
+  };
+
+  window.dgRenderReport = function() {
+    var result = window.dgScore(window.dg.answers);
+    var band   = result.band;
+
+    // Score value
+    var rv = document.getElementById('risk-value');
+    var rt = document.getElementById('risk-tag');
+    if (rv) {
+      rv.textContent = result.headline;
+      rv.className   = 'score-value band-' + band;
+    }
+    if (rt) {
+      rt.textContent = result.bandLabel;
+      rt.className   = 'score-tag tag-' + band;
+    }
+
+    // Primary failure mode
+    var pmn = document.getElementById('primary-mode-name');
+    var pmd = document.getElementById('primary-mode-desc');
+    if (pmn) {
+      pmn.textContent = result.primaryName + ' Risk';
+      pmn.className   = 'primary-mode-name band-' + band;
+    }
+    if (pmd) pmd.textContent = result.primaryDesc;
+
+    // Sub-scores bars
+    var subList = document.getElementById('subscore-list');
+    if (subList) {
+      subList.innerHTML = '';
+      var subOrder = [
+        { key: 'lpOnb', name: 'LP Onboarding Friction' },
+        { key: 'pipe',  name: 'Pipeline Momentum' },
+        { key: 'dilig', name: 'LP Diligence Confidence' },
+        { key: 'fund',  name: 'Funding Completion' },
+        { key: 'post',  name: 'Post-Close Credibility' }
+      ];
+      subOrder.forEach(function(s) {
+        var val = result.subs[s.key];
+        var subBand;
+        if (val <= 30)      subBand = 'low';
+        else if (val <= 60) subBand = 'moderate';
+        else if (val <= 80) subBand = 'high';
+        else                subBand = 'critical';
+
+        var row = document.createElement('div');
+        row.className = 'subscore-row';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'subscore-label';
+        lbl.textContent = s.name;
+
+        var track = document.createElement('div');
+        track.className = 'subscore-bar-track';
+
+        var fill = document.createElement('div');
+        fill.className = 'subscore-bar-fill ' + subBand;
+        fill.style.width = '0%';
+        track.appendChild(fill);
+
+        var num = document.createElement('div');
+        num.className = 'subscore-val';
+        num.textContent = val + '/100';
+
+        row.appendChild(lbl);
+        row.appendChild(track);
+        row.appendChild(num);
+        subList.appendChild(row);
+
+        // Animate bar after a tick
+        setTimeout(function(f, v){ return function(){ f.style.width = v + '%'; }; }(fill, val), 50);
+      });
+    }
+
+    // Capital killers
+    var kcEl = document.getElementById('killers-count');
+    var klEl = document.getElementById('killers-list');
+    if (kcEl) kcEl.textContent = String(result.killers.length);
+    if (klEl) {
+      klEl.innerHTML = '';
+      if (result.killers.length === 0) {
+        klEl.innerHTML = '<div class="killer medium"><div class="killer-ix">Clean</div><div class="killer-text">No major capital killers detected.<span class="k-detail">Your operational setup looks solid across the five failure modes. Review your deal narrative and LP sequencing for the last mile.</span></div></div>';
+      }
+      result.killers.forEach(function(k, ix) {
+        if (!k.killer) return;
+        var div = document.createElement('div');
+        div.className = 'killer' + (k.severity === 'medium' ? ' medium' : '');
+        var badge = document.createElement('div');
+        badge.className = 'killer-ix';
+        badge.textContent = '#' + (ix + 1);
+        var txt = document.createElement('div');
+        txt.className = 'killer-text';
+        txt.innerHTML = dgEsc(k.killer) + '<span class="k-detail">' + dgEsc(k.detail) + '</span>';
+        div.appendChild(badge);
+        div.appendChild(txt);
+        klEl.appendChild(div);
+      });
+    }
+
+    // Prioritized fixes
+    var flEl = document.getElementById('fixes-list');
+    if (flEl) {
+      flEl.innerHTML = '';
+      if (result.killers.length === 0) {
+        flEl.innerHTML = '<div class="fix"><div class="fix-ix">1</div><div class="fix-text">Rehearse your return narrative with a skeptical LP.<span class="f-detail">At low risk scores, pitch tightness and LP sequencing are often the final lift before close.</span></div></div>';
+      }
+      result.killers.forEach(function(k, ix) {
+        if (!k.fix) return;
+        var div = document.createElement('div');
+        div.className = 'fix';
+        var badge = document.createElement('div');
+        badge.className = 'fix-ix';
+        badge.textContent = ix + 1;
+        var txt = document.createElement('div');
+        txt.className = 'fix-text';
+        txt.innerHTML = dgEsc(k.fix) + '<span class="f-detail">' + dgEsc(k.fixDetail) + '</span>';
+        div.appendChild(badge);
+        div.appendChild(txt);
+        flEl.appendChild(div);
+      });
+    }
+
+    // CTA routing
+    var cta = window.DG_CTA[result.primaryKey] || window.DG_CTA['lpOnb'];
+    var ctaEyebrow = document.getElementById('cta-eyebrow');
+    var ctaLine    = document.getElementById('cta-line');
+    var ctaLink    = document.getElementById('cta-link');
+    if (ctaEyebrow) ctaEyebrow.textContent = cta.eyebrow;
+    if (ctaLine)    ctaLine.textContent    = cta.line;
+    if (ctaLink)    ctaLink.href           = cta.href;
+
+    // Write hash
+    window.dgWriteHash();
+  };
+
+  function dgEsc(s) {
+    return String(s || '').replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Navigation
+  // ------------------------------------------------------------------
+
+  window.dgStart = function() {
+    window.dg.step = 1;
+    window.dgRender();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.dgNext = function() {
+    if (window.dg.step >= 1 && window.dg.step < 5) {
+      window.dg.step += 1;
+    } else if (window.dg.step === 5) {
+      window.dg.step = 6;
+    }
+    window.dgRender();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.dgBack = function() {
+    if (window.dg.step > 1 && window.dg.step <= 5) {
+      window.dg.step -= 1;
+    } else if (window.dg.step === 6) {
+      window.dg.step = 5;
+    }
+    window.dgRender();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.dgReset = function() {
+    window.dg = { step: 0, answers: {} };
+    try {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    } catch(e) {}
+    // Reset lead form
+    var form = document.getElementById('lead-form');
+    if (form) form.reset();
+    var thanks = document.getElementById('lead-thanks');
+    if (thanks) thanks.classList.remove('visible');
+    window.dgRender();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ------------------------------------------------------------------
+  // Hash state — format: #r= + 12 chars, each = option index 0–6
+  // Q1-Q12 → chars 0–11
+  // ------------------------------------------------------------------
+  window.dgWriteHash = function() {
+    try {
+      var a = window.dg.answers;
+      var keys = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12'];
+      var str = keys.map(function(k){ return (a[k] !== undefined) ? String(a[k]) : 'x'; }).join('');
+      var hash = '#r=' + str;
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', hash);
+      }
+    } catch(e) {}
+  };
+
+  window.dgReadHash = function() {
+    try {
+      var h = (window.location && window.location.hash) || '';
+      var m = h.match(/#r=([0-9x]{12})/i);
+      if (!m) return null;
+      var str  = m[1];
+      var keys = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12'];
+      var a = {};
+      keys.forEach(function(k, i) {
+        var ch = str.charAt(i);
+        if (ch !== 'x') a[k] = parseInt(ch, 10);
+      });
+      // Only restore if all scoring questions are answered
+      if (a.q5 !== undefined && a.q6 !== undefined && a.q7 !== undefined &&
+          a.q8 !== undefined && a.q9 !== undefined &&
+          a.q10 !== undefined && a.q11 !== undefined && a.q12 !== undefined) {
+        return a;
+      }
+    } catch(e) {}
+    return null;
+  };
+
+  // ------------------------------------------------------------------
+  // Lead capture stub
+  // ------------------------------------------------------------------
+
+  window.dgSubmitLead = function(e) {
+    e.preventDefault();
+    var name      = (document.getElementById('lead-name')      || {}).value || '';
+    var email     = (document.getElementById('lead-email')     || {}).value || '';
+    var company   = (document.getElementById('lead-company')   || {}).value || '';
+    var investors = (document.getElementById('lead-investors') || {}).value || '';
+
+    // Build summary for clipboard
+    var result = window.dgScore(window.dg.answers);
+    var a      = window.dg.answers;
+    var sizeOpts = ['Less than $1M','$1M–$5M','$5M–$10M','$10M–$25M','$25M–$50M','$50M+'];
+    var stageOpts= ['Planning a raise','Currently raising','Soft commits collected','Subscription docs sent','Closing / collecting funds','Post-close / investor operations','Evaluating a new platform'];
+
+    var summary = [
+      'Capital Raise Failure Diagnostic',
+      '---',
+      'Risk Score: ' + result.headline + '/100 (' + result.bandLabel + ')',
+      'Primary risk: ' + result.primaryName + ' Risk',
+      '',
+      'Top capital killers:',
+    ];
+    result.killers.forEach(function(k, i){
+      if (k.killer) summary.push((i+1) + '. ' + k.killer);
+    });
+    summary.push('');
+    summary.push('Respondent: ' + (name || '(not provided)') + ' · ' + (company || '(not provided)'));
+    summary.push('Email: ' + email);
+    if (a.q2 !== undefined) summary.push('Raise size: ' + (sizeOpts[a.q2] || ''));
+    if (a.q3 !== undefined) summary.push('Stage: ' + (stageOpts[a.q3] || ''));
+    if (investors) summary.push('LP count: ' + investors);
+    summary.push('Link: ' + window.location.href);
+
+    var text = summary.join('\n');
+
+    // Copy to clipboard
+    var copied = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(function(){
+          dgCopyFallback(text);
+        });
+        copied = true;
+      } else {
+        copied = dgCopyFallback(text);
+      }
+    } catch(err) {
+      copied = dgCopyFallback(text);
+    }
+
+    // Show thanks
+    var form   = document.getElementById('lead-form');
+    var thanks = document.getElementById('lead-thanks');
+    if (form)   form.style.display   = 'none';
+    if (thanks) thanks.classList.add('visible');
+  };
+
+  // ------------------------------------------------------------------
+  // Copy link
+  // ------------------------------------------------------------------
+
+  window.dgCopyLink = function() {
+    var href = (window.location && window.location.href) || '';
+    if (href.indexOf('#') >= 0) href = href.split('#')[0];
+    window.dgWriteHash();
+    href = href + (window.location.hash || '');
+
+    var doBtn = function(ok) {
+      var btn = document.getElementById('copy-link-btn');
+      var lbl = document.getElementById('copy-link-label');
+      if (btn && lbl) {
+        btn.classList.add('copied');
+        lbl.textContent = ok ? 'Link copied' : 'Copy failed';
+        setTimeout(function(){
+          btn.classList.remove('copied');
+          lbl.textContent = 'Copy link to results';
+        }, 1400);
+      }
+    };
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(href).then(function(){ doBtn(true); }).catch(function(){
+          doBtn(dgCopyFallback(href));
+        });
+      } else {
+        doBtn(dgCopyFallback(href));
+      }
+    } catch(e) {
+      doBtn(dgCopyFallback(href));
+    }
+  };
+
+  function dgCopyFallback(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly','');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch(e) { return false; }
+  }
+
+  // ------------------------------------------------------------------
+  // Init
+  // ------------------------------------------------------------------
+
+  function dgInit() {
+    var restored = window.dgReadHash();
+    if (restored) {
+      window.dg.answers = restored;
+      window.dg.step    = 6;
+    }
+    window.dgRender();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', dgInit);
+  } else {
+    dgInit();
+  }
+</script>
+</body>
+</html>
