@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cash Flow Portal — Tools</title>
-<meta name="description" content="Interactive calculators and estimators for real estate syndicators evaluating Cash Flow Portal.">
+<meta name="description" content="Interactive calculators and diagnostics for real estate syndicators evaluating Cash Flow Portal.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,40 +13,43 @@
 
   :root {
     /* Surfaces */
-    --bg:           #f6f8fa;
-    --card:         #ffffff;
-    --card-hover:   #fafbff;
-    --surface:      #fafafa;
-    --surface-2:    #f5f5f7;
+    --bg:           #0a0a12;
+    --card:         #15151c;
+    --card-hover:   #1c1c25;
+    --surface:      #11111a;
+    --surface-2:    #1a1a22;
 
     /* Lines */
-    --border:       #dce0e6;
-    --border-soft:  #e5e5e5;
-    --border-hover: #b6cceb;   /* lightsteelblue-300 */
+    --border:       rgba(255,255,255,0.07);
+    --border-soft:  rgba(255,255,255,0.04);
+    --border-hover: rgba(167,139,250,0.32);
 
     /* Text */
-    --text:         #313844;
-    --text-2:       #54565a;
-    --muted:        #8f97a1;
-    --muted-soft:   #aeb8c2;
+    --text:         #f5f5f7;
+    --text-2:       #b3b6bd;
+    --muted:        #7a7e89;
+    --muted-soft:   #5a5d66;
 
-    /* Brand */
-    --blue:         #0085ff;
-    --blue-deep:    #2766bd;
-    --blue-soft:    #e9f1fe;
-    --blue-tint:    rgba(0,133,255,0.08);
-    --blue-ring:    rgba(0,133,255,0.18);
-    --aqua:         #2fecaf;
-    --aqua-soft:    #e8f8f1;
+    /* Accent — Squaredocs violet */
+    --accent:       #a78bfa;
+    --accent-hover: #b9a3fb;
+    --accent-soft:  rgba(167,139,250,0.10);
+    --accent-tint:  rgba(167,139,250,0.06);
+    --accent-ring:  rgba(167,139,250,0.28);
 
-    /* Gradients */
-    --grad:         linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
-    --grad-text:    linear-gradient(90deg, #313844 0%, #0085ff 70%, #2fecaf 100%);
+    /* Brand mark only */
+    --brand-grad:   linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
+
+    /* Gradient text */
+    --grad-text:    linear-gradient(90deg, #f5f5f7 0%, #a78bfa 100%);
 
     /* Shadow */
-    --shadow-sm:    0 1px 2px rgba(20, 35, 65, 0.04);
-    --shadow-md:    0 1px 2px rgba(20, 35, 65, 0.04), 0 8px 24px rgba(20, 35, 65, 0.06);
-    --shadow-lg:    0 1px 2px rgba(20, 35, 65, 0.04), 0 12px 32px rgba(20, 35, 65, 0.08);
+    --shadow-sm:    0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md:    0 2px 4px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+
+    /* Layout */
+    --topbar-h:     68px;
+    --sidebar-w:    260px;
   }
 
   html, body { min-height: 100%; }
@@ -55,245 +58,473 @@
     background: var(--bg);
     color: var(--text);
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-feature-settings: 'ss01', 'cv11';
     -webkit-font-smoothing: antialiased;
-    padding: 48px 24px 64px;
     position: relative;
     overflow-x: hidden;
   }
 
-  /* Soft ambient glow */
+  /* Top-edge violet halo (Squaredocs aesthetic) */
   body::before {
     content: '';
     position: fixed;
-    top: -260px;
+    top: -360px;
     left: 50%;
     transform: translateX(-50%);
-    width: 1000px;
-    height: 600px;
-    background: radial-gradient(ellipse at center, rgba(0,133,255,0.07) 0%, rgba(47,236,175,0.04) 40%, transparent 70%);
+    width: 1500px;
+    height: 760px;
+    background: radial-gradient(ellipse at center, rgba(167,139,250,0.22) 0%, rgba(99,72,180,0.08) 35%, transparent 70%);
     pointer-events: none;
     z-index: 0;
+    filter: blur(8px);
   }
 
-  .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 960px;
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Topbar ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: var(--topbar-h);
+    background: rgba(10,10,18,0.78);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+    backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topbar-inner {
+    max-width: 1280px;
+    height: 100%;
     margin: 0 auto;
-  }
-
-  /* ---------- Header ---------- */
-  .header {
+    padding: 0 32px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 56px;
+    gap: 18px;
   }
 
-  .logo-mark {
-    width: 36px;
-    height: 36px;
-    background: var(--grad);
-    border-radius: 9px;
+  .topbar-brand {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(0,133,255,0.25);
-  }
-
-  .logo-text {
-    font-family: 'Manrope', sans-serif;
+    gap: 10px;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 15px;
     letter-spacing: -0.01em;
     color: var(--text);
   }
 
-  .home-link {
-    margin-left: auto;
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+    background: var(--brand-grad);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(0,133,255,0.3);
+  }
+
+  .topbar-tabs {
+    display: flex;
+    gap: 4px;
+    margin-left: 18px;
+  }
+
+  .tab {
     font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 7px 13px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); background: var(--surface-2); }
+
+  .topbar-aux {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ext-link {
+    font-size: 12.5px;
     font-weight: 500;
     color: var(--muted);
-    text-decoration: none;
     transition: color 0.15s;
   }
 
-  .home-link:hover { color: var(--blue-deep); }
+  .ext-link:hover { color: var(--accent); }
+
+  /* ---------- Shell ---------- */
+  .shell {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 32px 64px;
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    position: sticky;
+    top: calc(var(--topbar-h) + 32px);
+    align-self: start;
+    max-height: calc(100vh - var(--topbar-h) - 64px);
+    overflow-y: auto;
+    padding-right: 8px;
+    padding-bottom: 32px;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 28px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .search:hover { border-color: var(--border-hover); }
+
+  .search svg { color: var(--muted); flex-shrink: 0; }
+
+  .search-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .search-kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+  }
+
+  .nav-group { margin-bottom: 24px; }
+  .nav-group:last-child { margin-bottom: 0; }
+
+  .nav-group h4 {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+
+  .nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--border);
+    margin-left: 4px;
+  }
+
+  .nav-list li { margin: 0; }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 0 6px 16px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    line-height: 1.4;
+  }
+
+  .nav-link:hover { color: var(--text); }
+
+  .nav-link.disabled {
+    color: var(--muted-soft);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .nav-link .nav-tag {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Main content ---------- */
+  .content {
+    max-width: 760px;
+    min-width: 0;
+  }
 
   /* ---------- Hero ---------- */
-  .hero { margin-bottom: 48px; max-width: 640px; }
+  .hero {
+    padding-top: 24px;
+    padding-bottom: 56px;
+    text-align: center;
+  }
+
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px 5px 5px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-ring);
+    border-radius: 24px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-bottom: 24px;
+  }
+
+  .hero-pill .pill-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--bg);
+    border-radius: 20px;
+    padding: 3px 8px;
+  }
 
   .hero h1 {
     font-family: 'Manrope', sans-serif;
-    font-size: clamp(30px, 4.2vw, 44px);
+    font-size: clamp(34px, 5vw, 52px);
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.05;
     letter-spacing: -0.03em;
-    margin-bottom: 16px;
     color: var(--text);
-  }
-
-  .hero h1 .accent {
-    background: var(--grad-text);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin-bottom: 18px;
   }
 
   .hero p {
-    font-size: clamp(15px, 1.6vw, 17px);
+    font-size: clamp(15px, 1.7vw, 17px);
     line-height: 1.55;
     color: var(--text-2);
     font-weight: 400;
+    max-width: 580px;
+    margin: 0 auto;
   }
 
-  /* ---------- Tile grid ---------- */
-  .grid {
+  .hero-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-or {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 0 4px;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 11px 20px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .btn-primary {
+    background: #ffffff;
+    color: #0a0a12;
+    border-color: #ffffff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+
+  .btn-primary:hover {
+    background: #ececf0;
+    border-color: #ececf0;
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .btn-ghost:hover {
+    background: var(--surface-2);
+    border-color: var(--border-hover);
+  }
+
+  /* ---------- Category section ---------- */
+  .section-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .cat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
-    margin-bottom: 48px;
+    margin-bottom: 56px;
   }
 
-  .tile {
+  .cat {
     position: relative;
+    padding: 24px;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-    cursor: pointer;
+    border-radius: 14px;
+    transition: border-color 0.18s, background 0.18s, transform 0.18s;
     overflow: hidden;
   }
 
-  .tile::after {
+  a.cat { cursor: pointer; }
+
+  a.cat:hover {
+    background: var(--card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+
+  .cat::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 16px;
-    background: radial-gradient(circle at top right, rgba(0,133,255,0.06), transparent 60%);
+    border-radius: 14px;
+    background: radial-gradient(circle at top right, rgba(167,139,250,0.10), transparent 60%);
     opacity: 0;
     transition: opacity 0.18s ease;
     pointer-events: none;
   }
 
-  .tile:hover {
-    transform: translateY(-2px);
-    border-color: var(--border-hover);
-    box-shadow: var(--shadow-lg);
-    background: var(--card-hover);
-  }
+  a.cat:hover::after { opacity: 1; }
 
-  .tile:hover::after { opacity: 1; }
+  .cat.disabled { opacity: 0.6; }
 
-  .tile.disabled {
-    cursor: default;
-    opacity: 0.7;
-    background: var(--surface);
-  }
-
-  .tile.disabled:hover {
-    transform: none;
-    border-color: var(--border);
-    box-shadow: var(--shadow-sm);
-    background: var(--surface);
-  }
-
-  .tile.disabled:hover::after { opacity: 0; }
-
-  .tile-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .tile-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+  .cat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(0,133,255,0.1), rgba(47,236,175,0.1));
-    border: 1px solid var(--blue-ring);
-    color: var(--blue);
-    flex-shrink: 0;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-ring);
+    color: var(--accent);
+    margin-bottom: 14px;
   }
 
-  .tile.disabled .tile-icon {
+  .cat.disabled .cat-icon {
     background: var(--surface-2);
     border-color: var(--border);
     color: var(--muted);
   }
 
-  .tile-badge {
-    font-size: 10px;
+  .cat h3 {
+    font-size: 15.5px;
     font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 20px;
-    white-space: nowrap;
-  }
-
-  .tile-badge.live {
-    color: #0b7a56;
-    background: var(--aqua-soft);
-    border: 1px solid rgba(47,236,175,0.4);
-  }
-
-  .tile-badge.soon {
-    color: var(--muted);
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-  }
-
-  .tile h2 {
-    font-family: 'Manrope', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.25;
     letter-spacing: -0.01em;
     color: var(--text);
+    margin-bottom: 6px;
   }
 
-  .tile p {
-    font-size: 13.5px;
+  .cat p {
+    font-size: 13px;
     line-height: 1.5;
     color: var(--text-2);
-    font-weight: 400;
-    flex-grow: 1;
   }
 
-  .tile-foot {
+  /* ---------- Popular section ---------- */
+  .pop-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 56px;
+  }
+
+  .pop {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--blue);
-    letter-spacing: 0.01em;
-    margin-top: 4px;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: background 0.18s, border-color 0.18s;
   }
 
-  .tile-foot svg { transition: transform 0.18s ease; }
-  .tile:hover .tile-foot { color: var(--blue-deep); }
-  .tile:hover .tile-foot svg { transform: translateX(3px); }
+  a.pop:hover {
+    background: var(--card-hover);
+    border-color: var(--border-hover);
+  }
 
-  .tile.disabled .tile-foot { color: var(--muted); }
+  .pop-text { min-width: 0; }
+  .pop-eyebrow {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .pop-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .pop-arrow { color: var(--muted); flex-shrink: 0; transition: color 0.15s, transform 0.15s; }
+  a.pop:hover .pop-arrow { color: var(--accent); transform: translateX(2px); }
 
   /* ---------- Footer ---------- */
   .footer {
-    padding-top: 32px;
+    padding-top: 28px;
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -304,109 +535,215 @@
     color: var(--muted);
   }
 
-  .footer a {
-    color: var(--text-2);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.15s;
-  }
-
-  .footer a:hover { color: var(--blue-deep); }
+  .footer a { color: var(--text-2); font-weight: 500; transition: color 0.15s; }
+  .footer a:hover { color: var(--accent); }
 
   /* ---------- Responsive ---------- */
+  @media (max-width: 960px) {
+    .shell {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding: 24px 24px 48px;
+    }
+
+    .sidebar {
+      position: static;
+      max-height: none;
+      overflow-y: visible;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .topbar-tabs { display: none; }
+    .topbar-inner { padding: 0 20px; gap: 12px; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .pop-row { grid-template-columns: 1fr; }
+  }
+
   @media (max-width: 520px) {
-    body { padding: 32px 20px 48px; }
-    .header { margin-bottom: 40px; }
-    .hero { margin-bottom: 32px; }
-    .grid { gap: 12px; margin-bottom: 40px; }
-    .tile { padding: 20px; }
+    .hero { padding-top: 16px; padding-bottom: 36px; }
+    .hero-actions { gap: 6px; }
+    .hero-or { display: none; }
+    .topbar-aux .ext-link { display: none; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div class="header">
-    <div class="logo-mark">
-      <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-        <path d="M3 14L9 4L15 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M5.5 10.5H12.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="topbar-brand" href="./">
+      <span class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M3 14L9 4L15 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5.5 10.5H12.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>Cash Flow Portal</span>
+    </a>
+    <nav class="topbar-tabs">
+      <a class="tab active" href="./">Tools</a>
+      <a class="tab" href="https://cashflowportal.com/" rel="noopener">Site</a>
+    </nav>
+    <div class="topbar-aux">
+      <a class="ext-link" href="https://cashflowportal.com/" rel="noopener">cashflowportal.com ↗</a>
     </div>
-    <span class="logo-text">Cash Flow Portal</span>
-    <a class="home-link" href="https://cashflowportal.com/" rel="noopener">cashflowportal.com ↗</a>
   </div>
+</header>
 
-  <section class="hero">
-    <h1>Tools for real estate <span class="accent">syndicators</span></h1>
-    <p>Interactive calculators to help you size up Cash Flow Portal for your fund — from monthly pricing to the hours you'll save versus manual investor operations.</p>
-  </section>
+<div class="shell">
 
-  <div class="grid">
+  <aside class="sidebar" aria-label="Tools navigation">
 
-    <a class="tile" href="pricing.html" aria-label="Open the Investor Portal Pricing Calculator">
-      <div class="tile-head">
-        <div class="tile-icon" aria-hidden="true">
+    <div class="search" role="button" tabindex="0" aria-label="Search (placeholder)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <span class="search-text">Search...</span>
+      <span class="search-kbd">⌘K</span>
+    </div>
+
+    <div class="nav-group">
+      <h4>Calculators</h4>
+      <ul class="nav-list">
+        <li><a class="nav-link" href="pricing.html">Investor Portal Pricing</a></li>
+        <li><a class="nav-link" href="readiness.html">Deal Readiness &amp; LP Friction</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group">
+      <h4>Coming soon</h4>
+      <ul class="nav-list">
+        <li><a class="nav-link disabled" aria-disabled="true">ROI &amp; Time Savings <span class="nav-tag">Soon</span></a></li>
+        <li><a class="nav-link disabled" aria-disabled="true">K-1 Estimator <span class="nav-tag">Soon</span></a></li>
+        <li><a class="nav-link disabled" aria-disabled="true">Capital Call Modeler <span class="nav-tag">Soon</span></a></li>
+      </ul>
+    </div>
+
+    <div class="nav-group">
+      <h4>About</h4>
+      <ul class="nav-list">
+        <li><a class="nav-link disabled" aria-disabled="true">About these tools</a></li>
+        <li><a class="nav-link disabled" aria-disabled="true">How scoring works</a></li>
+        <li><a class="nav-link" href="https://cashflowportal.com/" rel="noopener">Cash Flow Portal ↗</a></li>
+      </ul>
+    </div>
+
+  </aside>
+
+  <main class="content">
+
+    <section class="hero">
+      <span class="hero-pill">
+        <span class="pill-tag">New</span>
+        Deal Readiness Score is live
+      </span>
+      <h1>Cash Flow Portal Tools</h1>
+      <p>Interactive calculators and diagnostics for real estate syndicators. Size up CFP for your fund — pricing, raise readiness, ROI — without ever talking to sales.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="pricing.html">Open pricing calculator</a>
+        <span class="hero-or">or</span>
+        <a class="btn btn-ghost" href="readiness.html">Run readiness diagnostic</a>
+      </div>
+    </section>
+
+    <h2 class="section-title">Explore by category</h2>
+    <div class="cat-grid">
+
+      <a class="cat" href="pricing.html">
+        <div class="cat-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="1" x2="12" y2="23"></line>
             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
           </svg>
         </div>
-        <span class="tile-badge live">Live</span>
-      </div>
-      <h2>Investor Portal Pricing</h2>
-      <p>Get a real-time monthly and annual quote based on your equity under management. Shareable via link.</p>
-      <div class="tile-foot">
-        Open calculator
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </div>
-    </a>
+        <h3>Investor Portal Pricing</h3>
+        <p>Real-time monthly + annual quote based on equity under management. Shareable via deep-link.</p>
+      </a>
 
-    <a class="tile" href="readiness.html" aria-label="Open the Deal Readiness & LP Friction Score diagnostic">
-      <div class="tile-head">
-        <div class="tile-icon" aria-hidden="true">
+      <a class="cat" href="readiness.html">
+        <div class="cat-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
           </svg>
         </div>
-        <span class="tile-badge live">Live</span>
-      </div>
-      <h2>Deal Readiness &amp; LP Friction</h2>
-      <p>Pre-raise diagnostic. 8 questions in 90 seconds. See your readiness score, LP friction score, and top 3 capital killers.</p>
-      <div class="tile-foot">
-        Start diagnostic
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </div>
-    </a>
+        <h3>Deal Readiness Diagnostic</h3>
+        <p>8 questions in 90 seconds. Find the friction points killing your raise before you launch.</p>
+      </a>
 
-    <div class="tile disabled" aria-label="ROI Estimator — coming soon">
-      <div class="tile-head">
-        <div class="tile-icon" aria-hidden="true">
+      <div class="cat disabled">
+        <div class="cat-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
             <polyline points="17 6 23 6 23 12"></polyline>
           </svg>
         </div>
-        <span class="tile-badge soon">Soon</span>
+        <h3>ROI &amp; Time Savings</h3>
+        <p>Investor count + distributions + K-1s = the hours and dollars saved versus manual operations.</p>
       </div>
-      <h2>ROI &amp; Time Savings Estimator</h2>
-      <p>Plug in your investor count, distributions per year, and K-1s. We'll show you the hours and dollars saved vs. manual ops.</p>
-      <div class="tile-foot">Coming soon</div>
+
+      <div class="cat disabled">
+        <div class="cat-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <h3>More tools coming</h3>
+        <p>Investor onboarding, K-1 estimator, and capital-call modeler are on the roadmap.</p>
+      </div>
+
     </div>
 
-  </div>
+    <h2 class="section-title">Popular</h2>
+    <div class="pop-row">
 
-  <div class="footer">
-    <span>© Cash Flow Portal</span>
-    <span>Questions? <a href="mailto:sales@cashflowportal.com">Talk to sales</a></span>
-  </div>
+      <a class="pop" href="pricing.html">
+        <div class="pop-text">
+          <div class="pop-eyebrow">Calculator</div>
+          <div class="pop-title">Investor Portal Pricing</div>
+        </div>
+        <svg class="pop-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
 
+      <a class="pop" href="readiness.html">
+        <div class="pop-text">
+          <div class="pop-eyebrow">Diagnostic</div>
+          <div class="pop-title">Deal Readiness Score</div>
+        </div>
+        <svg class="pop-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+
+      <div class="pop" style="opacity:0.55;">
+        <div class="pop-text">
+          <div class="pop-eyebrow">Coming soon</div>
+          <div class="pop-title">ROI Estimator</div>
+        </div>
+        <svg class="pop-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <span>© Cash Flow Portal</span>
+      <span>Questions? <a href="mailto:sales@cashflowportal.com">Talk to sales</a></span>
+    </div>
+
+  </main>
 </div>
+
 </body>
 </html>

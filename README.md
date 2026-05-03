@@ -14,7 +14,7 @@ Prospect-facing interactive calculators for [Cash Flow Portal](https://cashflowp
 └── README.md
 ```
 
-Flat layout: each tool is a single HTML file at the root. No build step, no dependencies. Manrope font, light palette (whitesmoke + dodgerblue/aquamarine brand gradient).
+Flat layout: each tool is a single HTML file at the root. No build step, no dependencies. Manrope font, dark palette modeled on the Squaredocs Framer template (`#0a0a12` near-black + `#a78bfa` violet accent + soft top-edge halo). The CFP dodgerblue/aquamarine brand gradient is reserved for the logo mark only.
 
 ## Tools
 

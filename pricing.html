@@ -13,39 +13,44 @@
 
   :root {
     /* Surfaces */
-    --bg:           #f6f8fa;   /* page background (whitesmoke-900) */
-    --bg-soft:      #eceef8;   /* ghostwhite — subtle ambient tint */
-    --card:         #ffffff;
-    --surface:      #fafafa;   /* input fills */
-    --surface-2:    #f5f5f7;
+    --bg:           #0a0a12;
+    --bg-soft:      #11111a;
+    --card:         #15151c;
+    --surface:      #11111a;
+    --surface-2:    #1a1a22;
 
     /* Lines */
-    --border:       #dce0e6;   /* gainsboro-200 */
-    --border-soft:  #e5e5e5;
-    --border-focus: #a0c0fb;   /* lightskyblue-100 */
+    --border:       rgba(255,255,255,0.07);
+    --border-soft:  rgba(255,255,255,0.04);
+    --border-focus: rgba(167,139,250,0.45);
 
     /* Text */
-    --text:         #313844;   /* darkslategray — primary */
-    --text-2:       #54565a;   /* dimgray-300 */
-    --muted:        #8f97a1;   /* lightslategray */
-    --muted-soft:   #aeb8c2;   /* silver-200 */
+    --text:         #f5f5f7;
+    --text-2:       #b3b6bd;
+    --muted:        #7a7e89;
+    --muted-soft:   #5a5d66;
 
-    /* Brand — from logo */
-    --blue:         #0085ff;   /* dodgerblue */
-    --blue-deep:    #2766bd;   /* cornflowerblue (hover) */
-    --blue-soft:    #e9f1fe;   /* aliceblue-200 */
-    --blue-tint:    rgba(0,133,255,0.08);
-    --blue-ring:    rgba(0,133,255,0.18);
-    --aqua:         #2fecaf;   /* aquamarine */
-    --aqua-soft:    #e8f8f1;   /* mintcream-200 */
+    /* Accent — Squaredocs violet */
+    --accent:       #a78bfa;
+    --accent-hover: #b9a3fb;
+    --accent-soft:  rgba(167,139,250,0.10);
+    --accent-tint:  rgba(167,139,250,0.06);
+    --accent-ring:  rgba(167,139,250,0.28);
 
-    /* Accent combos */
-    --grad:         linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
-    --grad-text:    linear-gradient(90deg, #0085ff 0%, #2fecaf 100%);
+    /* Success / "copied" — green that reads on dark */
+    --good:         #6ee7b7;
+    --good-soft:    rgba(110,231,183,0.12);
+    --good-ring:    rgba(110,231,183,0.32);
+
+    /* Brand — reserved for the CFP logo mark */
+    --brand-grad:   linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
+
+    /* Gradients (UI) */
+    --grad-text:    linear-gradient(90deg, #f5f5f7 0%, #a78bfa 100%);
 
     /* Shadow */
-    --shadow-sm:    0 1px 2px rgba(20, 35, 65, 0.04);
-    --shadow-md:    0 1px 2px rgba(20, 35, 65, 0.04), 0 8px 24px rgba(20, 35, 65, 0.06);
+    --shadow-sm:    0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md:    0 2px 4px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
   }
 
   html, body { min-height: 100%; }
@@ -65,18 +70,19 @@
     overflow-x: hidden;
   }
 
-  /* Soft ambient glow behind the card */
+  /* Top-edge violet halo */
   body::before {
     content: '';
     position: fixed;
-    top: -240px;
+    top: -340px;
     left: 50%;
     transform: translateX(-50%);
-    width: 820px;
-    height: 520px;
-    background: radial-gradient(ellipse at center, rgba(0,133,255,0.08) 0%, rgba(47,236,175,0.04) 40%, transparent 70%);
+    width: 1200px;
+    height: 700px;
+    background: radial-gradient(ellipse at center, rgba(167,139,250,0.22) 0%, rgba(99,72,180,0.08) 35%, transparent 70%);
     pointer-events: none;
     z-index: 0;
+    filter: blur(8px);
   }
 
   .wrap {
@@ -108,8 +114,8 @@
   }
 
   .back-link:hover {
-    color: var(--blue-deep);
-    background: var(--blue-soft);
+    color: var(--accent);
+    background: var(--accent-soft);
   }
 
   .back-link svg { transition: transform 0.15s; }
@@ -126,12 +132,12 @@
   .logo-mark {
     width: 32px;
     height: 32px;
-    background: var(--grad);
+    background: var(--brand-grad);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(0,133,255,0.25);
+    box-shadow: 0 4px 14px rgba(0,133,255,0.3);
   }
 
   .logo-mark svg { display: block; }
@@ -150,9 +156,9 @@
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--blue-deep);
-    background: var(--blue-soft);
-    border: 1px solid var(--blue-ring);
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-ring);
     padding: 3px 8px;
     border-radius: 20px;
   }
@@ -203,8 +209,8 @@
   }
 
   .input-row:focus-within {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px var(--blue-tint);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
   }
 
   .input-prefix, .input-suffix {
@@ -267,10 +273,10 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--grad);
+    background: var(--accent);
     cursor: pointer;
-    border: 2px solid #ffffff;
-    box-shadow: 0 2px 8px rgba(0,133,255,0.3);
+    border: 2px solid #1a1a22;
+    box-shadow: 0 0 0 1px var(--accent-ring), 0 2px 12px rgba(167,139,250,0.4);
     transition: transform 0.15s;
   }
 
@@ -278,10 +284,10 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: var(--blue);
+    background: var(--accent);
     cursor: pointer;
-    border: 2px solid #ffffff;
-    box-shadow: 0 2px 8px rgba(0,133,255,0.3);
+    border: 2px solid #1a1a22;
+    box-shadow: 0 0 0 1px var(--accent-ring), 0 2px 12px rgba(167,139,250,0.4);
   }
 
   input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
@@ -303,8 +309,8 @@
   }
 
   .result-block {
-    background: linear-gradient(135deg, rgba(0,133,255,0.05) 0%, rgba(47,236,175,0.05) 100%);
-    border: 1px solid var(--blue-ring);
+    background: linear-gradient(135deg, rgba(167,139,250,0.10) 0%, rgba(167,139,250,0.04) 100%);
+    border: 1px solid var(--accent-ring);
     border-radius: 12px;
     padding: 22px 24px;
     margin-bottom: 16px;
@@ -367,9 +373,9 @@
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.01em;
-    color: var(--text-2);
+    color: var(--text);
     background: #ffffff;
-    border: 1px solid var(--border);
+    border: 1px solid #ffffff;
     border-radius: 8px;
     padding: 8px 12px;
     cursor: pointer;
@@ -380,18 +386,19 @@
     user-select: none;
   }
 
+  .copy-btn { color: #0a0a12; }
+
   .copy-btn:hover {
-    background: var(--blue-soft);
-    border-color: var(--blue-ring);
-    color: var(--blue-deep);
+    background: #ececf0;
+    border-color: #ececf0;
   }
 
   .copy-btn:active { transform: translateY(1px); }
 
   .copy-btn.copied {
-    background: var(--aqua-soft);
-    border-color: rgba(47,236,175,0.45);
-    color: #0b7a56;
+    background: var(--good-soft);
+    border-color: var(--good-ring);
+    color: var(--good);
   }
 
   .copy-btn svg { display: block; opacity: 0.85; }
@@ -409,8 +416,8 @@
     user-select: none;
   }
 
-  .share-btn:hover { color: var(--blue-deep); }
-  .share-btn.copied { color: #0b7a56; }
+  .share-btn:hover { color: var(--accent); }
+  .share-btn.copied { color: var(--good); }
 
   /* ---------- Enterprise toggle ---------- */
   .toggle-row {
@@ -426,8 +433,8 @@
   }
 
   .toggle-row.on {
-    background: var(--blue-soft);
-    border-color: var(--blue-ring);
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
   }
 
   .toggle-label {
@@ -464,7 +471,7 @@
     position: absolute;
     cursor: pointer;
     inset: 0;
-    background: #cfd6e0;
+    background: rgba(255,255,255,0.16);
     border-radius: 20px;
     transition: background 0.2s;
   }
@@ -479,11 +486,11 @@
     background: #ffffff;
     border-radius: 50%;
     transition: transform 0.2s, background 0.2s;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
   }
 
   .toggle input:checked + .toggle-slider {
-    background: var(--blue);
+    background: var(--accent);
   }
 
   .toggle input:checked + .toggle-slider::before {
@@ -491,7 +498,7 @@
   }
 
   .toggle input:focus-visible + .toggle-slider {
-    box-shadow: 0 0 0 3px var(--blue-tint);
+    box-shadow: 0 0 0 3px var(--accent-tint);
   }
 
   .tier[hidden] { display: none; }
@@ -516,8 +523,8 @@
   }
 
   .tier.active {
-    background: var(--blue-soft);
-    border-color: var(--blue-ring);
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
   }
 
   .tier-name {
@@ -538,8 +545,8 @@
   }
 
   .tier.active .tier-dot {
-    background: var(--blue);
-    box-shadow: 0 0 0 3px var(--blue-tint);
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
   }
 
   .tier.active .tier-name { color: var(--text); }
@@ -554,7 +561,7 @@
     white-space: nowrap;
   }
 
-  .tier.active .tier-price { color: var(--blue-deep); }
+  .tier.active .tier-price { color: var(--accent); }
 
   .footnote {
     margin-top: 20px;

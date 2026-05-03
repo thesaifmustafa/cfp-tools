@@ -13,48 +13,48 @@
 
   :root {
     /* Surfaces */
-    --bg:           #f6f8fa;
-    --card:         #ffffff;
-    --surface:      #fafafa;
-    --surface-2:    #f5f5f7;
+    --bg:           #0a0a12;
+    --card:         #15151c;
+    --surface:      #11111a;
+    --surface-2:    #1a1a22;
 
     /* Lines */
-    --border:       #dce0e6;
-    --border-soft:  #e5e5e5;
+    --border:       rgba(255,255,255,0.07);
+    --border-soft:  rgba(255,255,255,0.04);
 
     /* Text */
-    --text:         #313844;
-    --text-2:       #54565a;
-    --muted:        #8f97a1;
-    --muted-soft:   #aeb8c2;
+    --text:         #f5f5f7;
+    --text-2:       #b3b6bd;
+    --muted:        #7a7e89;
+    --muted-soft:   #5a5d66;
 
-    /* Brand */
-    --blue:         #0085ff;
-    --blue-deep:    #2766bd;
-    --blue-soft:    #e9f1fe;
-    --blue-tint:    rgba(0,133,255,0.08);
-    --blue-ring:    rgba(0,133,255,0.18);
-    --aqua:         #2fecaf;
-    --aqua-soft:    #e8f8f1;
-    --aqua-ring:    rgba(47,236,175,0.45);
+    /* Accent — Squaredocs violet */
+    --accent:       #a78bfa;
+    --accent-hover: #b9a3fb;
+    --accent-soft:  rgba(167,139,250,0.10);
+    --accent-tint:  rgba(167,139,250,0.06);
+    --accent-ring:  rgba(167,139,250,0.28);
 
-    /* Signal colors */
-    --warn:         #fa8c16;   /* darkorange-100 */
-    --warn-soft:    #fff7e6;
-    --warn-ring:    rgba(250,140,22,0.3);
-    --danger:       #ff4d4f;
-    --danger-soft:  #fff2f0;
-    --danger-ring:  rgba(255,77,79,0.3);
-    --good:         #0b7a56;
-    --good-soft:    #e8f8f1;
+    /* Signal colors — dark-tuned */
+    --warn:         #fbbf6c;
+    --warn-soft:    rgba(251,191,108,0.12);
+    --warn-ring:    rgba(251,191,108,0.32);
+    --danger:       #ff7575;
+    --danger-soft:  rgba(255,117,117,0.10);
+    --danger-ring:  rgba(255,117,117,0.32);
+    --good:         #6ee7b7;
+    --good-soft:    rgba(110,231,183,0.12);
+    --good-ring:    rgba(110,231,183,0.32);
 
-    /* Gradients */
-    --grad:         linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
-    --grad-text:    linear-gradient(90deg, #0085ff 0%, #2fecaf 100%);
+    /* Brand mark only */
+    --brand-grad:   linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
+
+    /* Gradients (UI) */
+    --grad-text:    linear-gradient(90deg, #f5f5f7 0%, #a78bfa 100%);
 
     /* Shadow */
-    --shadow-sm:    0 1px 2px rgba(20, 35, 65, 0.04);
-    --shadow-md:    0 1px 2px rgba(20, 35, 65, 0.04), 0 8px 24px rgba(20, 35, 65, 0.06);
+    --shadow-sm:    0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md:    0 2px 4px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
   }
 
   html, body { min-height: 100%; }
@@ -73,14 +73,15 @@
   body::before {
     content: '';
     position: fixed;
-    top: -260px;
+    top: -340px;
     left: 50%;
     transform: translateX(-50%);
-    width: 900px;
-    height: 560px;
-    background: radial-gradient(ellipse at center, rgba(0,133,255,0.08) 0%, rgba(47,236,175,0.04) 40%, transparent 70%);
+    width: 1300px;
+    height: 720px;
+    background: radial-gradient(ellipse at center, rgba(167,139,250,0.22) 0%, rgba(99,72,180,0.08) 35%, transparent 70%);
     pointer-events: none;
     z-index: 0;
+    filter: blur(8px);
   }
 
   .wrap {
@@ -112,7 +113,7 @@
     transition: color 0.15s, background 0.15s;
   }
 
-  .back-link:hover { color: var(--blue-deep); background: var(--blue-soft); }
+  .back-link:hover { color: var(--accent); background: var(--accent-soft); }
   .back-link svg { transition: transform 0.15s; }
   .back-link:hover svg { transform: translateX(-2px); }
 
@@ -127,12 +128,12 @@
   .logo-mark {
     width: 32px;
     height: 32px;
-    background: var(--grad);
+    background: var(--brand-grad);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(0,133,255,0.25);
+    box-shadow: 0 4px 14px rgba(0,133,255,0.3);
   }
 
   .logo-text {
@@ -149,9 +150,9 @@
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--blue-deep);
-    background: var(--blue-soft);
-    border: 1px solid var(--blue-ring);
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-ring);
     padding: 3px 8px;
     border-radius: 20px;
   }
@@ -241,14 +242,17 @@
   }
 
   .btn-primary {
-    background: var(--grad);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0,133,255,0.22);
+    background: #ffffff;
+    color: #0a0a12;
+    border-color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
   }
 
   .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0,133,255,0.3);
+    background: #ececf0;
+    border-color: #ececf0;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
   }
 
   .btn-primary:active { transform: translateY(0); }
@@ -267,9 +271,9 @@
   }
 
   .btn-ghost:hover {
-    background: var(--blue-soft);
-    border-color: var(--blue-ring);
-    color: var(--blue-deep);
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+    color: var(--accent);
   }
 
   .btn-text {
@@ -284,7 +288,7 @@
     transition: color 0.15s;
   }
 
-  .btn-text:hover { color: var(--blue-deep); }
+  .btn-text:hover { color: var(--accent); }
   .btn-text.copied { color: var(--good); }
 
   /* ---------- Wizard progress ---------- */
@@ -308,8 +312,8 @@
     transition: background 0.25s;
   }
 
-  .progress-dot.done { background: var(--aqua); }
-  .progress-dot.current { background: var(--blue); }
+  .progress-dot.done { background: var(--accent); }
+  .progress-dot.current { background: var(--accent-hover); }
 
   .progress-label {
     font-size: 12px;
@@ -379,8 +383,8 @@
   }
 
   .opt:hover {
-    background: var(--blue-soft);
-    border-color: var(--blue-ring);
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
   }
 
   .opt input[type="radio"] {
@@ -398,7 +402,7 @@
   }
 
   .opt input[type="radio"]:checked {
-    border-color: var(--blue);
+    border-color: var(--accent);
     border-width: 5px;
   }
 
@@ -419,14 +423,14 @@
   }
 
   .opt:has(input:checked) {
-    background: var(--blue-soft);
-    border-color: var(--blue);
+    background: var(--accent-soft);
+    border-color: var(--accent);
   }
 
   /* Fallback for browsers without :has() — the checked radio still visually indicates */
   @supports not (selector(:has(*))) {
     .opt input[type="radio"]:checked ~ .opt-text {
-      color: var(--blue-deep);
+      color: var(--accent);
     }
   }
 
@@ -450,8 +454,8 @@
 
   /* ---------- Report step ---------- */
   .report-hero {
-    background: linear-gradient(135deg, rgba(0,133,255,0.05) 0%, rgba(47,236,175,0.05) 100%);
-    border: 1px solid var(--blue-ring);
+    background: linear-gradient(135deg, rgba(167,139,250,0.10) 0%, rgba(167,139,250,0.04) 100%);
+    border: 1px solid var(--accent-ring);
     border-radius: 14px;
     padding: 24px 26px;
     margin-bottom: 24px;
@@ -527,7 +531,7 @@
     border-radius: 20px;
   }
 
-  .tag-good { color: var(--good); background: var(--good-soft); border: 1px solid var(--aqua-ring); }
+  .tag-good { color: var(--good); background: var(--good-soft); border: 1px solid var(--good-ring); }
   .tag-mid  { color: var(--warn); background: var(--warn-soft); border: 1px solid var(--warn-ring); }
   .tag-bad  { color: var(--danger); background: var(--danger-soft); border: 1px solid var(--danger-ring); }
 
@@ -622,7 +626,7 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--danger);
-    background: #ffffff;
+    background: rgba(255,117,117,0.10);
     border: 1px solid var(--danger-ring);
     border-radius: 6px;
     padding: 2px 7px;
@@ -664,8 +668,8 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: var(--grad);
-    color: #ffffff;
+    background: var(--accent);
+    color: #0a0a12;
     font-weight: 700;
     font-size: 12px;
     display: flex;
@@ -694,8 +698,8 @@
   .cta-block {
     margin-top: 24px;
     padding: 20px 24px;
-    background: linear-gradient(135deg, rgba(0,133,255,0.04), rgba(47,236,175,0.04));
-    border: 1px solid var(--blue-ring);
+    background: linear-gradient(135deg, rgba(167,139,250,0.10), rgba(167,139,250,0.04));
+    border: 1px solid var(--accent-ring);
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -709,7 +713,7 @@
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--blue);
+    color: var(--accent);
     margin-bottom: 4px;
   }
 
@@ -735,8 +739,8 @@
     font-family: 'Manrope', sans-serif;
     font-size: 12px;
     font-weight: 600;
-    color: var(--text-2);
-    background: #ffffff;
+    color: var(--text);
+    background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 8px 12px;
@@ -748,14 +752,14 @@
   }
 
   .report-actions .copy-btn:hover {
-    background: var(--blue-soft);
-    border-color: var(--blue-ring);
-    color: var(--blue-deep);
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+    color: var(--accent);
   }
 
   .report-actions .copy-btn.copied {
-    background: var(--aqua-soft);
-    border-color: var(--aqua-ring);
+    background: var(--good-soft);
+    border-color: var(--good-ring);
     color: var(--good);
   }
 
