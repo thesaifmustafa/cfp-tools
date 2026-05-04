@@ -9,11 +9,13 @@ Prospect-facing interactive calculators for [Cash Flow Portal](https://cashflowp
 ```
 /
 ├── index.html        Launcher — hero + category grid
-├── diagnostic.html   Capital Raise Failure Diagnostic
-├── pricing.html      Investor Portal Pricing Calculator
-├── readiness.html    Deal Readiness & LP Friction Score
+├── diagnostic.html   Capital Raise Failure Diagnostic     [Tools]
+├── leakage.html      Soft Commit Leakage Calculator        [Tools]
+├── pricing.html      Investor Portal Pricing Calculator    [Calculators]
+├── readiness.html    Deal Readiness & LP Friction Score    [Calculators]
 ├── shell.css         Shared topbar + sticky sidebar styles
 ├── shell.js          Injects topbar/sidebar into every page; auto-active link
+├── specs/            Product specs (one .md per tool)
 └── README.md
 ```
 
@@ -75,6 +77,40 @@ Example: `diagnostic.html#r=1310122301x3` (Q1=1, Q2=3, Q3=1, Q4=0, …)
 Included: 12-question wizard, rule-based scoring, 5 sub-scores, top-3 capital killers, 3 fixes, dynamic CTA by primary risk mode, lead capture stub (client-side only, copies result to clipboard), shareable hash link.
 
 Not included in v1: file uploads, AI deck analysis, CRM/banking integrations, PDF export, login, dynamic benchmarking, real AE notification backend.
+
+---
+
+### Soft Commit Leakage Calculator — `leakage.html`
+
+Funnel-math calculator for active raisers. 4 raise-profile radios + 6 funnel-count inputs + 3 process radios → conversion rates, dollar leakage at the worst stage, root causes, and product-aligned CTA.
+
+**Inputs:**
+
+| Section | Questions | Purpose |
+|---|---|---|
+| A — Raise Profile | Q1–Q4 (type, size, check size, stage) | Context + dollar estimation (Q3 maps to median check size) |
+| B — Funnel Numbers | LPs contacted, interested, soft commits, signed, funded, total funded $ (optional) | Core math |
+| C — Current Process | Q13–Q15 (subscription method, LP tracking, funded tracking) | Root-cause routing |
+
+**Math:**
+
+Conversion rates per spec Section 5:
+- Interest → soft commit, soft → signed, signed → funded, overall (interest → funded)
+
+Stage leakage = `(LPs lost at that stage) × avg check size` (median of Q3 band — `<$25K`→$15K, `$25K–$50K`→$37.5K, `$50K–$100K`→$75K, `$100K–$250K`→$175K, `$250K+`→$400K, `Not sure`→$50K). If user supplies actual `Total funded $`, that overrides the estimated funded-dollars.
+
+**Primary leak detection:** band-rank wins (`weak` > `moderate` > `strong` per spec Section 11 thresholds). Tie-breaker: prefer later stages (`soft-commit` > `funding` > `early-interest`) since later leaks waste more upstream momentum. Validates against the spec sample exactly: `(180/55/28/16/11, $75K avg)` returns `$900K` headline at the soft-commit stage; `(150/52/31/14/10, $75K avg)` returns `$1,275,000` ✓.
+
+**Recovery scenarios:** result page has a Conservative (20%) / Moderate (35%) / Aggressive (50%) toggle that re-renders the "potential capital recovered" inline.
+
+**CTA varies by primary leak:**
+- early-interest → CFP CRM
+- soft-commit → CFP Investor Portal
+- funding → CFP Banking
+
+**Deep link:** `leakage.html#l=<q1>.<q2>.<q3>.<q4>.<contacted>.<interested>.<soft>.<signed>.<funded>.<fundedDollars>.<q13>.<q14>.<q15>` — 13 dot-separated values reproduce the result.
+
+Not in v1: file uploads, CRM/banking integrations, PDF export, dynamic per-deal-type benchmarks, real AE notification backend.
 
 ---
 

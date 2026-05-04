@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soft Commit Leakage Calculator · Cash Flow Portal</title>
+<meta name="description" content="Quantify how much capital your raise is losing between investor interest, soft commit, signed subscription, and funded capital.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<style>
+  :root {
+    /* Surfaces */
+    --bg:           #0a0a12;
+    --card:         #15151c;
+    --surface:      #11111a;
+    --surface-2:    #1a1a22;
+
+    /* Lines */
+    --border:       rgba(255,255,255,0.07);
+    --border-soft:  rgba(255,255,255,0.04);
+    --border-hover: rgba(167,139,250,0.32);
+
+    /* Text */
+    --text:         #f5f5f7;
+    --text-2:       #b3b6bd;
+    --muted:        #7a7e89;
+    --muted-soft:   #5a5d66;
+
+    /* Accent */
+    --accent:       #a78bfa;
+    --accent-hover: #b9a3fb;
+    --accent-soft:  rgba(167,139,250,0.10);
+    --accent-tint:  rgba(167,139,250,0.06);
+    --accent-ring:  rgba(167,139,250,0.28);
+
+    /* Signal */
+    --warn:         #fbbf6c;
+    --warn-soft:    rgba(251,191,108,0.12);
+    --warn-ring:    rgba(251,191,108,0.32);
+    --danger:       #ff7575;
+    --danger-soft:  rgba(255,117,117,0.10);
+    --danger-ring:  rgba(255,117,117,0.32);
+    --good:         #6ee7b7;
+    --good-soft:    rgba(110,231,183,0.12);
+    --good-ring:    rgba(110,231,183,0.32);
+
+    /* Brand */
+    --brand-grad:   linear-gradient(135deg, #0085ff 0%, #2fecaf 100%);
+
+    /* Gradient text */
+    --grad-text:    linear-gradient(90deg, #f5f5f7 0%, #a78bfa 100%);
+
+    /* Shadow */
+    --shadow-sm:    0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md:    0 2px 4px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Card ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .step[hidden] { display: none; }
+
+  /* ---------- Intro ---------- */
+  .intro-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(24px, 3.5vw, 32px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .intro-title .accent {
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .intro-sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text-2);
+    margin-bottom: 28px;
+  }
+
+  .intro-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .meta-cell {
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 12px 18px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: #ffffff;
+    color: #0a0a12;
+    border-color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    background: #ececf0;
+    border-color: #ececf0;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-2);
+    border-color: var(--border);
+  }
+  .btn-ghost:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+    color: var(--accent);
+  }
+  .btn-text {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 6px;
+    transition: color 0.15s;
+  }
+  .btn-text:hover { color: var(--accent); }
+  .btn-text.copied { color: var(--good); }
+
+  /* ---------- Wizard progress ---------- */
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .progress-dots { display: flex; gap: 6px; }
+  .progress-dot {
+    width: 28px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.25s;
+  }
+  .progress-dot.done { background: var(--accent); }
+  .progress-dot.current { background: var(--accent-hover); }
+  .progress-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .progress-label strong { color: var(--text); font-weight: 700; }
+
+  /* ---------- Step heading ---------- */
+  .step-heading {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .step-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* ---------- Question / radio ---------- */
+  fieldset.q { border: none; padding: 0; margin: 0 0 22px 0; }
+  fieldset.q:last-of-type { margin-bottom: 0; }
+
+  .q-prompt {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .options { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .opt:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+  }
+  .opt input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--muted-soft);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .opt input[type="radio"]:checked {
+    border-color: var(--accent);
+    border-width: 5px;
+  }
+  .opt-text {
+    flex: 1;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .opt:has(input:checked) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  @supports not (selector(:has(*))) {
+    .opt input[type="radio"]:checked ~ .opt-text { color: var(--accent); }
+  }
+
+  /* ---------- Numerical inputs ---------- */
+  .num-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+
+  .num-q {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .num-q:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+
+  .num-q-prompt {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .num-q-prompt .num-q-aux { color: var(--muted); font-weight: 400; margin-left: 4px; }
+
+  .num-row { display: flex; align-items: center; gap: 0; }
+  .num-prefix, .num-suffix {
+    padding: 0 8px 0 0;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: var(--muted);
+    user-select: none;
+    font-weight: 600;
+  }
+  .num-row input[type="number"] {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 4px 0;
+    font-family: 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    -moz-appearance: textfield;
+    min-width: 0;
+  }
+  .num-row input[type="number"]::-webkit-inner-spin-button,
+  .num-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .num-row input[type="number"]::placeholder { color: var(--muted-soft); font-weight: 600; }
+
+  /* ---------- Wizard nav ---------- */
+  .wizard-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+  }
+  .wizard-nav-left, .wizard-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ---------- Report hero ---------- */
+  .report-hero {
+    background: linear-gradient(135deg, rgba(167,139,250,0.10) 0%, rgba(167,139,250,0.04) 100%);
+    border: 1px solid var(--accent-ring);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 24px;
+  }
+  .report-headline {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .leak-amount {
+    font-family: 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .leak-tagline {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.45;
+  }
+  .leak-tagline strong { color: var(--text); font-weight: 600; }
+
+  /* ---------- Funnel viz ---------- */
+  .funnel {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--border);
+  }
+  .funnel-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .funnel-row {
+    display: grid;
+    grid-template-columns: 1fr 64px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  .funnel-bar-wrap {
+    position: relative;
+    height: 30px;
+    background: var(--surface);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .funnel-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: linear-gradient(90deg, rgba(167,139,250,0.32), rgba(167,139,250,0.16));
+    border-right: 2px solid var(--accent);
+    transition: width 0.4s ease;
+  }
+  .funnel-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    z-index: 1;
+  }
+  .funnel-count {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+    text-align: right;
+  }
+
+  /* ---------- Conversion rates ---------- */
+  .rates {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 16px;
+  }
+  .rate-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .rate-label { font-size: 13px; color: var(--text-2); flex: 1; min-width: 0; }
+  .rate-arrow { color: var(--muted-soft); margin: 0 4px; }
+  .rate-pct {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    min-width: 50px;
+    text-align: right;
+  }
+  .rate-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 5px;
+    border: 1px solid;
+    flex-shrink: 0;
+    margin-left: 6px;
+  }
+  .rate-badge.strong { color: var(--good); background: var(--good-soft); border-color: var(--good-ring); }
+  .rate-badge.moderate { color: var(--warn); background: var(--warn-soft); border-color: var(--warn-ring); }
+  .rate-badge.weak { color: var(--danger); background: var(--danger-soft); border-color: var(--danger-ring); }
+
+  /* ---------- Recovery scenarios ---------- */
+  .recovery-block {
+    margin-top: 20px;
+    padding: 18px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .recovery-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .recovery-amount {
+    font-family: 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .recovery-amount .recovery-pct {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-left: 8px;
+    letter-spacing: 0;
+  }
+  .recovery-hint {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-bottom: 14px;
+  }
+  .recovery-toggle {
+    display: inline-flex;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2px;
+    gap: 0;
+  }
+  .recovery-btn {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .recovery-btn:hover { color: var(--text); }
+  .recovery-btn.active {
+    background: var(--accent);
+    color: #0a0a12;
+  }
+
+  /* ---------- Sections ---------- */
+  .report-section { margin-bottom: 24px; }
+  .report-section:last-of-type { margin-bottom: 0; }
+  .section-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .section-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  /* ---------- Cause / fix lists ---------- */
+  .cause-list, .fixes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cause {
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .cause-ix {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-ring);
+    border-radius: 6px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    white-space: nowrap;
+  }
+  .cause-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .fix {
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .fix-ix {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0a0a12;
+    font-weight: 700;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .fix-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .fix-text .f-detail {
+    display: block;
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* ---------- CTA ---------- */
+  .cta-block {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.10), rgba(167,139,250,0.04));
+    border: 1px solid var(--accent-ring);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .cta-copy .cta-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .cta-copy .cta-line {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.35;
+  }
+
+  /* ---------- Report actions ---------- */
+  .report-actions {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .report-actions .copy-btn {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .report-actions .copy-btn:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+    color: var(--accent);
+  }
+  .report-actions .copy-btn.copied {
+    background: var(--good-soft);
+    border-color: var(--good-ring);
+    color: var(--good);
+  }
+
+  .footnote {
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 600px) {
+    .card { padding: 24px 20px; }
+    .intro-meta { grid-template-columns: 1fr; }
+    .leak-amount { font-size: 38px; }
+    .recovery-amount { font-size: 26px; }
+    .cta-block { flex-direction: column; align-items: stretch; }
+    .cta-block .btn { justify-content: center; }
+    .recovery-toggle { width: 100%; }
+    .recovery-btn { flex: 1; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header id="cfp-topbar" class="topbar"></header>
+
+<div class="shell">
+  <aside id="cfp-sidebar" class="sidebar" aria-label="Tools navigation"></aside>
+  <main class="content">
+<div class="wrap">
+
+  <div class="card">
+
+    <!-- ========== STEP 0: INTRO ========== -->
+    <section class="step" id="step-intro">
+      <h1 class="intro-title">How much capital is your raise <span class="accent">leaking</span>?</h1>
+      <p class="intro-sub">10 quick numbers. 3 minutes. Get a dollar-value estimate of where investor interest is failing to convert into funded capital.</p>
+
+      <div class="intro-meta">
+        <div class="meta-cell">
+          <div class="meta-label">Output</div>
+          <div class="meta-value">Leakage $ + funnel breakdown</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Time</div>
+          <div class="meta-value">~3 minutes</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Privacy</div>
+          <div class="meta-value">No signup, no email</div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" onclick="lkStart()">
+        Calculate my leakage
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </section>
+
+    <!-- Wizard steps populated by lkRender -->
+    <section class="step" id="step-wizard" hidden></section>
+
+    <!-- Report -->
+    <section class="step" id="step-report" hidden></section>
+
+  </div>
+
+  <div class="footnote">Heuristic estimator. Conversion benchmarks are directional, not industry-validated. Not legal, financial, or investment advice.</div>
+
+</div>
+
+  </main>
+</div>
+
+<script src="shell.js"></script>
+<script>
+  // =============================================================
+  // Soft Commit Leakage Calculator
+  // Architecture: single-page, no deps, CRM-safe inline handlers
+  // State lives on window.lk, renderable from URL hash
+  // =============================================================
+
+  // Section A — radio questions (raise profile)
+  window.lkSectionA = [
+    { id: 'q1', prompt: 'What are you raising for?',
+      options: ['Single-asset syndication', 'Fund', 'SPV', 'Fund of funds', 'Co-sponsor / feeder vehicle', 'Other'] },
+    { id: 'q2', prompt: 'Target raise size?',
+      options: ['Under $1M', '$1M – $5M', '$5M – $10M', '$10M – $25M', '$25M – $50M', '$50M+'] },
+    { id: 'q3', prompt: 'Average expected LP check size?',
+      options: ['Under $25K', '$25K – $50K', '$50K – $100K', '$100K – $250K', '$250K+', 'Not sure'] },
+    { id: 'q4', prompt: 'What stage is your raise in?',
+      options: ['Planning', 'Actively raising', 'Soft commits collected', 'Subscription docs sent', 'Closing / collecting funds', 'Post-close'] }
+  ];
+
+  // Section B — funnel inputs (numerical)
+  window.lkSectionB = [
+    { id: 'contacted',     prompt: 'How many LPs have you contacted or engaged for this raise?', placeholder: 'e.g. 150' },
+    { id: 'interested',    prompt: 'How many LPs expressed interest?',                            placeholder: 'e.g. 55' },
+    { id: 'softCommits',   prompt: 'How many LPs gave a verbal or soft commitment?',              placeholder: 'e.g. 28' },
+    { id: 'signed',        prompt: 'How many LPs completed subscription documents?',              placeholder: 'e.g. 16' },
+    { id: 'funded',        prompt: 'How many LPs have funded?',                                   placeholder: 'e.g. 11' },
+    { id: 'fundedDollars', prompt: 'Total funded so far (optional)',                              placeholder: 'e.g. 825000', prefix: '$', aux: 'Leave blank to estimate from check size.' }
+  ];
+
+  // Section C — current process (radio)
+  window.lkSectionC = [
+    { id: 'q13', prompt: 'How do investors currently subscribe?',
+      options: ['Manual PDF / email', 'DocuSign + file sharing', 'Existing investor portal', 'Not set up yet', 'Other'] },
+    { id: 'q14', prompt: 'How do you track LP stage and follow-up?',
+      options: ['Spreadsheet', 'Inbox / manual notes', 'CRM', 'Investor portal', 'Not consistently tracked'] },
+    { id: 'q15', prompt: 'How do you track signed commitments vs received funds?',
+      options: ['Spreadsheet', 'Bank records / manual reconciliation', 'Investor portal', 'CRM', 'Not consistently tracked'] }
+  ];
+
+  window.lkWizardSteps = [
+    { n: 1, title: 'Raise profile',   sub: 'Quick context on what you’re raising and where you are.' },
+    { n: 2, title: 'Funnel numbers',  sub: 'Best estimates are fine — we’ll use these to compute leakage.' },
+    { n: 3, title: 'Current process', sub: 'How investor flow is handled today — surfaces the likely root cause.' }
+  ];
+
+  // Median check sizes for dollar estimates (Q3 → median in dollars)
+  window.lkCheckMedians = [15000, 37500, 75000, 175000, 400000, 50000];
+
+  window.lk = {
+    step: 0,    // 0=intro, 1-3=wizard, 4=report
+    answers: {},
+    recovery: 'conservative'
+  };
+
+  // ---------------------------------------------------------------
+  // CALCULATIONS
+  // ---------------------------------------------------------------
+
+  window.lkSafeNum = function(v) {
+    if (v == null || v === '') return 0;
+    var n = parseFloat(v);
+    return (isNaN(n) || n < 0) ? 0 : n;
+  };
+
+  window.lkRate = function(num, den) {
+    if (!den || den <= 0) return 0;
+    return Math.max(0, Math.min(1, num / den));
+  };
+
+  // Funnel benchmark thresholds (per spec Section 11)
+  window.lkRateBand = function(stage, rate) {
+    if (stage === 'interestToSoft') { if (rate >= 0.60) return 'strong'; if (rate >= 0.40) return 'moderate'; return 'weak'; }
+    if (stage === 'softToSigned')   { if (rate >= 0.75) return 'strong'; if (rate >= 0.50) return 'moderate'; return 'weak'; }
+    if (stage === 'signedToFunded') { if (rate >= 0.85) return 'strong'; if (rate >= 0.65) return 'moderate'; return 'weak'; }
+    if (stage === 'overall')        { if (rate >= 0.35) return 'strong'; if (rate >= 0.20) return 'moderate'; return 'weak'; }
+    return 'moderate';
+  };
+
+  window.lkComputeFunnel = function(a) {
+    var contacted   = window.lkSafeNum(a.contacted);
+    var interested  = window.lkSafeNum(a.interested);
+    var softCommits = window.lkSafeNum(a.softCommits);
+    var signed      = window.lkSafeNum(a.signed);
+    var funded      = window.lkSafeNum(a.funded);
+    var fundedDollarsInput = window.lkSafeNum(a.fundedDollars);
+
+    var checkIx = (a.q3 == null) ? 5 : a.q3;
+    var avgCheck = window.lkCheckMedians[checkIx] || window.lkCheckMedians[5];
+
+    // Conversion rates
+    var rates = {
+      interestToSoft: window.lkRate(softCommits, interested),
+      softToSigned:   window.lkRate(signed, softCommits),
+      signedToFunded: window.lkRate(funded, signed),
+      overall:        window.lkRate(funded, interested)
+    };
+
+    // Dollar estimates
+    var fundedDollarsActual = fundedDollarsInput > 0 ? fundedDollarsInput : (funded * avgCheck);
+
+    // LP-count drops at each transition
+    var drops = {
+      interestToSoft: Math.max(0, interested - softCommits),
+      softToSigned:   Math.max(0, softCommits - signed),
+      signedToFunded: Math.max(0, signed - funded)
+    };
+
+    // Stage-specific dollar leakage (LPs lost at that stage × avg check size)
+    var stageDollarDrop = {
+      'early-interest': drops.interestToSoft * avgCheck,
+      'soft-commit':    drops.softToSigned * avgCheck,
+      'funding':        drops.signedToFunded * avgCheck
+    };
+
+    // Stage health bands
+    var stageBands = {
+      'early-interest': window.lkRateBand('interestToSoft', rates.interestToSoft),
+      'soft-commit':    window.lkRateBand('softToSigned', rates.softToSigned),
+      'funding':        window.lkRateBand('signedToFunded', rates.signedToFunded)
+    };
+    var bandRank = { weak: 3, moderate: 2, strong: 1 };
+
+    // Pick primary leak: worst-band stage. Tie-breaker: prefer later (more "expensive") stages.
+    // Order soft-commit > funding > early-interest reflects spec's emphasis on the messy middle.
+    var stagePriority = ['soft-commit', 'funding', 'early-interest'];
+    var primaryLeak = stagePriority[0];
+    var bestRank = -1;
+    for (var i = 0; i < stagePriority.length; i++) {
+      var s = stagePriority[i];
+      var r = bandRank[stageBands[s]] || 0;
+      if (r > bestRank) { bestRank = r; primaryLeak = s; }
+    }
+
+    // Headline leakage = dollar drop at the primary leak stage
+    var headlineLeakage = stageDollarDrop[primaryLeak];
+
+    // Total funnel-wide leakage (interest → funded gap, in dollars)
+    var totalLeakage = (interested - funded) * avgCheck;
+    if (totalLeakage < 0) totalLeakage = 0;
+
+    // Pipeline control flag: lots of interest, weak tracking
+    var weakTrack = (a.q14 === 0 || a.q14 === 1 || a.q14 === 4);
+    var pipelineControlFlag = (interested >= 20 && weakTrack);
+
+    return {
+      inputs: {
+        contacted: contacted, interested: interested, softCommits: softCommits,
+        signed: signed, funded: funded,
+        fundedDollars: fundedDollarsActual, fundedDollarsProvided: fundedDollarsInput > 0,
+        avgCheck: avgCheck
+      },
+      rates: rates,
+      drops: drops,
+      stageDollarDrop: stageDollarDrop,
+      stageBands: stageBands,
+      leakage: {
+        stageDollars: stageDollarDrop,
+        headline: headlineLeakage,
+        total: totalLeakage
+      },
+      primaryLeak: primaryLeak,
+      pipelineControlFlag: pipelineControlFlag
+    };
+  };
+
+  // ---------------------------------------------------------------
+  // COPY (diagnoses, causes, fixes, CTAs)
+  // ---------------------------------------------------------------
+
+  window.lkPrimaryDiagnosis = {
+    'early-interest': {
+      stageLabel: 'interest → soft commit',
+      headline: 'Largest leak: interest → soft commit',
+      detail: 'LPs are showing interest but failing to convert into commitments. This usually means follow-up is unstructured or the deal narrative isn’t creating enough urgency.',
+      reportEyebrow: 'Estimated early-interest leakage'
+    },
+    'soft-commit': {
+      stageLabel: 'soft commit → completed subscription',
+      headline: 'Largest leak: soft commit → completed subscription',
+      detail: 'LPs are verbally in, but the subscription process is stalling them. Manual documents, fragmented signing flows, or unclear next steps cause the most expensive drop-off in the funnel.',
+      reportEyebrow: 'Estimated soft-commit leakage'
+    },
+    'funding': {
+      stageLabel: 'signed subscription → funded capital',
+      headline: 'Largest leak: signed subscription → funded capital',
+      detail: 'Investors are signing but capital is moving slowly. The funding step is disconnected from the subscription workflow — wire instructions, contribution tracking, or funding confirmation are likely manual.',
+      reportEyebrow: 'Estimated signed-but-unfunded leakage'
+    }
+  };
+
+  window.lkRootCauses = function(r, a) {
+    var causes = [];
+    var primary = r.primaryLeak;
+
+    if (primary === 'soft-commit') {
+      if (a.q13 === 0 || a.q13 === 1) {
+        causes.push({ ix: 'Subscription friction', text: 'Manual PDFs and email-based subscription flows create stalls right where LPs have already shown intent.' });
+      } else {
+        causes.push({ ix: 'Subscription friction', text: 'The subscription workflow likely has too many manual handoffs between materials, signing, KYC, and funding instructions.' });
+      }
+      causes.push({ ix: 'Stage-blind follow-up', text: 'Without stage-based follow-up, LPs who said “yes” verbally don’t get the right nudge at the right time to complete docs.' });
+      causes.push({ ix: 'Signed ≠ funded', text: 'Treating signed and funded as separate workflows hides the moment momentum is breaking.' });
+    } else if (primary === 'funding') {
+      if (a.q15 === 0 || a.q15 === 1 || a.q15 === 4) {
+        causes.push({ ix: 'Funding tracked separately', text: 'Funding status is being reconciled against bank records or spreadsheets — disconnected from subscription completion.' });
+      } else {
+        causes.push({ ix: 'Funding tracked separately', text: 'The funding workflow appears decoupled from the subscription workflow, which slows received-capital visibility.' });
+      }
+      causes.push({ ix: 'Manual wire instructions', text: 'Wire details and contribution tracking sit outside the LP flow, so signed investors fall into a black box.' });
+      causes.push({ ix: 'No funded confirmation', text: 'LPs don’t get automated confirmation that capital was received, which slows down repeat funding velocity.' });
+    } else if (primary === 'early-interest') {
+      if (a.q14 === 0 || a.q14 === 1 || a.q14 === 4) {
+        causes.push({ ix: 'Spreadsheet pipeline', text: 'Tracking LPs in inboxes or spreadsheets means stages and next-steps aren’t visible — interest decays before commitment.' });
+      } else {
+        causes.push({ ix: 'Unstructured pipeline', text: 'Even with a tracking tool, follow-up cadence and stage discipline appear weak — warm interest doesn’t convert.' });
+      }
+      causes.push({ ix: 'No structured follow-up', text: 'Without LP segmentation by stage and likelihood, the warmest investors don’t get the right cadence.' });
+      causes.push({ ix: 'Weak narrative loop', text: 'Interest doesn’t convert when LPs can’t clearly re-encounter the return story or downside case after the first conversation.' });
+    }
+
+    if (r.pipelineControlFlag && causes.length < 5) {
+      causes.push({ ix: 'Forecast confidence gap', text: 'You may have meaningful soft interest, but without a controlled pipeline you’re forecasting capital from inbox memory.' });
+    }
+
+    return causes.slice(0, 5);
+  };
+
+  window.lkFixes = function(r) {
+    var primary = r.primaryLeak;
+
+    if (primary === 'soft-commit') {
+      return [
+        { text: 'Move LPs through one guided flow from soft commit to subscription', detail: 'Materials, e-sig, KYC, and accreditation should live in a single workflow — not bouncing across email, DocuSign, and shared folders.' },
+        { text: 'Track every LP by funnel stage', detail: 'Interested, soft committed, docs sent, signed, funded — each stage with a next step and follow-up owner.' },
+        { text: 'Connect subscription completion to funding status', detail: 'When an investor signs, the funding step should already be set up. Don’t treat signed and funded as separate operations.' }
+      ];
+    } else if (primary === 'funding') {
+      return [
+        { text: 'Connect signed subscription status to capital movement', detail: 'A signed sub doc should automatically surface funding instructions and trigger contribution tracking — no manual handoff.' },
+        { text: 'Surface real-time funded vs signed status', detail: 'Every LP should have one row showing both signed amount and received amount. Reconciling at the bank level is too late.' },
+        { text: 'Automate investor confirmation after funding', detail: 'When capital lands, the LP and the GP should both get instant confirmation. This unlocks repeat-fund velocity.' }
+      ];
+    } else if (primary === 'early-interest') {
+      return [
+        { text: 'Run your raise through a defined LP pipeline', detail: 'Every conversation gets a stage, likelihood, next step, and follow-up owner. No more inbox archaeology.' },
+        { text: 'Segment LPs by likelihood and check size', detail: 'High-likelihood LPs get more frequent, more personalized touches. Low-likelihood LPs get a different cadence.' },
+        { text: 'Tighten the deal narrative loop', detail: 'Make sure interested LPs can re-encounter the return story, downside case, and distribution logic without re-asking you for the deck.' }
+      ];
+    }
+    return [];
+  };
+
+  window.lkCTA = {
+    'early-interest': {
+      eyebrow: 'CFP CRM',
+      line: 'See how CFP helps turn investor interest into a managed capital pipeline.',
+      buttonText: 'See the CRM workflow'
+    },
+    'soft-commit': {
+      eyebrow: 'CFP Investor Portal',
+      line: 'See how CFP moves LPs from verbal commitment to completed subscription.',
+      buttonText: 'See the subscription flow'
+    },
+    'funding': {
+      eyebrow: 'CFP Banking',
+      line: 'See how CFP connects signed commitments to trackable capital movement.',
+      buttonText: 'See the funding workflow'
+    }
+  };
+
+  // ---------------------------------------------------------------
+  // RENDERING
+  // ---------------------------------------------------------------
+
+  window.lkEscape = function(s) {
+    return String(s).replace(/[&<>"']/g, function(c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+
+  window.lkFmtMoney = function(n) {
+    n = Math.round(n);
+    if (n >= 1e9) return '$' + (n/1e9).toFixed(2).replace(/\.?0+$/, '') + 'B';
+    if (n >= 1e6) return '$' + (n/1e6).toFixed(2).replace(/\.?0+$/, '') + 'M';
+    if (n >= 1e3) return '$' + (n/1e3).toFixed(0) + 'K';
+    return '$' + n;
+  };
+
+  window.lkFmtMoneyFull = function(n) {
+    return '$' + Math.round(n).toLocaleString('en-US');
+  };
+
+  window.lkFmtPct = function(rate) {
+    return Math.round(rate * 100) + '%';
+  };
+
+  window.lkRender = function() {
+    var step = window.lk.step;
+    var i = document.getElementById('step-intro');
+    var w = document.getElementById('step-wizard');
+    var r = document.getElementById('step-report');
+    if (!i || !w || !r) return;
+
+    i.hidden = step !== 0;
+    w.hidden = !(step >= 1 && step <= 3);
+    r.hidden = step !== 4;
+
+    if (step >= 1 && step <= 3) window.lkRenderWizard(step);
+    if (step === 4) window.lkRenderReport();
+
+    if (window.scrollTo) {
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      catch (e) { window.scrollTo(0, 0); }
+    }
+  };
+
+  window.lkRenderWizard = function(step) {
+    var w = document.getElementById('step-wizard');
+    if (!w) return;
+    var section = window.lkWizardSteps[step - 1];
+    var html = '';
+
+    html += '<div class="progress">';
+    html += '<div class="progress-dots">';
+    for (var s = 1; s <= 3; s++) {
+      var cls = 'progress-dot';
+      if (s < step) cls += ' done';
+      else if (s === step) cls += ' current';
+      html += '<span class="' + cls + '"></span>';
+    }
+    html += '</div>';
+    html += '<div class="progress-label"><strong>Step ' + step + '</strong> of 3 · ' + window.lkEscape(section.title) + '</div>';
+    html += '</div>';
+
+    html += '<h2 class="step-heading">' + window.lkEscape(section.title) + '</h2>';
+    html += '<p class="step-sub">' + window.lkEscape(section.sub) + '</p>';
+
+    if (step === 1) {
+      window.lkSectionA.forEach(function(q) { html += window.lkRenderRadio(q); });
+    } else if (step === 2) {
+      html += '<div class="num-grid">';
+      window.lkSectionB.forEach(function(q) { html += window.lkRenderNum(q); });
+      html += '</div>';
+    } else if (step === 3) {
+      window.lkSectionC.forEach(function(q) { html += window.lkRenderRadio(q); });
+    }
+
+    html += '<div class="wizard-nav">';
+    html += '<div class="wizard-nav-left">';
+    html += '<button type="button" class="btn-text" onclick="lkBack()">← Back</button>';
+    html += '</div>';
+    html += '<div class="wizard-nav-right">';
+    var disabled = !window.lkValidateStep(step);
+    var nextLabel = step === 3 ? 'See my leakage' : 'Continue';
+    html += '<button type="button" class="btn btn-primary" id="lk-next-btn" onclick="lkNext()"' + (disabled ? ' disabled' : '') + '>';
+    html += window.lkEscape(nextLabel);
+    html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+    html += '</button>';
+    html += '</div>';
+    html += '</div>';
+
+    w.innerHTML = html;
+    window.lkBindWizard(step);
+  };
+
+  window.lkRenderRadio = function(q) {
+    var html = '<fieldset class="q">';
+    html += '<legend class="q-prompt">' + window.lkEscape(q.prompt) + '</legend>';
+    html += '<div class="options">';
+    var prior = window.lk.answers[q.id];
+    q.options.forEach(function(text, ix) {
+      var checked = (prior === ix) ? ' checked' : '';
+      html += '<label class="opt">';
+      html += '<input type="radio" name="' + q.id + '" value="' + ix + '"' + checked + ' onchange="lkSetAnswer(\'' + q.id + '\', ' + ix + ')">';
+      html += '<span class="opt-text">' + window.lkEscape(text) + '</span>';
+      html += '</label>';
+    });
+    html += '</div>';
+    html += '</fieldset>';
+    return html;
+  };
+
+  window.lkRenderNum = function(q) {
+    var prior = window.lk.answers[q.id];
+    var val = (prior != null && prior !== '') ? String(prior) : '';
+    var aux = q.aux ? '<span class="num-q-aux">' + window.lkEscape(q.aux) + '</span>' : '';
+    var html = '<div class="num-q">';
+    html += '<div class="num-q-prompt">' + window.lkEscape(q.prompt) + aux + '</div>';
+    html += '<div class="num-row">';
+    if (q.prefix) html += '<span class="num-prefix">' + window.lkEscape(q.prefix) + '</span>';
+    html += '<input type="number" inputmode="numeric" min="0" step="1" placeholder="' + window.lkEscape(q.placeholder || '') + '" value="' + window.lkEscape(val) + '" data-id="' + q.id + '" oninput="lkOnNumInput(this)" onchange="lkOnNumInput(this)">';
+    html += '</div>';
+    html += '</div>';
+    return html;
+  };
+
+  window.lkBindWizard = function(step) {
+    // CRM-safe addEventListener fallback (in case innerHTML stripped inline handlers)
+    var w = document.getElementById('step-wizard');
+    if (!w) return;
+    var radios = w.querySelectorAll('input[type="radio"]');
+    radios.forEach(function(el) {
+      el.addEventListener('change', function() { window.lkSetAnswer(el.name, parseInt(el.value, 10)); });
+    });
+    var nums = w.querySelectorAll('input[type="number"]');
+    nums.forEach(function(el) {
+      el.addEventListener('input', function() { window.lkOnNumInput(el); });
+    });
+  };
+
+  window.lkValidateStep = function(step) {
+    var a = window.lk.answers;
+    if (step === 1) return ['q1','q2','q3','q4'].every(function(k) { return a[k] != null; });
+    if (step === 2) return ['contacted','interested','softCommits','signed','funded'].every(function(k) {
+      return a[k] != null && a[k] !== '' && parseFloat(a[k]) >= 0;
+    });
+    if (step === 3) return ['q13','q14','q15'].every(function(k) { return a[k] != null; });
+    return false;
+  };
+
+  window.lkUpdateNextBtn = function() {
+    var btn = document.getElementById('lk-next-btn');
+    if (!btn) return;
+    var disabled = !window.lkValidateStep(window.lk.step);
+    if (disabled) btn.setAttribute('disabled', 'disabled');
+    else btn.removeAttribute('disabled');
+  };
+
+  window.lkSetAnswer = function(id, value) {
+    window.lk.answers[id] = value;
+    window.lkUpdateNextBtn();
+  };
+
+  window.lkOnNumInput = function(el) {
+    var id = el.getAttribute('data-id');
+    var v = el.value;
+    window.lk.answers[id] = v === '' ? null : parseFloat(v);
+    window.lkUpdateNextBtn();
+  };
+
+  window.lkStart = function() {
+    window.lk.step = 1;
+    window.lkRender();
+  };
+
+  window.lkBack = function() {
+    if (window.lk.step <= 1) window.lk.step = 0;
+    else window.lk.step -= 1;
+    window.lkRender();
+  };
+
+  window.lkNext = function() {
+    if (!window.lkValidateStep(window.lk.step)) return;
+    if (window.lk.step >= 3) {
+      window.lk.step = 4;
+      window.lkUpdateHash();
+    } else {
+      window.lk.step += 1;
+    }
+    window.lkRender();
+  };
+
+  window.lkReset = function() {
+    window.lk.step = 0;
+    window.lk.answers = {};
+    window.lk.recovery = 'conservative';
+    if (history && history.replaceState) {
+      try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    } else {
+      try { location.hash = ''; } catch (e) {}
+    }
+    window.lkRender();
+  };
+
+  // ---------------------------------------------------------------
+  // REPORT
+  // ---------------------------------------------------------------
+
+  window.lkRecoveryPct = function(scen) {
+    if (scen === 'aggressive') return 50;
+    if (scen === 'moderate') return 35;
+    return 20;
+  };
+
+  window.lkRecoveryAmount = function(leakage, scen) {
+    return leakage * (window.lkRecoveryPct(scen) / 100);
+  };
+
+  window.lkRenderReport = function() {
+    var r = document.getElementById('step-report');
+    if (!r) return;
+    var a = window.lk.answers;
+    var result = window.lkComputeFunnel(a);
+    var diag = window.lkPrimaryDiagnosis[result.primaryLeak];
+    var causes = window.lkRootCauses(result, a);
+    var fixes = window.lkFixes(result);
+    var cta = window.lkCTA[result.primaryLeak];
+    var inp = result.inputs;
+    var maxFunnel = Math.max(inp.contacted, inp.interested, inp.softCommits, inp.signed, inp.funded, 1);
+
+    var rec = window.lkRecoveryAmount(result.leakage.headline, window.lk.recovery);
+    var recPct = window.lkRecoveryPct(window.lk.recovery);
+
+    var html = '';
+
+    // Hero
+    html += '<div class="report-hero">';
+    html += '<div class="report-headline">' + window.lkEscape(diag.reportEyebrow) + '</div>';
+    html += '<div class="leak-amount">' + window.lkFmtMoneyFull(result.leakage.headline) + '</div>';
+    html += '<div class="leak-tagline"><strong>' + window.lkEscape(diag.headline) + '.</strong> ' + window.lkEscape(diag.detail) + '</div>';
+
+    // Funnel viz
+    html += '<div class="funnel">';
+    html += '<div class="funnel-title">Your funnel</div>';
+    var stages = [
+      { label: 'LPs contacted',           count: inp.contacted },
+      { label: 'Interested',              count: inp.interested },
+      { label: 'Soft commits',            count: inp.softCommits },
+      { label: 'Completed subscriptions', count: inp.signed },
+      { label: 'Funded',                  count: inp.funded }
+    ];
+    stages.forEach(function(s) {
+      var pct = (s.count / maxFunnel) * 100;
+      html += '<div class="funnel-row">';
+      html += '<div class="funnel-bar-wrap">';
+      html += '<div class="funnel-fill" style="width:' + pct.toFixed(1) + '%"></div>';
+      html += '<div class="funnel-label">' + window.lkEscape(s.label) + '</div>';
+      html += '</div>';
+      html += '<div class="funnel-count">' + s.count.toLocaleString('en-US') + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    // Conversion rates
+    html += '<div class="rates">';
+    var rateRows = [
+      { label: 'Interest', label2: 'Soft commit', stage: 'interestToSoft', rate: result.rates.interestToSoft },
+      { label: 'Soft commit', label2: 'Signed',   stage: 'softToSigned',   rate: result.rates.softToSigned },
+      { label: 'Signed', label2: 'Funded',        stage: 'signedToFunded', rate: result.rates.signedToFunded },
+      { label: 'Interest', label2: 'Funded',      stage: 'overall',        rate: result.rates.overall }
+    ];
+    rateRows.forEach(function(rr) {
+      var band = window.lkRateBand(rr.stage, rr.rate);
+      html += '<div class="rate-row">';
+      html += '<div class="rate-label">' + window.lkEscape(rr.label) + ' <span class="rate-arrow">→</span> ' + window.lkEscape(rr.label2) + '</div>';
+      html += '<div class="rate-pct">' + window.lkFmtPct(rr.rate) + '</div>';
+      html += '<span class="rate-badge ' + band + '">' + band + '</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    html += '</div>';  // /.report-hero
+
+    // Recovery scenarios
+    html += '<div class="recovery-block">';
+    html += '<div class="recovery-eyebrow">Potential capital recovered</div>';
+    html += '<div class="recovery-amount" id="lk-recovery-amt">' + window.lkFmtMoneyFull(rec) + '<span class="recovery-pct">at ' + recPct + '% recovery</span></div>';
+    html += '<div class="recovery-hint">Recovering even a portion of leaked soft commits typically translates into real funded capital. Choose a scenario:</div>';
+    html += '<div class="recovery-toggle">';
+    ['conservative','moderate','aggressive'].forEach(function(scen) {
+      var label = scen.charAt(0).toUpperCase() + scen.slice(1);
+      var pct = window.lkRecoveryPct(scen);
+      var active = (window.lk.recovery === scen) ? ' active' : '';
+      html += '<button type="button" class="recovery-btn' + active + '" data-scen="' + scen + '" onclick="lkSetRecovery(\'' + scen + '\')">' + label + ' (' + pct + '%)</button>';
+    });
+    html += '</div>';
+    html += '</div>';
+
+    // Likely root causes
+    html += '<section class="report-section" style="margin-top:24px;">';
+    html += '<h3 class="section-title">Likely root causes <span class="section-count">' + causes.length + '</span></h3>';
+    html += '<div class="cause-list">';
+    causes.forEach(function(c) {
+      html += '<div class="cause">';
+      html += '<span class="cause-ix">' + window.lkEscape(c.ix) + '</span>';
+      html += '<div class="cause-text">' + window.lkEscape(c.text) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</section>';
+
+    // Recommended fixes
+    html += '<section class="report-section">';
+    html += '<h3 class="section-title">Recommended fixes <span class="section-count">' + fixes.length + '</span></h3>';
+    html += '<div class="fixes-list">';
+    fixes.forEach(function(f, ix) {
+      html += '<div class="fix">';
+      html += '<span class="fix-ix">' + (ix + 1) + '</span>';
+      html += '<div class="fix-text">' + window.lkEscape(f.text);
+      if (f.detail) html += '<span class="f-detail">' + window.lkEscape(f.detail) + '</span>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</section>';
+
+    // CTA
+    html += '<div class="cta-block">';
+    html += '<div class="cta-copy">';
+    html += '<div class="cta-eyebrow">' + window.lkEscape(cta.eyebrow) + '</div>';
+    html += '<div class="cta-line">' + window.lkEscape(cta.line) + '</div>';
+    html += '</div>';
+    html += '<a class="btn btn-primary" href="https://cashflowportal.com/" rel="noopener">';
+    html += window.lkEscape(cta.buttonText);
+    html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+    html += '</a>';
+    html += '</div>';
+
+    // Actions
+    html += '<div class="report-actions">';
+    html += '<button type="button" class="copy-btn" id="lk-copy-text" onclick="lkCopyText()">';
+    html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+    html += '<span>Copy summary</span>';
+    html += '</button>';
+    html += '<button type="button" class="copy-btn" id="lk-copy-link" onclick="lkCopyLink()">';
+    html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>';
+    html += '<span>Copy link</span>';
+    html += '</button>';
+    html += '<button type="button" class="btn-text" onclick="lkReset()" style="margin-left:auto;">Start over</button>';
+    html += '</div>';
+
+    r.innerHTML = html;
+  };
+
+  window.lkSetRecovery = function(scen) {
+    window.lk.recovery = scen;
+    var a = window.lk.answers;
+    var result = window.lkComputeFunnel(a);
+    var amt = window.lkRecoveryAmount(result.leakage.headline, scen);
+    var pct = window.lkRecoveryPct(scen);
+    var amtEl = document.getElementById('lk-recovery-amt');
+    if (amtEl) amtEl.innerHTML = window.lkFmtMoneyFull(amt) + '<span class="recovery-pct">at ' + pct + '% recovery</span>';
+    var btns = document.querySelectorAll('.recovery-btn');
+    btns.forEach(function(b) {
+      b.classList.toggle('active', b.getAttribute('data-scen') === scen);
+    });
+  };
+
+  // ---------------------------------------------------------------
+  // HASH SHARING
+  // ---------------------------------------------------------------
+
+  window.lkUpdateHash = function() {
+    var a = window.lk.answers;
+    if (!history || !history.replaceState) return;
+    var parts = [
+      a.q1, a.q2, a.q3, a.q4,
+      a.contacted, a.interested, a.softCommits, a.signed, a.funded,
+      a.fundedDollars == null ? 0 : a.fundedDollars,
+      a.q13, a.q14, a.q15
+    ].map(function(v) { return v == null ? '' : v; });
+    var hash = '#l=' + parts.join('.');
+    try { history.replaceState(null, '', location.pathname + location.search + hash); } catch (e) {}
+  };
+
+  window.lkParseHash = function() {
+    var hash = location.hash || '';
+    var m = hash.match(/^#l=([\d\.\-]+)$/);
+    if (!m) return null;
+    var parts = m[1].split('.');
+    if (parts.length < 13) return null;
+    var n = function(s) { return s === '' ? null : parseFloat(s); };
+    return {
+      q1: n(parts[0]), q2: n(parts[1]), q3: n(parts[2]), q4: n(parts[3]),
+      contacted: n(parts[4]), interested: n(parts[5]), softCommits: n(parts[6]),
+      signed: n(parts[7]), funded: n(parts[8]), fundedDollars: n(parts[9]),
+      q13: n(parts[10]), q14: n(parts[11]), q15: n(parts[12])
+    };
+  };
+
+  window.lkCopyText = function() {
+    var a = window.lk.answers;
+    var result = window.lkComputeFunnel(a);
+    var diag = window.lkPrimaryDiagnosis[result.primaryLeak];
+    var inp = result.inputs;
+    var lines = [
+      'Soft Commit Leakage Calculator — Result',
+      '',
+      diag.reportEyebrow + ': ' + window.lkFmtMoneyFull(result.leakage.headline),
+      'Primary leak: ' + diag.headline,
+      '',
+      'Funnel:',
+      '  LPs contacted: ' + inp.contacted,
+      '  Interested: ' + inp.interested,
+      '  Soft commits: ' + inp.softCommits,
+      '  Completed subscriptions: ' + inp.signed,
+      '  Funded: ' + inp.funded,
+      '',
+      'Conversion rates:',
+      '  Interest → soft commit: ' + window.lkFmtPct(result.rates.interestToSoft),
+      '  Soft commit → signed: ' + window.lkFmtPct(result.rates.softToSigned),
+      '  Signed → funded: ' + window.lkFmtPct(result.rates.signedToFunded),
+      '  Overall (interest → funded): ' + window.lkFmtPct(result.rates.overall),
+      '',
+      'Conservative recovery (20%): ' + window.lkFmtMoneyFull(window.lkRecoveryAmount(result.leakage.headline, 'conservative')) + ' in additional funded capital.'
+    ];
+    window.lkCopyFallback(lines.join('\n'), 'lk-copy-text');
+  };
+
+  window.lkCopyLink = function() {
+    var url = location.origin + location.pathname + location.hash;
+    window.lkCopyFallback(url, 'lk-copy-link');
+  };
+
+  window.lkCopyFallback = function(text, btnId) {
+    var done = function() {
+      var btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.classList.add('copied');
+      var s = btn.querySelector('span');
+      if (s) {
+        var orig = s.textContent;
+        s.textContent = 'Copied!';
+        setTimeout(function() { btn.classList.remove('copied'); if (s) s.textContent = orig; }, 1800);
+      }
+    };
+    var legacyCopy = function() {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      } catch (e) {}
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, legacyCopy);
+    } else {
+      legacyCopy();
+    }
+  };
+
+  // ---------------------------------------------------------------
+  // INIT
+  // ---------------------------------------------------------------
+
+  window.lkInit = function() {
+    var parsed = window.lkParseHash();
+    if (parsed && parsed.q1 != null && parsed.contacted != null) {
+      window.lk.answers = parsed;
+      window.lk.step = 4;
+    } else {
+      window.lk.step = 0;
+    }
+    window.lkRender();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.lkInit);
+  } else {
+    window.lkInit();
+  }
+</script>
+</body>
+</html>

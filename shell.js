@@ -42,6 +42,7 @@
       '<h4>Tools</h4>' +
       '<ul class="nav-list">' +
         '<li><a class="nav-link" href="diagnostic.html">Capital Raise Failure Diagnostic</a></li>' +
+        '<li><a class="nav-link" href="leakage.html">Soft Commit Leakage Calculator</a></li>' +
       '</ul>' +
     '</div>' +
     '<div class="nav-group">' +
